@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.custom-icon {
+  cursor: pointer;
+  color: #9e9e9e;
+  font-size: 20px;
+  user-select: none;
+}
+
+.custom-icon-all {
+  color: #9e9e9e;
+  font-size: 20px;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__leading {
+  border-radius: 12px 0 0 12px !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__trailing {
+  border-radius: 0 12px 12px 0 !important;
+}
+

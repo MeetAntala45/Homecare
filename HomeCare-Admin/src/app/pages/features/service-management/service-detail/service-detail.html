@@ -1,0 +1,105 @@
+@if (isLoading) {
+<div
+  class="d-flex flex-column align-items-center justify-content-center bg-white rounded"
+  style="min-height: 400px; gap: 12px"
+>
+  <div class="spinner-border text-primary-custom" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="text-secondary mb-0 fs-14">Loading service details...</p>
+</div>
+} @else if (service) {
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn p-1 border-0 bg-transparent fs-5 text-dark" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <h2 class="fw-bold mb-0 h5">{{ service.name }}</h2>
+  </div>
+  <button class="btn edit-btn button-text" (click)="openEdit()">
+    <i class="bi bi-pencil me-2"></i>Edit
+  </button>
+</div>
+
+<div class="bg-white rounded-3 p-3 p-md-4">
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <span class="info-label">Service Name</span>
+      <span class="info-value d-block">{{ service.name }}</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <span class="info-label">Service Type</span>
+      <span class="info-value d-block">{{ service.serviceTypeName }}</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <span class="info-label">Service Category</span>
+      <span class="info-value d-block">{{ service.categoryName }}</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <span class="info-label">Service Sub Category</span>
+      <span class="info-value d-block">{{ service.subCategoryName }}</span>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <span class="info-label">Duration</span>
+      <span class="info-value d-block">{{ service.durationMin }}min</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <span class="info-label">Price</span>
+      <span class="info-value d-block">{{ service.price | currency }}</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <span class="info-label">Availability</span>
+      <span class="info-value d-block">
+        {{ service.isAvailable ? 'Available' : 'Unavailable' }}
+      </span>
+    </div>
+  </div>
+
+  <hr class="my-3 text-light" />
+
+  <h6 class="fw-bold mb-3">Service Images</h6>
+  <div class="d-flex flex-wrap gap-3 mb-4">
+    @if (service.imagePaths && service.imagePaths.length) { @for (img of service.imagePaths; track
+    img) {
+    <div class="service-image-wrap">
+      <img
+        [src]="getImageUrl(img)"
+        alt="Service image"
+        class="service-image"
+        (error)="onImageError($event)"
+      />
+    </div>
+    } } @else {
+    <span class="text-muted fs-14">—</span>
+    }
+  </div>
+
+  <hr class="my-3 text-light" />
+
+  <h6 class="fw-bold mb-3">{{ service.serviceTypeName }} Includes</h6>
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    @if (service.inclusions && service.inclusions.length) { @for (item of service.inclusions; track
+    item) {
+    <span class="checklist-tag">{{ item }}</span>
+    } } @else {
+    <span class="text-muted fs-14">—</span>
+    }
+  </div>
+
+  <hr class="my-3 text-light" />
+
+  <h6 class="fw-bold mb-3">{{ service.serviceTypeName }} Excludes</h6>
+  <div class="d-flex flex-wrap gap-2">
+    @if (service.exclusions && service.exclusions.length) { @for (item of service.exclusions; track
+    item) {
+    <span class="checklist-tag">{{ item }}</span>
+    } } @else {
+    <span class="text-muted fs-14">—</span>
+    }
+  </div>
+</div>
+}

@@ -1,0 +1,41 @@
+<div class="d-flex align-items-center justify-content-center min-vh-100 px-3">
+  <div class="login-box w-100">
+    <div class="logo-wrapper">
+      <span class="logo-text">H<span class="logo-o">o</span>meCare</span>
+    </div>
+
+    <h3 class="content text-center mb-4 fs-4 fw-400">Sign in to continue</h3>
+
+    <form [formGroup]="adminLoginForm" (ngSubmit)="onSubmit()">
+      <app-input-component
+        label="Email"
+        type="email"
+        icon="mail"
+        requiredMessage="Email is required"
+        [control]="emailControl"
+      >
+      </app-input-component>
+
+      <app-input-component
+        label="Password"
+        type="password"
+        icon="visibility_off"
+        requiredMessage="Password is required"
+        [control]="passwordControl"
+      >
+      </app-input-component>
+
+      <div class="text-end mb-4">
+        <a routerLink="/forgot-password" class="pass"> Forgot Password? </a>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-primary-custom w-100 py-3"
+        [disabled]="adminLoginForm.invalid || isSubmitting"
+      >
+        {{ isSubmitting ? 'Signing In...' : 'Sign In' }}
+      </button>
+    </form>
+  </div>
+</div>

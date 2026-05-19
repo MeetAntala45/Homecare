@@ -1,0 +1,200 @@
+<div class="table-responsive p-4 pe-5 rounded-top-3">
+  <div style="min-width: 1200px">
+    <div class="d-flex justify-content-between">
+      <div class="d-flex gap-2 mb-3">
+        @if (showPendingButton) {
+        <button class="btn status-btn px-4 py-2 button-text" [ngClass]="activeStatus === 'pending' 
+                  ? 'status-btn--pending-active' 
+                  : 'status-btn--pending'" (click)="setStatus('pending')">
+          UpComing
+        </button>
+        }
+
+        @if (showCompletedButton) {
+        <button class="btn status-btn px-4 py-2 button-text" [ngClass]="activeStatus === 'completed' 
+                  ? 'status-btn--completed-active' 
+                  : 'status-btn--completed'" (click)="setStatus('completed')">
+          Completed
+        </button>
+        }
+      </div>
+      <div class="">
+        @if(showFilter){
+        <button class="btn filter-btn button-text" (click)="filterClicked.emit()">
+          <i class="bi bi-funnel me-1 filter-icon"></i>
+          <span>Filter</span>
+        </button>
+        }
+      </div>
+    </div>
+    <table class="table custom-table align-middle w-100" style="table-layout: fixed" title="">
+      <thead>
+        <tr>
+          @for(col of columns; track col.header){
+          <th class="subtitle-2 grid-header overflow-hidden text-truncate text-nowrap" [ngStyle]="{ width: col.width }"
+            [class.sortable-col]="col.sortable" (click)="onSort(col)" [truncateTooltip]="col.header">
+            {{ col.header }}
+            @if(col.sortable){
+            <i class="bi {{ getSortIcon(col) }} ms-1 sort-icon" [class.sort-active]="sortBy === col.field"></i>
+            }
+          </th>
+          }
+          @if(showActions){
+          <th class="subtitle-2 grid-header action-col">Action</th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @if(isLoading){
+        @for(row of skeletonRows; track $index){
+        <tr>
+          @for(col of columns; track col.field){
+          <td class="py-3" [ngStyle]="{ width: col.width }">
+            <div class="skeleton skeleton-cell"></div>
+          </td>
+          }
+          @if(showActions){
+          <td class="py-3">
+            <div class="skeleton skeleton-cell"></div>
+          </td>
+          }
+        </tr>
+        }
+
+        } @else {
+        @for(row of data; track $index){
+        <tr class="clickable-row" [id]="'booking-' + row['bookingId']"
+          [class.row-highlight]="row['bookingId'] === highlightedRowId" (click)="rowClicked.emit(row)">
+          @for(col of columns; track col.field){
+          <td class="body-2 fs-14 fw-semibold text-dark-custom py-3" [ngStyle]="{ height: col.height }">
+            @if(!col.type || col.type === 'text'){
+            <span class="d-block text-truncate" [truncateTooltip]="row[col.field]">
+              {{ row[col.field] }}
+            </span>
+            }
+            @if(col.type === 'id'){
+            <ng-container>{{ row[col.field] | idFormat }}</ng-container>
+            }
+            @if(col.type === 'status'){
+            <ng-container>
+              <span class="badge-status" [ngClass]="{
+                        'badge-active': row[col.field] === true || row[col.field] === 'Active',
+                        'badge-inactive': row[col.field] === false || row[col.field] === 'Inactive',
+                        'badge-blocked': row[col.field] === 'Blocked'
+                      }">
+                <span class="badge-dot"></span>
+                {{ row[col.field] === true ? 'Active' : row[col.field] === false ? 'Inactive' : row[col.field] }}
+              </span>
+            </ng-container>
+            }
+            @if(col.type === 'currency'){
+            <ng-container>
+              <span class="currency-color">
+                {{ col.isPositiveAmount ? '+' : '' }}{{ row[col.field] | currency }}
+              </span>
+            </ng-container>
+            }
+            @if(col.type === 'partner-status'){
+            <ng-container>
+              <span class="badge-status" [ngClass]="row[col.field + 'Class']">
+                <span class="badge-dot"></span>
+                {{ row[col.field + 'Label'] }}
+              </span>
+            </ng-container>
+            }
+            @if(col.type === 'booking-status'){
+            <ng-container>
+              <span class="badge-status" [ngClass]="getBookingStatusClass(row[col.field])">
+                <span class="badge-dot"></span>
+                {{ row[col.field] }}
+              </span>
+            </ng-container>
+            }
+            @if(col.type === 'expert'){
+            <div class="expert-cell position-relative" (click)="$event.stopPropagation()"
+              (mouseenter)="row[col.field] !== '-' ? (row._showPopup = true) : null"
+              (mouseleave)="row._showPopup = false">
+              @if(row[col.field] && row[col.field] !== '-'){
+              @if(row['expertImage']){
+              <img [src]="row['expertImage']" class="expert-img" alt="" (error)="row['expertImage'] = null" />
+              } @else {
+              <div class="expert-img-avatar">{{ row[col.field]?.charAt(0)?.toUpperCase() }}</div>
+              }
+              } @else {
+              <div class="expert-img-placeholder"><i class="bi bi-person"></i></div>
+              }
+              <span class="expert-name text-truncate" [truncateTooltip]="row[col.field]">
+                {{ row[col.field] || '-' }}
+              </span>
+              @if(row._showPopup && row[col.field] !== '-'){
+              <div class="expert-popup" (mouseenter)="row._showPopup = true" (mouseleave)="row._showPopup = false">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  @if(row['expertImage']){
+                  <img [src]="row['expertImage']" class="expert-popup-img" alt="" (error)="row['expertImage'] = null" />
+                  } @else {
+                  <div class="expert-popup-avatar">{{ row[col.field]?.charAt(0)?.toUpperCase() }}</div>
+                  }
+                  <div>
+                    <div class="fw-semibold fs-14">{{ row[col.field] }}</div>
+                    <div class="text-muted fs-12">
+                      {{ row['serviceType'] }}
+                      <span class="verified-badge"><i class="bi bi-check-circle me-1"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex gap-2">
+                  @if(row['partnerId'] && !row['isPartnerDeleted']){
+                  <button class="btn-detail btn-sm flex-grow-1 fw-semibold" (click)="expertDetailClicked.emit(row)">
+                    View Details
+                  </button>
+                  @if(row['partnerPhone']){
+                  <button class="btn-phone d-flex align-items-center justify-content-center"
+                    style="width: 39px; height: 39px" (click)="copyPhone(row['partnerPhone'])">
+                    <i class="bi bi-telephone"></i>
+                  </button>
+                  }
+                  } @else if(row['isPartnerDeleted']){
+                  <div class="d-flex align-items-center gap-2 w-100">
+                    <i class="bi bi-exclamation-circle text-warning"></i>
+                    <span class="text-muted fs-12">This partner is no longer available.</span>
+                  </div>
+                  }
+                </div>
+              </div>
+              }
+            </div>
+            }
+          </td>
+          }
+          @if(showActions){
+          <td (click)="$event.stopPropagation()">
+            @if(directActions.length > 0){
+            <div class="d-flex justify-content-end gap-2">
+              @for(da of directActions; track da.action){
+              <button class="border-0 bg-transparent p-1 {{ da.class }}" (click)="onAction(da.action, row)">
+                <i class="bi {{ da.icon }}"></i>
+              </button>
+              }
+            </div>
+            } @else {
+            <app-action-dropdown [actions]="row.actions" (actionClicked)="onAction($event, row)">
+            </app-action-dropdown>
+            }
+          </td>
+          }
+        </tr>
+        } @empty {
+        <tr>
+          <td [colSpan]="showActions ? columns.length + 1 : columns.length" class="text-center text-muted py-5 fs-14">
+            No data found.
+          </td>
+        </tr>
+        }
+        }
+
+      </tbody>
+    </table>
+  </div>
+</div>

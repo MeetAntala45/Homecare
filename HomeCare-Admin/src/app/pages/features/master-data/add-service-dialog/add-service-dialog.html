@@ -1,0 +1,72 @@
+<div class="p-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h6 class="fw-bold p-0">Add Service Type</h6>
+    <button (click)="onCancel()" class="border-0 bg-transparent text-light-custom">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="serviceForm">
+    <mat-dialog-content class="p-0 pt-2 overflow-hidden">
+      <div [class.mb-2]="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Service Type</mat-label>
+          <input matInput formControlName="name" class="fs-14" />
+          @if (serviceForm.get('name')?.invalid) {
+          <mat-error> Service-Type is required </mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="upload-container mb-4">
+        <input
+          type="file"
+          #fileInput
+          hidden
+          accept=".svg, .png , .jpeg"
+          (change)="onFileSelected($event)"
+        />
+        <div class="d-flex align-items-center gap-3">
+
+          <button
+            type="button"
+            class="upload-btn btn-secondary-custom d-flex align-items-center rounded-3"
+            (click)="fileInput.click()"
+          >
+            <mat-icon class="me-2">north</mat-icon>
+            Upload icon
+          </button>
+
+          @if (imagePreview) {
+          <img [src]="imagePreview" alt="icon" class="preview-img rounded" width="40" height="40" />
+          }
+        </div>
+
+        <p class="text-light-custom small mt-2 mb-0">
+          Icon size must be 64px * 64px. svg or png file format.
+        </p>
+      </div>
+    </mat-dialog-content>
+
+    <div class="row w-100 m-0">
+      <div class="col-6 ps-0">
+        <button
+          type="button"
+          class="w-100 btn-secondary-custom py-3 fw-bold rounded-3 fs-14"
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+      </div>
+      <div class="col-6 pe-0">
+        <button
+          type="button"
+          class="w-100 btn-primary-custom py-3 fw-bold rounded-3 fs-14"
+          (click)="onSave()"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

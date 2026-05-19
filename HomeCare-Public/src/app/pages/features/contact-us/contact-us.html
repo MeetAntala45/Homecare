@@ -1,0 +1,142 @@
+<div class="container d-flex flex-column justify-content-center gap-sm-5 gap-4">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="position-relative rounded-4 overflow-hidden">
+                <img class="img-fluid w-100 rounded-4" src="assets/images/contact-us.png" alt="contact us">
+
+                <app-gradient-overlay></app-gradient-overlay>
+
+                <h2
+                    class="position-absolute top-50 start-50 translate-middle text-white fw-bold display-6 display-md-5 text-center px-2 z-1">
+                    Contact Us
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-4 gx-lg-5 mx-4 gap-5 gap-lg-0 align-items-center">
+
+        <div class="col-12 col-lg-5 p-0">
+            <div
+                class="bg-primary-300 p-3 p-md-4 p-lg-5 d-flex flex-column gap-3 gap-md-4 rounded-4 h-100 justify-content-center">
+
+                <div class="d-flex align-items-center gap-3 py-2">
+                    <span
+                        class="icon-box d-flex justify-content-center align-items-center border border-white border-opacity-50 rounded-3 text-white flex-shrink-0 bi bi-telephone fs-5"></span>
+                    <div class="text-white text-break">
+                        +91-454-1545-121
+                    </div>
+                </div>
+
+                <hr class="text-white my-1">
+
+                <div class="d-flex align-items-center gap-3 py-2">
+                    <span
+                        class="icon-box d-flex justify-content-center align-items-center border border-white border-opacity-50 text-white rounded-3 flex-shrink-0 bi bi-envelope fs-5"></span>
+                    <div class="text-white text-break">
+                        example.email@domain.com
+                    </div>
+                </div>
+
+                <hr class="text-white my-1">
+
+                <div class="d-flex align-items-start gap-3 py-2">
+                    <span
+                        class="icon-box d-flex justify-content-center align-items-center border border-white border-opacity-50 text-white rounded-3 flex-shrink-0 bi bi-geo-alt fs-5"></span>
+                    <div class="text-white text-break">
+                        1234 Elm Street, Apt 567, Springfield, IL 62704, United States
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-7">
+            <div class="px-0 px-md-3 px-lg-5 ">
+
+                <div class="pb-3 text-center text-lg-start">
+                    <h6 class="fw-bold fs-3">Get in Touch</h6>
+                </div>
+
+                <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="floating-group">
+                                <input type="text" class="form-control custom-input" formControlName="firstName"
+                                    placeholder=" "
+                                    [class.is-invalid]="firstNameControl.invalid && firstNameControl.touched" />
+                                <label>First Name*</label>
+                            </div>
+
+                            @if (firstNameControl.invalid && firstNameControl.touched) {
+                            <div class="error-text ps-3">{{ getErrorMessage(firstNameControl,'First name') }}</div>
+                            }
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="floating-group">
+                                <input type="text" class="form-control custom-input" formControlName="lastName"
+                                    placeholder=" "
+                                    [class.is-invalid]="lastNameControl.invalid && lastNameControl.touched" />
+                                <label>Last Name*</label>
+                            </div>
+                            @if (lastNameControl.invalid && lastNameControl.touched) {
+                            <div class="error-text ps-3">{{ getErrorMessage(lastNameControl, 'Last name') }}</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-12 col-md-6">
+                            <div class="floating-group">
+                                <input type="tel" class="form-control custom-input" formControlName="phoneNumber"
+                                    placeholder=" " [class.is-invalid]="phoneControl.invalid && phoneControl.touched" />
+                                <label>Mobile Number*</label>
+                            </div>
+                            @if (phoneControl.invalid && phoneControl.touched) {
+                            <div class="error-text ps-3">{{ getErrorMessage(phoneControl, 'Mobile number') }}</div>
+                            }
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="floating-group">
+                                <input type="email" class="form-control custom-input" formControlName="email"
+                                    placeholder=" " [class.is-invalid]="emailControl.invalid && emailControl.touched" />
+                                <label>Email*</label>
+                            </div>
+                            @if (emailControl.invalid && emailControl.touched) {
+                            <div class="error-text ps-3">{{ getErrorMessage(emailControl, 'Email') }}</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-12">
+                            <div class="floating-group textarea-group">
+                                <textarea rows="4" class="form-control custom-input"
+                                  formControlName="description" placeholder=" "
+                                  [class.is-invalid]="descriptionControl.invalid && descriptionControl.touched"></textarea>
+                                <label>Description*</label>
+                              </div>
+
+                            @if (descriptionControl.invalid && descriptionControl.touched) {
+                            <div class="error-text ps-3">{{ getErrorMessage(descriptionControl, 'Description') }}</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-lg-5">
+                            <button type="submit" [disabled]="contactForm.invalid"
+                                class="btn-primary-custom text-nowrap w-100 py-3 px-1 fw-bold rounded-5" disabled>
+                                Send Message
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

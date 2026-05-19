@@ -1,0 +1,104 @@
+.coupon-banner {
+    position: fixed;
+    bottom: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    width: min(560px, 94vw);
+    transition: bottom 0.45s cubic-bezier(.22,1,.36,1);
+  }
+  .coupon-banner.visible { bottom: 24px; }
+
+  .coupon-banner__inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    color: #fff;
+  }
+
+  .coupon-banner__badge {
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    white-space: nowrap;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .coupon-banner__body { flex: 1; min-width: 0; }
+
+  .coupon-banner__desc {
+    margin: 0 0 8px;
+    font-size: 0.88rem;
+    opacity: 0.82;
+    line-height: 1.4;
+  }
+
+  .coupon-banner__code-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .coupon-banner__label {
+    font-size: 0.78rem;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .coupon-banner__code {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px dashed rgba(255,255,255,0.35);
+    border-radius: 8px;
+    color: #fbbf24;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 4px 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .coupon-banner__code:hover { background: rgba(255,255,255,0.18); }
+
+  .coupon-banner__copy-icon { font-size: 0.8rem; opacity: 0.7; }
+
+  .coupon-banner__conditions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .coupon-banner__tag {
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.75rem;
+    opacity: 0.75;
+  }
+
+  .coupon-banner__close {
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 2px 4px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .coupon-banner__close:hover { color: #fff; }

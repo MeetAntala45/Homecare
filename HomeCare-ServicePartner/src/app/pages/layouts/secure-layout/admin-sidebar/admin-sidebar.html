@@ -1,0 +1,34 @@
+<div class="d-flex align-items-center justify-content-between px-4 py-3">
+  <a class="text-decoration-none text-dark" routerLink="/service-partner/dashboard" click="onMenuClick()">
+    <h2 class="fw-bold mb-0">H<span class="text-primary-300">o</span>meCare</h2>
+  </a>
+</div>
+<ul class="sidebar-menu list-unstyled px-3">
+  @for (item of menu; track item) {
+  <li class="mb-2">
+    <a
+      class="menu-item fw-semibold d-flex align-items-center gap-3 px-3 py-2 rounded-3 text-decoration-none"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      (click)="onMenuClick()"
+    >
+      <i class="bi fw-semibold fs-5" [ngClass]="item.icon"></i>
+      <span
+        #labelRef
+        class="ellipsis-text"
+        [matTooltip]="item.label"
+        matTooltipPosition="above"
+        [matTooltipDisabled]="!isTextOverflow(labelRef)"
+      >
+        {{ item.label }}
+      </span>
+      @if (item.route === '/service-partner/leaves' && leaveUnreadCount() > 0) {
+        <span class="sp-leave-badge">
+          {{ leaveUnreadCount() > 99 ? '99+' : leaveUnreadCount() }}
+        </span>
+      }
+    </a>
+  </li>
+  }
+</ul>

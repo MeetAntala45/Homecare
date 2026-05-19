@@ -1,0 +1,125 @@
+<div class="filter-panel d-flex flex-column bg-white">
+  <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+    <h6 class="mb-0 fw-semibold fs-6 text-dark">Filter</h6>
+    <button class="btn btn-sm d-flex align-items-center p-1" (click)="onCancelButton()">
+      <mat-icon class="text-secondary">close</mat-icon>
+    </button>
+  </div>
+
+  <div class="filter-body p-4 d-flex flex-column  gap-3">
+    @for(field of data.fields; track field.key){ @switch(field.type) {
+
+    @case('input') { @if(data.useMatInput) {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ field.label }}</mat-label>
+      <input matInput [type]="field.inputType || 'text'" [(ngModel)]="selectedValues[field.key]" />
+    </mat-form-field>
+    } @else {
+    <div class="mb-3">
+      <div class="input-group">
+        <input
+          type="{{ field.inputType || 'text' }}"
+          class="form-control"
+          [placeholder]="field.label"
+          [(ngModel)]="selectedValues[field.key]"
+        />
+
+        @if(field.suffix) {
+        <span class="input-group-text">{{ field.suffix }}</span>
+        }
+      </div>
+    </div>
+    } } @case('date') {
+    <mat-form-field appearance="outline" class="w-100 custom-date-field">
+      <mat-label>{{ field.label }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [formControl]="fieldControls[field.key]"
+        [max]="field.allowFuture ? null : maxDate"
+        [min]="minDate"
+        placeholder="MM/DD/YYYY"
+        (input)="onDateInput($event)"
+        (keypress)="onDateKeyPress($event)"
+        (blur)="onDateBlur($event, field.key, field.allowFuture ?? false)"
+      />
+
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon>
+      </mat-datepicker-toggle>
+
+      <mat-datepicker #picker></mat-datepicker>
+
+      @if (fieldControls[field.key]?.invalid && (fieldControls[field.key]?.touched ||
+      fieldControls[field.key]?.dirty)) {
+      <mat-error>
+        {{ dateError || getErrorMessage() }}
+      </mat-error>
+      }
+    </mat-form-field>
+    } @case('time') {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ field.label }}</mat-label>
+      <input matInput type="time" [(ngModel)]="selectedValues[field.key]" />
+      <mat-icon matSuffix>schedule</mat-icon>
+    </mat-form-field>
+    } @case('range') {
+    <div class="mt-3 mb-4">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="fw-medium body-1 text-dark">{{ field.label }}</span>
+        <div class="d-flex gap-2">
+          <span class="badge rounded-pill bg-light text-dark border fw-semibold">
+            {{ field.prefix || '' }}{{ selectedValues[field.key]?.min }}
+          </span>
+          <span class="badge rounded-pill bg-dark text-white fw-semibold">
+            {{ field.prefix || '' }}{{ selectedValues[field.key]?.max }}
+          </span>
+        </div>
+      </div>
+      <mat-slider [min]="field.min" [max]="field.max" class="w-100">
+        <input
+          matSliderStartThumb
+          [(ngModel)]="selectedValues[field.key].min"
+          (valueChange)="selectedValues[field.key].min = $event"
+        />
+        <input
+          matSliderEndThumb
+          [(ngModel)]="selectedValues[field.key].max"
+          (valueChange)="selectedValues[field.key].max = $event"
+        />
+      </mat-slider>
+      <div class="d-flex justify-content-between">
+        <small class="text-muted">{{ field.prefix || '' }}{{ field.min }}</small>
+        <small class="text-muted">{{ field.prefix || '' }}{{ field.max }}</small>
+      </div>
+    </div>
+    } @case('toggle') {
+    <div class="d-flex align-items-center justify-content-between py-2 mt-3">
+      <span class="fw-medium body-1 text-dark">{{ field.label }}</span>
+      <div class="form-check form-switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          [(ngModel)]="selectedValues[field.key]"
+        />
+      </div>
+    </div>
+    } @default {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ field.label }}</mat-label>
+      <mat-select [(ngModel)]="selectedValues[field.key]">
+        <mat-option [value]="null">All</mat-option>
+        @for(opt of field.options; track opt.value){
+        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    } } }
+  </div>
+
+  <div class="filter-footer d-flex gap-3 px-4 py-3">
+    <button class="btn-cancel w-100 fw-semibold" (click)="onCancel()">Cancel</button>
+    <button class="btn-filter w-100 fw-bold" (click)="onFilter()">Filter</button>
+  </div>
+</div>

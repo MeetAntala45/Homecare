@@ -1,0 +1,49 @@
+<div class="p-4">
+
+  <div class="d-flex justify-content-end mb-1">
+    <button class="text-light-custom border-0 bg-transparent" (click)="cancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="warning-icon mb-3">
+    <i class="bi bi-exclamation-triangle fs-2"></i>
+  </div>
+
+  <h5 class="modal-title mb-2">
+    Are you sure you want to cancel this booking?
+  </h5>
+
+  <p class="modal-subtitle">
+    Please enter the reason for cancelling the booking request.
+  </p>
+
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Reason</mat-label>
+    <textarea 
+      matInput 
+      [(ngModel)]="reason" 
+      #reasonCtrl="ngModel" 
+      rows="3" 
+      placeholder="Type here..." 
+      required>
+    </textarea>
+    <mat-error *ngIf="reasonCtrl.invalid && reasonCtrl.touched">
+      Reason is required
+    </mat-error>
+  </mat-form-field>
+
+  <div class="row w-100 m-0">
+    <div class="action-row col-6 ps-0">
+      <button type="button" mat-flat-button class="w-100 btn-secondary-custom py-3 fs-14" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+    <div class="action-row col-6 pe-0">
+      <button type="button" mat-flat-button class="w-100 btn-primary-custom py-3 fs-14" (click)="confirm(reasonCtrl)">
+        Save
+      </button>
+    </div>
+  </div>
+
+</div>

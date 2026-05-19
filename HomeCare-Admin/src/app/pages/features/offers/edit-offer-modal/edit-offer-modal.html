@@ -1,0 +1,177 @@
+<div class="p-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h6 class="fw-bold mb-0">Edit Offer</h6>
+    <button class="border-0 bg-transparent text-light-custom" (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form">
+    <mat-dialog-content class="p-0 pt-1">
+
+      <div class="row gx-3 gy-2 ">
+
+        <div class="col-12 col-md-6 col-lg-6">
+          <app-offer-input-fields
+            [config]="{ type: 'text', label: 'Offer Code', placeholder: 'e.g. SAVE10', requiredMessage: 'Offer code is required.',maxLength: 20 }"
+            [control]="form.get('offerCode') | asFormControlpipe">
+          </app-offer-input-fields>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-6">
+          <app-offer-input-fields
+            [config]="{ type: 'number', label: 'Discount (%)', placeholder: '1 - 100', suffixText: '%', requiredMessage: 'Discount is required.' }"
+            [control]="form.get('discountPct') | asFormControlpipe">
+          </app-offer-input-fields>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <app-offer-input-fields
+            [config]="{ type: 'select', label: 'Status', options: statusOptions, requiredMessage: 'Status is required.' }"
+            [control]="form.get('status') | asFormControlpipe">
+          </app-offer-input-fields>
+        </div>
+
+        <div class="col-12">
+          <app-offer-input-fields
+            [config]="{ type: 'textarea', label: 'Description', placeholder: 'e.g. Get 10% off on orders above 499' , maxLength: 200}"
+            [control]="form.get('description') | asFormControlpipe">
+          </app-offer-input-fields>
+        </div>
+
+      </div>
+
+      <div class="conditions-header mt-3 mb-3 d-flex align-items-center justify-content-between">
+        <div>
+          <h6 class="fw-bold text-light-custom mb-0">Conditions</h6>
+          <span class="body-2 text-muted">optional — no conditions means offer applies to all users</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-add-condition d-flex align-items-center gap-1"
+          (click)="addCondition()">
+          <mat-icon>add</mat-icon> Add
+        </button>
+      </div>
+
+      @for (conditionGroup of conditionsArray.controls; track conditionGroup; let i = $index; let last = $last) {
+      <div class="condition-card">
+        <div class="d-flex align-items-start gap-2">
+          <div class="flex-grow-1">
+
+            <div class="row gx-2 gy-2">
+              <div class="col-12 col-md-6">
+                <app-offer-input-fields [config]="{
+                        type: 'select',
+                        label: 'Condition Type',
+                        options: conditionTypeOptions,
+                        requiredMessage: 'Condition type is required.'
+                        }" [control]="getControl(conditionGroup | asFormGroup, 'conditionTypeId')"
+                  (selectionChange)="onConditionTypeChange($event, i)">
+                </app-offer-input-fields>
+              </div>
+
+              <div class="col-12 col-md-6">
+                @if (getControl(conditionGroup | asFormGroup, 'conditionTypeId').value
+                && getControl(conditionGroup | asFormGroup, 'conditionTypeId').value !== ADD_TYPE_VALUE) {
+                <app-offer-input-fields [config]="{
+                            type: 'select',
+                            label: 'Operator',
+                            options: getOperatorOptions(i),
+                            requiredMessage: 'Operator is required.'
+                        }" [control]="getControl(conditionGroup | asFormGroup, 'operator')"
+                  (selectionChange)="onOperatorChange(i)">
+                </app-offer-input-fields>
+                } @else {
+                <span class="operator-placeholder d-flex align-items-center h-100">
+                  Select a condition type first
+                </span>
+                }
+              </div>
+            </div>
+
+            @if (!isBetween(i)) {
+            <div class="row gx-2 gy-2 mt-1">
+              <div class="col-12 col-md-6">
+                <app-offer-input-fields
+                  [config]="{ type: getValueFieldType(i), label: 'Value', placeholder: 'Enter value', requiredMessage: 'Value is required.', serviceTypeHierarchy: serviceTypeHierarchy }"
+                  [control]="getControl(conditionGroup | asFormGroup, 'value')" 
+                  >
+                </app-offer-input-fields>
+              </div>
+              <div class="col-12 col-md-6">
+                <app-offer-input-fields
+                  [config]="{ type: 'select', label: 'Fail Behaviour', options: failBehaviourOptions, requiredMessage: 'Fail behaviour is required.' }"
+                  [control]="getControl(conditionGroup | asFormGroup, 'failBehaviour')">
+                </app-offer-input-fields>
+              </div>
+            </div>
+            }
+
+            @if (isBetween(i)) {
+            <div class="row gx-2 gy-2 mt-1">
+              <div class="col-12 col-md-4">
+                <app-offer-input-fields
+                  [config]="{ type: getValueFieldType(i), label: 'From', placeholder: 'From', requiredMessage: 'From is required.', disableMinDate: isExistingCondition(i) }"
+                  [control]="getControl(conditionGroup | asFormGroup, 'valueFrom')">
+                </app-offer-input-fields>
+              </div>
+              <div class="col-12 col-md-4">
+                <app-offer-input-fields
+                  [config]="{ type: getValueFieldType(i), label: 'To', placeholder: 'To', requiredMessage: 'To is required.' }"
+                  [control]="getControl(conditionGroup | asFormGroup, 'valueTo')">
+                </app-offer-input-fields>
+              </div>
+              <div class="col-12 col-md-4">
+                <app-offer-input-fields
+                  [config]="{ type: 'select', label: 'Fail Behaviour', options: failBehaviourOptions, requiredMessage: 'Behaviour is required.' }"
+                  [control]="getControl(conditionGroup | asFormGroup, 'failBehaviour')">
+                </app-offer-input-fields>
+              </div>
+            </div>
+            @if ((conditionGroup | asFormGroup).errors?.['invalidDateRange']) {
+            <small class="err mt-1 ms-3">
+              From date must be before To date
+            </small>
+            }
+
+            @if ((conditionGroup | asFormGroup).errors?.['invalidTimeRange']){
+            <small class="err mt-1 ms-3">
+              From time must be before To time
+            </small>
+            }
+            }
+
+          </div>
+
+          <button type="button" class="btn-delete-condition mt-1" (click)="removeCondition(i)"
+            matTooltip="Delete condition" matTooltipClass="delete-tooltip">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      @if (!last) {
+      <div class="condition-divider"></div>
+      }
+      }
+
+    </mat-dialog-content>
+
+    <div class="row mt-3">
+      <div class="col-6">
+        <button type="button" class="w-100 btn-secondary-custom py-3 fw-bold rounded-3 fs-14"
+          (click)="onCancel()">Cancel</button>
+      </div>
+      <div class="col-6">
+        <button type="button" class="w-100 btn-primary-custom py-3 fw-bold rounded-3 fs-14" (click)="onSave()"
+          [disabled]="isLoading">
+          @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          {{ isLoading ? 'Updating...' : 'Update' }}
+        </button>
+      </div>
+    </div>
+
+  </form>
+</div>

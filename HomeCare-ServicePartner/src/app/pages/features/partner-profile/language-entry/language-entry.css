@@ -1,0 +1,49 @@
+.entry-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.field-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-delete {
+  flex-shrink: 0;
+  margin-top: 8px;
+  border: 1px solid #e0e0ff;
+  background: #fff;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.btn-delete mat-icon {
+  color: #4540e1;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+.btn-delete:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.btn-delete:hover mat-icon {
+  color: #dc2626;
+}
+
+@media (max-width: 576px) {
+  .entry-row { flex-wrap: wrap; }
+  .field-item { flex: 1 1 100%; }
+  .btn-delete { align-self: flex-end; margin-top: 0; }
+}

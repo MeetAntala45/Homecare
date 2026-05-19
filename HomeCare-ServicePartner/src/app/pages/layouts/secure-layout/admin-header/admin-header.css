@@ -1,0 +1,31 @@
+.navbar {
+  left: 260px;
+  right: 0;
+  height: 76px;
+  z-index: 1050;
+  border-bottom: 1.5px solid var(--border-light);
+}
+
+@media (max-width: 991px) {
+  .navbar {
+    left: 0;
+  }
+}
+
+.dropdown-icon {
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.avatar-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #4540E1;
+  background: #dad9f9;
+}

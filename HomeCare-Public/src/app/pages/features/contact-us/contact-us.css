@@ -1,0 +1,110 @@
+.icon-box {
+    width: 40px;
+    height: 40px;
+}
+
+.ellipsis-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.msg-btn {
+    max-width: 200px;
+}
+
+.btn-primary-custom:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: var(--primary-300)!important;
+}
+
+.custom-input {
+    border: 1px solid #dcdcdc;
+    transition: all 0.2s ease;
+}
+
+.custom-input:focus {
+    border: 1px solid #4f46e5;
+    box-shadow: none;
+}
+
+.custom-input.is-invalid {
+    border: 1px solid red !important;
+}
+
+.error-text {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.floating-group {
+    position: relative;
+}
+
+.floating-group .form-control {
+    padding: 14px 12px;
+    border: 1px solid #dcdcdc;
+    background: transparent;
+}
+
+.floating-group .form-control:focus {
+    border: 1px solid #4f46e5;
+    box-shadow: none;
+}
+
+.floating-group label {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    background: white;
+    padding: 0 4px;
+    font-size: 14px;
+    color: #6c757d;
+    transition: 0.2s ease;
+    pointer-events: none;
+}
+
+.floating-group textarea + label {
+    top: 14px;            
+    transform: none;        
+}
+
+.floating-group .form-control:focus+label,
+.floating-group .form-control:not(:placeholder-shown)+label {
+    top: -0.5px;
+    font-size: 12px;
+    color: #4f46e5;
+}
+
+.floating-group textarea.form-control.has-value + label,
+.floating-group textarea.form-control:focus + label {
+    top: -8px;
+    font-size: 12px;
+    color: #4f46e5;
+}
+
+.floating-group .form-control.is-invalid {
+    border: 1px solid red !important;
+}
+
+.floating-group .form-control.is-invalid+label {
+    color: red ; 
+}
+.floating-group textarea.form-control.is-invalid+label {
+    color: red ; 
+}
+.error-text {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+}
+.floating-group .form-control:not(:focus):not(:placeholder-shown):not(.is-invalid) + label {
+    color: #6c757d;
+}
+.floating-group textarea.form-control:not(:focus):not(:placeholder-shown) + label {
+    top: -8px;
+}

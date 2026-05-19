@@ -1,0 +1,51 @@
+<app-grid-layout
+  title="My Jobs"
+  [columns]="columns"
+  [data]="data"
+  [isLoading]="isLoading"
+  [skeletonRowCount]="pageSize"
+  [showPagination]="true"
+  [showActions]="true"                                  
+  (actionClicked)="onActionClicked($event)"     
+  [totalCount]="totalCount"
+  [pageNumber]="pageNumber"
+  [pageSize]="pageSize"
+  (pageChanged)="onPageChanged($event)"
+  [sortBy]="sort.sortBy"
+  [sortOrder]="sort.sortOrder"
+  [showCompleted]="true"
+  [showPending]="true"
+  [showFilterInData]="true"
+  (sortChanged)="onSortChanged($event)"
+  [activeStatus]="status"
+  (statusChanged)="onStatusChange($event)"
+  [showViewToggle]="true"
+  [initialViewMode]="initialViewMode"
+  (viewModeChanged)="onViewModeChanged($event)"
+  (dataFilterClicked)="openFilter()"
+  [highlightRowKey]="highlightBookingId?.toString() ?? null"
+  [highlightedRowId]="highlightBookingId"
+  (listCalled)="onListClicked()">
+  >
+
+>
+  <div calendarSlot>
+    <div class="d-flex justify-content-end gap-2 mb-3">
+      <button class="cal-nav-btn" (click)="prevMonth()">
+        <i class="bi bi-chevron-left primary-icon"></i>
+      </button>
+      <button class="cal-nav-btn cal-nav-btn--today" (click)="goToToday()">
+        Today
+      </button>
+      <button class="cal-nav-btn" (click)="nextMonth()">
+        <i class="bi bi-chevron-right primary-icon"></i>
+      </button>
+    </div>
+    <app-jobs-calendar
+      [jobs]="calendarJobs"
+      [currentYear]="calendarYear"
+      [currentMonth]="calendarMonth"
+      [scrollToTodayTrigger]="scrollTrigger">
+    </app-jobs-calendar>
+  </div>
+</app-grid-layout>

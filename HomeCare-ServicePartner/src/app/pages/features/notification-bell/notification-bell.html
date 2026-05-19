@@ -1,0 +1,63 @@
+<div class="bell-wrapper">
+    <button class="bell-btn" (click)="togglePanel()">
+        <i class="bi bi-bell-fill bell-icon"></i>
+        @if (notificationService.unreadCount() > 0) {
+        <span class="badge">
+            {{ notificationService.unreadCount() > 99 ? '99+' : notificationService.unreadCount() }}
+        </span>
+        }
+    </button>
+
+    @if (panelOpen()) {
+    <div class="panel-backdrop" (click)="panelOpen.set(false)"></div>
+    <div class="notification-panel">
+
+        <div class="panel-header">
+            <span class="panel-title">Notifications</span>
+            @if (notificationService.unreadCount() > 0) {
+            <button class="mark-all-btn" (click)="markAllRead($event)">
+                <i class="bi bi-check-all"></i> Mark all as read
+            </button>
+            }
+        </div>
+
+        <div class="notifications-scroll">
+            @if (notificationService.notifications().length === 0) {
+            <div class="empty-state">
+                <i class="bi bi-bell-slash"></i>
+                <p>No notifications yet</p>
+            </div>
+            }
+
+            @for (n of notificationService.notifications(); track n.id) {
+            <div class="notification-row" [class.unread]="!n.isRead">
+
+                <div class="dot-col">
+                    @if (!n.isRead) { <span class="unread-dot"></span> }
+                </div>
+
+                <div class="notification-content">
+                    <p class="notification-message">{{ n.message }}</p>
+                    <p class="notification-meta">{{ n.serviceName }} </p>
+                    <p class="notification-time">{{ n.createdAt | Timezone | date:'dd MMM, h:mm a' }}</p>
+                </div>
+
+                <div class="action-col">
+                    <button class="pill-btn view-pill" title="View booking" (click)="viewAndRead($event, n)">
+                        <i class="bi bi-arrow-right"></i> View
+                    </button>
+
+                    @if (!n.isRead) {
+                    <button class="pill-btn read-pill" title="Mark as read" (click)="markOneRead($event, n)">
+                        <i class="bi bi-check2"></i>
+                    </button>
+                    }
+                </div>
+
+            </div>
+            }
+        </div>
+
+    </div>
+    }
+</div>

@@ -1,0 +1,71 @@
+<div class="calendar-wrapper">
+  <div class="calendar-header">
+
+    <div class="d-flex align-items-center justify-content-between mb-3 px-1">
+      <span class="month-label fw-bold">{{ monthLabel }}</span>
+      <span class="text-dark-custom small">{{ jobs.length }} job(s) in {{ monthName }}</span>
+    </div>
+    
+    <div class="d-flex flex-wrap justify-content-end gap-sm-3 gap-2 mb-3 px-1">
+      <span class="legend-item">
+        <span class="legend-dot legend-dot-pending"></span>
+        <span class="legend-label">Pending</span>
+      </span>
+      <span class="legend-item">
+        <span class="legend-dot legend-dot-completed"></span>
+        <span class="legend-label">Completed</span>
+      </span>
+      <span class="legend-item">
+        <span class="legend-dot legend-dot-inprogress"></span>
+        <span class="legend-label">In Progress</span>
+      </span>
+    </div>
+
+    <div class="calendar-grid">
+        @for (day of weekDays; track day) {
+        <div class="weekday-header text-center fw-semibold py-2">
+            {{ day }}
+        </div>
+        }
+
+        @for (cell of calendarDays; track cell.date.toISOString()) {
+          <div class="day-cell" [attr.id]="'day-' + toDateOnlyStr(cell.date)"
+            [class.other-month]="!cell.isCurrentMonth" [class.today-cell]="cell.isToday">
+
+            <div class="d-flex justify-content-end">
+                <span class="date-num" [class.today-badge]="cell.isToday">
+                    {{ cell.date.getDate() }}
+                </span>
+            </div>
+
+            @if (cell.isCurrentMonth) {
+              <div class="jobs-list my-1">
+                @for (job of cell.jobs; track job.bookingId) {
+                  <div class="job-card p-2" 
+                    [class.job-card--pending]="job.bookingStatus === 'Pending'"
+                    [class.job-card--completed]="job.bookingStatus === 'Completed'"
+                    [class.job-card--inprogress]="job.bookingStatus === 'InProgress'">
+
+                    <div class="d-flex align-items-start justify-content-between gap-1">
+                        <div class="job-left">
+                            <div class="job-name pb-1" [title]="job.serviceName">
+                                {{ job.serviceName }}
+                            </div>
+                            <div class="job-customer" [title]="job.customerName">
+                                <i class="bi bi-person me-1"></i>{{ job.customerName }}
+                            </div>
+                        </div>
+                        <span class="job-time flex-shrink-0">
+                            {{ formatTime(job.slotTime) }}
+                        </span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+    </div>
+    
+  </div>
+</div>

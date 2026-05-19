@@ -1,0 +1,146 @@
+<app-customer-header
+  [showMenu]="false"
+  [showLogin]="false"
+  [showProfile]="false"
+  [headerTitle]="false"
+  [isMobileMenu]="false"
+  [isCheckoutHeader]="false"
+></app-customer-header>
+
+<div class="pt-sm-5 pt-4 pb-3 px-1 px-sm-0">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="text-center">
+          <h2 class="fw-bold mb-3 pt-2">Thanks for choosing HomeCare</h2>
+          <h6 class="text-light-custom fs-5 mb-sm-5 mb-4">
+            Your <strong>{{ booking?.serviceCategory }}</strong> booking is confirmed
+          </h6>
+        </div>
+        <div class="my-3 custom-divider"></div>
+
+        <div class="mb-sm-5">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fw-bold">Booking Details</span>
+            <button
+              class="d-flex align-items-center text-primary-300 bg-transparent custom-border fw-bold rounded-5 px-3 py-2 gap-2"
+              (click)="downloadInvoice()"
+              [disabled]="isDownloading"
+            >
+              @if (isDownloading) { Downloading... } @else {
+              <i class="bi bi-download primary-icon"></i>Invoice }
+            </button>
+          </div>
+
+          @if (loading) {
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary"></div>
+          </div>
+          } @if (!loading && booking) {
+
+          <div class="mb-4">
+            <div class="fw-semibold">{{ booking.serviceName }}</div>
+            <div class="text-light-custom fw-medium fs-14">{{ booking.durationMinutes }} Min</div>
+          </div>
+
+          <div class="mb-3">
+            @if (isAssigningPartner) {
+            <div class="text-center py-3">
+              <div class="spinner-border text-primary-300 mb-2"></div>
+              <div class="text-dark-custom small">We are assigning a Service Partner.</div>
+            </div>
+            } @if (!isAssigningPartner) {
+            <div class="text-light-custom fw-semibold small mb-3">Assigned Service Partner</div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="fw-semibold small d-flex justify-content-center align-items-center gap-3">
+                @if(photoPreview != '') {
+                <img
+                  [src]="photoPreview || getAvatarText()"
+                  alt="Profile"
+                  width="50"
+                  height="50"
+                  class="object-fit-cover"
+                />
+                } @else {
+                <div
+                  class="partner-img-box d-flex align-items-center justify-content-center rounded-circle bg-light"
+                >
+                  <mat-icon class="text-primary-100">person</mat-icon>
+                </div>
+                }
+                {{ booking.partnerName }}
+              </div>
+
+              <button
+                matTooltip="{{ copied ? 'Copied!' : booking.partnerMobileNumber }}"
+                matTooltipPosition="above"
+                #tooltip="matTooltip"
+                (click)="onCallClick(booking.partnerMobileNumber, tooltip)"
+                class="border border-2 rounded-circle px-2 py-1 d-flex align-items-center justify-content-center bg-transparent flex-shrink-0"
+              >
+                <i class="bi bi-telephone telephone-icon"></i>
+              </button>
+            </div>
+            }
+          </div>
+
+          <div class="mb-4 custom-divider"></div>
+
+          <div class="row g-0">
+            <div class="col-6">
+              <div class="text-light-custom fw-semibold">Amount Paid</div>
+            </div>
+            <div class="col-6">
+              <div class="fw-bold">
+                {{ booking.amountPaid | currency : 'USD' }}
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="col-6">
+              <div class="text-light-custom fw-semibold">Location</div>
+            </div>
+            <div class="col-6">
+              <div class="fw-semibold">
+                {{ booking.location }}
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="col-6">
+              <div class="text-light-custom fw-semibold">Start Date & Time</div>
+            </div>
+
+            <div class="col-6">
+              <div class="fw-semibold">
+                {{ formatDateTime(booking.slotDate, booking.slotStartTime) }}
+              </div>
+            </div>
+          </div>
+          } @if (!loading && !booking) {
+          <div class="text-center text-muted py-4">Could not load booking details.</div>
+          }
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center gap-3 mt-4">
+          <button
+            class="d-flex align-items-center justify-content-center text-primary-300 bg-transparent custom-border fw-bold rounded-5 px-3 py-3 gap-2 w-100"
+            (click)="addServices()"
+          >
+            Add Services
+          </button>
+          <button
+            class="d-flex align-items-center justify-content-center bg-primary-300 text-white booking-button fw-medium rounded-5 px-3 py-3 gap-2 w-100"
+            (click)="goToBookings()"
+          >
+            My Bookings
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-ai-chatbot></app-ai-chatbot>
+</div>

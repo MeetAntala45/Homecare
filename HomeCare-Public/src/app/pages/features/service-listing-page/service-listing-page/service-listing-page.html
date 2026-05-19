@@ -1,0 +1,193 @@
+<div class="container d-flex flex-column gap-5">
+  <div class="position-relative rounded-4 overflow-hidden service-banner">
+    <img src="/assets/images/service-listing.png" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0"
+      alt="Services Banner" />
+
+    <app-gradient-overlay></app-gradient-overlay>
+
+    <app-search-box
+      class="position-absolute top-50 start-50 translate-middle text-white fw-bold z-1 d-flex justify-content-center w-100 w-md-50"
+      variant="glass" [placeholder]="'Search for ' + serviceTypeName" mode="live"
+      (searchClicked)="onSearchClick($event)" (searchCleared)="onSearchCleared()">
+    </app-search-box>
+
+    <div class="position-absolute bottom-0 start-0 z-2 p-2 p-md-4 text-white">
+      <span class="service-count"> {{ allServicesByType.length | countFormat }} Services</span>
+      <h1 class="fw-bold m-0 service-heading">{{ serviceTypeName | titlecase }}</h1>
+    </div>
+
+    <div
+      class="position-absolute bottom-0 end-0 z-2 p-2 p-md-4 text-white d-flex gap-2 gap-lg-4 small flex-column flex-xl-row text-end">
+      <div class="d-flex gap-2 align-items-center justify-content-end">
+        <i class="bi-check-circle d-none d-sm-inline"></i>
+        <span class="d-none d-sm-inline">Verified Professionals</span>
+      </div>
+      <div class="d-flex gap-2 align-items-center justify-content-end">
+        <i class="bi-check-circle d-none d-sm-inline"></i>
+        <span class="d-none d-sm-inline">Superior Stain Removal</span>
+      </div>
+    </div>
+  </div>
+  <div class="row flex-column flex-md-row">
+    <div class="d-flex d-md-none mb-3">
+      <button class="btn-secondary-custom w-100 d-flex justify-content-between align-items-center"
+        (click)="openPanel()">
+        <span>
+          {{
+          selectedCategoryIndex !== null
+          ? categories[selectedCategoryIndex]?.name
+          : 'All Categories'
+          }}
+        </span>
+        <i class="bi-chevron-down"></i>
+      </button>
+    </div>
+    @if(isOpen){
+    <div class="cdk-overlay-backdrop" (click)="closePanel()"></div>
+    <div class="bottom-sheet">
+      <div class="header d-flex justify-content-between align-items-center border-bottom p-3">
+        <h6 class="fw-bold">Categories</h6>
+        <button class="btn-close" (click)="closePanel()"></button>
+      </div>
+
+      <div class="body">
+        <ng-container *ngTemplateOutlet="categoryList"></ng-container>
+      </div>
+    </div>
+    }
+
+    <div class="col-12 col-md-3 border-end border-2 px-2 px-md-3 mb-3 mb-md-0 d-none d-md-block">
+      <ng-container *ngTemplateOutlet="categoryList"></ng-container>
+    </div>
+
+    <ng-template #categoryList class="services-scroll-wrapper">
+      @for (category of categories; track category.id; let i = $index) {
+
+      <div class="d-flex justify-content-between align-items-center px-3 py-2 cursor-pointer"
+        (click)="selectCategory(i)">
+        <span class="fw-bold">{{ category.name | titlecase }}</span>
+        <i class="text-secondary" [class.bi-chevron-down]="openedCategoryIndex !== i"
+          [class.bi-chevron-up]="openedCategoryIndex === i">
+        </i>
+      </div>
+
+      <div class="subcategory-wrapper" [class.open]="!isSearchActive && openedCategoryIndex === i">
+        <div class="ps-3">
+          @if (!isSearchActive && openedCategoryIndex === i) {
+          @if (subCategories.length === 0) {
+          <p class="text-muted small p-4">No subcategories available.</p>
+          } @else{
+          @for (sub of subCategories; track sub.id; let j = $index) {
+          <button class="d-flex align-items-center gap-3 border-0 rounded-2 w-100 my-2 text-start p-2 small"
+            [class.bg-select-subcategory]="!isSearchActive && selectedSubCategoryIndex === j"
+            [class.bg-opacity-10]="selectedSubCategoryIndex === j" [class.text-dark]="selectedSubCategoryIndex === j"
+            [class.fw-semibold]="selectedSubCategoryIndex === j" [class.bg-transparent]="selectedSubCategoryIndex !== j"
+            (click)="selectSubCategory(j)">
+            <img [src]="getSubCategoryImage(sub.id!)" width="50" height="50"
+              class="rounded-2 object-fit-cover flex-shrink-0 d-sm-inline d-md-none d-xl-inline"
+              [alt]="sub.name | titlecase" />
+            <p class="my-auto">{{ sub.name | titlecase }}</p>
+          </button>
+          } } }
+        </div>
+      </div>
+      @if (i !== categories.length - 1) {
+      <hr class="my-3 border-2 border-fill" />
+      } }
+    </ng-template>
+
+    <div class="col-12 col-md-9 px-2 px-md-4 py-2">
+      @if (isSearchActive) {
+
+      <h5 class="mb-1 text-muted">
+        Search Results for <span class="fw-bold">"{{ submittedSearchText }}"</span>
+      </h5>
+      <p class="fw-bold small m-0">{{ services.length }} Services</p>
+
+      } @else if (selectedSubCategoryIndex !== null) { @if (subCategories[selectedSubCategoryIndex];
+      as sub) {
+      <h5 class="fw-bold mb-1">{{ sub.name | titlecase }}</h5>
+      }
+      <p class="fw-bold text-muted small m-0">{{ services.length }} Services</p>
+
+      } @if (isSearchActive || selectedSubCategoryIndex !== null) { @if (isLoading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary-300"></div>
+      </div>
+      }
+      <div class="services-scroll-wrapper">
+        @for (service of services; track service.id ; let i= $index) {
+        <div class="py-4 d-flex flex-row gap-3 gap-md-5 mb-3 w-100 service-card">
+          <div class="d-flex flex-column w-100 justify-content-start">
+            <div class="row">
+              <div class="col-6 col-sm-8 col-md-12">
+                <h6 class="fw-bold mb-1">{{ service.name | titlecase }}</h6>
+                <p class="text-muted fw-semibold small mb-1">{{ service.durationMin }} Min</p>
+                <p class="fw-semibold mb-1">${{ service.price }}</p>
+              </div>
+              <div class="col-6 col-sm-4 d-block d-md-none">
+                <img [src]="getServiceImage(service)" [alt]="service.name | titlecase"
+                  class="rounded-4 img-fit h-100 img-fluid" />
+              </div>
+            </div>
+
+            <hr class="border-dashed" />
+
+            <div class="d-flex fw-semibold">
+              <p><i class="bi bi-dot "></i></p>
+              <div>
+
+                <p #descRef class="fs-14 m-0" [class.clamp]="!expanded[i]">
+                  {{ service.description }}
+                </p>
+
+                @if (isOverflow[i]) {
+                <span class="see-more" (click)="toggle(i)">
+                  {{ expanded[i] ? 'See Less' : 'See More' }}
+                </span>
+                }
+              </div>
+            </div>
+
+            <button class="fs-14 bg-white text-primary-300 rounded-pill px-3 fw-bold py-2 view-btn mt-2"
+              (click)="onViewClick(service.id)">
+              View Details
+              <i class="ms-1 fs-14 arrow-icon bi bi-arrow-right d-none d-sm-inline"></i>
+            </button>
+          </div>
+
+          <div class="position-relative text-center d-flex flex-column flex-md-row img-container">
+            <img [src]="getServiceImage(service)" [alt]="service.name | titlecase"
+              class="rounded-4 img-fit thumb-img d-none d-md-block" />
+
+            @if (service.isAvailable && service.hasPartner) {
+            <button class="border border-2 bg-white d-flex rounded-pill px-3 py-1 text-primary-300 fw-bold add-btn"
+              (click)="onAddClick(service.id)">
+              <mat-icon class="me-1 fs-5">add</mat-icon>
+              <span class="fs-14">Add</span>
+            </button>
+            } @else {
+            <button class="border border-2 btn-secondary-custom px-3 py-1 d-inline-flex rounded-pill fw-bold add-btn "
+              disabled title="Service not available">
+              <mat-icon class="me-1 fs-5">block</mat-icon>
+              N/A
+            </button>
+            }
+          </div>
+        </div>
+        @if (service.id !== services[services.length-1 ].id) {
+        <hr class="my-3 border-2 border-fill" />
+        } }
+      </div>
+
+      @if (services.length === 0 && isSearchActive) {
+      <p class="text-muted text-center py-5">No services found for your search.</p>
+      } @if (services.length === 0 && selectedSubCategoryIndex !== null) {
+      <p class="text-muted text-center py-5">No services available.</p>
+      } } @else {
+
+      <p class="text-muted text-center py-5">Select a category to view services.</p>
+      }
+    </div>
+  </div>
+</div>

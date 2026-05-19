@@ -1,0 +1,38 @@
+<div class="p-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="p-0 fw-bold">{{ data.title }}</h6>
+      <button class="text-light-custom border-0 bg-transparent" (click)="onCancel()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  
+    <p class="text-muted mb-4 fs-14" [innerHTML]="data.message"></p>
+  
+    <div class="row w-100 m-0">
+      <div class="col-6 ps-0">
+        <button
+          type="button"
+          mat-flat-button
+          class="w-100 btn-secondary-custom py-3 fs-14"
+          (click)="onCancel()"
+          [disabled]="loading"
+        >
+          Cancel
+        </button>
+      </div>
+      <div class="col-6 pe-0">
+        <button
+          type="button"
+          mat-flat-button
+          class="w-100 btn-primary-custom py-3 fs-14"
+          (click)="onConfirm()"
+          [disabled]="loading"
+        >
+          @if (loading) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          }
+          {{ data.confirmLabel }}
+        </button>
+      </div>
+    </div>
+  </div>

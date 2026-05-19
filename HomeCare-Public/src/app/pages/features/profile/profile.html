@@ -1,0 +1,123 @@
+<div class="container p-lg-5 p-md-3 p-sm-1 py-sm-3">
+  <div class="mx-md-3">
+
+    <div class="fs-3 fw-bolder mb-4">My Profile</div>
+
+    <div class="info-card d-flex mb-3 p-3 gap-4 flex-column flex-md-row">
+
+      <div class="d-flex align-items-center justify-content-between p-2 flex-md-fill w-100">
+        <div class="d-flex flex-column gap-1 min-w-0 w-100">
+          <div class="d-flex align-items-center justify-content-between w-100">
+            <i class="bi bi-telephone info-icon flex-shrink-0"></i>
+            <button type="button" (click)="openPhoneModal()"
+              class="add-btn d-flex align-items-center text-primary-300 pe-3 bg-transparent border-1 fw-bold rounded-5 px-3 py-2 gap-1 d-md-none">
+              @if(mobileNumber){ Change } @else { <i class="bi bi-plus-lg add-icon"></i>Add }
+            </button>
+          </div>
+          <span class="info-value fs-14 text-dark-custom fw-medium">{{ mobileNumber || '—' }}</span>
+        </div>
+        <button type="button" (click)="openPhoneModal()"
+          class="add-btn d-none d-md-flex align-items-center text-primary-300 pe-3 bg-transparent border-1 fw-bold rounded-5 px-3 py-2 gap-1">
+          @if(mobileNumber){ Change } @else { <i class="bi bi-plus-lg add-icon"></i>Add }
+        </button>
+      </div>
+
+      <span class="divider"></span>
+
+      <div class="d-flex align-items-center justify-content-between p-2 flex-md-fill w-100">
+        <div class="d-flex flex-column gap-1 min-w-0 w-100">
+          <div class="d-flex align-items-center justify-content-between w-100">
+            <i class="bi bi-envelope info-icon flex-shrink-0"></i>
+            <button type="button" (click)="onChangeEmailClick()"
+              class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5 d-md-none">
+              Change
+            </button>
+          </div>
+          <span class="info-value fs-14 text-dark-custom fw-medium overflow-hidden">
+            {{ email || '—' }}
+          </span>
+        </div>
+        <button type="button" (click)="onChangeEmailClick()"
+          class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5 d-none d-md-flex">
+          Change
+        </button>
+      </div>
+    </div>
+
+    <div class="info-card p-3">
+      <div class="d-flex justify-content-between align-items-center p-2 mb-2">
+        <div class="text-dark-custom fw-bold fs-5 mb-0">Saved Address</div>
+        <button (click)="openSearchModal()"
+          class="add-btn d-flex align-items-center text-primary-300 bg-transparent border-1 fw-bold rounded-5 px-3 py-2 gap-1">
+          <i class="bi bi-plus-lg add-icon"></i>Add
+        </button>
+      </div>
+
+      @if(isLoading) {
+      <div class="loading-wrapper">
+        <div class="spinner-border text-primary-300" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="loading-text">Loading...</p>
+      </div>
+      } @else if(addresses.length === 0) {
+      <div class="px-2 pb-2 text-secondary no-address-text">
+        No saved addresses yet.
+      </div>
+      } @else {
+      <div class="address-item">
+        @for(addr of addresses; track addr.id; let i = $index) {
+            <div class="d-flex align-items-start justify-content-between px-2 py-2 rounded-3">
+              <div class="d-flex align-items-start gap-3 min-w-0">
+                <div
+                  class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 mt-1 address-icon-wrap">
+                  <i class="bi bi-geo-alt-fill add-icon"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="fw-medium text-dark address-title">
+                    {{ addr.houseFlatNo }}, {{ addr.landmark }}
+                    @if(addr.label) {
+                    <span class="badge text-bg-light text-secondary fw-normal ms-1 address-tag">
+                      {{ addr.label }}
+                    </span>
+                    }
+                  </div>
+                  @if(addr.displayName) {
+                  <div class="text-secondary address-subtitle">
+                    {{ addr.displayName }}
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <app-action-dropdown [actions]="actions" (actionClicked)="onAction($any($event), i)">
+              </app-action-dropdown>
+              </div>
+            @if(i < addresses.length - 1) { <hr class="address-divider m-2"> }
+          }
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if(showSearchModal || showMapModal) {
+<div class="modal-overlay">
+  @if(showSearchModal) {
+  <div class="modal-container">
+    <app-location-search-modal (locationSelected)="onLocationSelectedFromSearch($event)"
+      (closeModal)="closeAllModals()">
+    </app-location-search-modal>
+  </div>
+  }
+  @if(showMapModal) {
+  <div class="modal-container">
+    <app-map-picker [mode]="editMode ? 'edit' : 'add'" [initialLat]="pendingLat" [initialLng]="pendingLng"
+      [initialAddress]="pendingAddress" [editMode]="editMode" [editData]="editData"
+      (addressSelected)="onAddressSelected($event)" (changeLocation)="onChangeLocation()"
+      (closeModal)="closeAllModals()">
+    </app-map-picker>
+  </div>
+  }
+</div>
+}

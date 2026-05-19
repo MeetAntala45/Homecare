@@ -1,0 +1,129 @@
+.tracker-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1.5px solid #ede8fb;
+    background: #fff;
+}
+
+.tracker-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f6ff;
+    border-bottom: 1px solid #ede8fb;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-dot.online {
+    background: #16a34a;
+    animation: blink 1.5s infinite;
+}
+
+.status-dot.connecting {
+    background: #d97706;
+    animation: blink 1s infinite;
+}
+
+.status-dot.offline {
+    background: #9ca3af;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.status-text {
+    font-size: 0.85rem;
+    color: #374151;
+}
+
+.last-updated {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.tracker-map {
+    width: 100%;
+    height: 350px;
+    min-height: 350px;
+    display: block;
+}
+
+.tracker-legend {
+    display: flex;
+    gap: 20px;
+    padding: 10px 16px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.legend-dot.purple {
+    background: #7c5cbf;
+}
+
+.legend-dot.blue {
+    background: #4540e1;
+}
+
+:host ::ng-deep .pin-label {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    background: #7c5cbf;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+:host ::ng-deep .customer-pin .pin-label {
+    background: #4540e1;
+}
+
+.location-stopped-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff8f0;
+    border-bottom: 1px solid #fed7aa;
+    color: #c2410c;
+    font-size: 0.84rem;
+    justify-content: space-between;
+}
+
+.telephone-icon {
+    margin-left: auto;
+    color: var(--primary-300);
+}

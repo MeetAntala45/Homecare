@@ -1,0 +1,25 @@
+<div class="thankyou-page">
+  <app-customer-header
+    [showMenu]="false"
+    [showLogin]="false"
+    [showProfile]="false"
+    [headerTitle]="false"
+    [isMobileMenu]="false"
+    [isCheckoutHeader]="false"
+  >
+    ></app-customer-header
+  >
+
+  <div class="thankyou-content">
+    <h4 class="thankyou-title">Thank you for applying to HomeCare!</h4>
+
+    <p class="thankyou-subtitle">We'll review your application and get back to you soon.</p>
+
+    <div class="thankyou-actions">
+      <button mat-stroked-button class="btn-view" (click)="addServices()">View Services</button>
+
+      <button mat-raised-button class="btn-home" (click)="onGoHomeClick()">Go to Home</button>
+    </div>
+  </div>
+  <app-ai-chatbot></app-ai-chatbot>
+</div>

@@ -1,0 +1,89 @@
+<div class="p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Change Expert</h5>
+    <button class="text-light-custom border-0 bg-transparent" (click)="cancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="assigned-card mb-3">
+
+    <div class="assigned-label">Assigned Expert</div>
+
+    <div class="d-flex align-items-center gap-3 mt-2">
+
+      @if(data.expertImage){
+      <img [src]="data.expertImage" class="assigned-avatar" alt="" (error)="onImgError($event)" />
+      } @else {
+      <div class="assigned-avatar-letter">
+        {{ data.currentPartner?.charAt(0)?.toUpperCase() }}
+      </div>
+      }
+
+      <div>
+        <div class="assigned-name">
+          {{ data.currentPartner }}
+        </div>
+
+        <div class="assigned-sub">
+          {{ data.serviceType }}
+          <span class="badge-dot"></span>
+          <span class="verified-badge"> <i class="bi bi-check-circle me-1"></i> Verified </span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="fs-13 fw-semibold mb-2">Available Expert</div>
+
+  @if(data.partners.length === 0){
+  <div class="text-center text-muted py-4">
+    <i class="bi bi-person-x fs-2 d-block mb-2"></i>
+    No other experts available for this time slot.
+  </div>
+  } @else {
+  <div class="partner-list">
+    @for(partner of data.partners; track partner.id){
+    <div class="partner-item" [class.partner-selected]="selectedPartnerId === partner.id"
+      (click)="selectPartner(partner.id)">
+
+      <div class="d-flex align-items-center gap-3" style="min-width: 0; flex: 1;">
+        @if(partner.profileImage){
+        <img [src]="baseUrl+partner.profileImage" class="partner-avatar-img" alt="" (error)="onImgError($event)" />
+        } @else {
+        <div class="partner-avatar-letter">
+          {{ partner.fullName?.charAt(0)?.toUpperCase() }}
+        </div>
+        }
+
+        <div class="partner-info">
+          <div class="partner-name">
+            {{ partner.fullName }}
+          </div>
+          <div class="partner-sub">
+            {{ data.serviceType }} <span class="badge-dot"></span>
+            <span class="verified-badge"> <i class="bi bi-check-circle me-1"></i> Verified </span>
+          </div>
+        </div>
+      </div>
+
+      <input type="radio" name="partner" [checked]="selectedPartnerId === partner.id" />
+    </div>
+    }
+  </div>
+  }
+
+  <div class="row w-100 m-0 mt-2">
+    <div class="action-row col-6 ps-0">
+      <button type="button" class="w-100 btn-secondary-custom py-3 fs-14" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+    <div class="action-row col-6 pe-0">
+      <button type="button" class="w-100 btn-primary-custom py-3 fs-14" (click)="confirm()">
+        Save
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+.loading-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 12px;
+    background: #fff;
+    border-radius: 10px;
+}
+
+.info-label {
+    color: var(--text-light);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.currency-color {
+    color: #1fa743;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}

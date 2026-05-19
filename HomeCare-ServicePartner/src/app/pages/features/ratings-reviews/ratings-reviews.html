@@ -1,0 +1,161 @@
+<div class="grid-header d-flex flex-wrap justify-content-between align-items-center">
+    <h5 class="h5 fw-bold text-dark-custom m-0 mt-1">Review & Ratings</h5>
+  </div>
+  
+  <div class="rr-page w-100 mt-3">
+
+    <div class="rr-outer-box">
+  
+      @if (isLoading) {
+        <div class="row g-4">
+
+          <div class="col-12 d-flex justify-content-center">
+            <div class="rr-hero">
+
+              <div class="d-flex flex-column align-items-center gap-2" style="min-width: 110px;">
+                <div class="skeleton sk-big-score"></div>
+                <div class="skeleton sk-stars-bar"></div>
+                <div class="skeleton sk-tag"></div>
+                <div class="skeleton sk-count"></div>
+              </div>
+
+              <div class="flex-grow-1 d-flex flex-column gap-2">
+                @for (b of [1,2,3,4,5]; track b) {
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="skeleton sk-bar-label"></div>
+                    <div class="skeleton sk-bar-track"></div>
+                    <div class="skeleton sk-bar-count"></div>
+                  </div>
+                }
+              </div>
+      
+            </div>
+          </div>
+
+          <div class="col-12"><hr class="rr-divider" /></div>
+
+          <div class="col-12 mb-1">
+            <div class="skeleton sk-heading"></div>
+          </div>
+
+          @for (i of [1,2,3]; track i) {
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="review-card"> 
+      
+                <div class="rv-top">
+                  <div class="rv-left">
+                    <div class="skeleton sk-avatar"></div>
+                    <div class="d-flex flex-column gap-1">
+                      <div class="skeleton sk-name"></div>
+                      <div class="skeleton sk-service"></div>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column align-items-end gap-1">
+                    <div class="skeleton sk-rating-sm"></div>
+                    <div class="skeleton sk-time"></div>
+                  </div>
+                </div>
+      
+                <div class="skeleton sk-text-full"></div>
+                <div class="skeleton sk-text-short"></div>
+              </div>
+            </div>
+          }
+      
+        </div>
+      }
+  
+      @else if (!summary || summary.totalReviews === 0) {
+        <div class="rr-empty">
+          <div class="empty-icon">⭐</div>
+          <h5 class="fw-bold mt-3 mb-1">No reviews yet</h5>
+          <p class="text-muted">Complete jobs and encourage customers to leave feedback</p>
+        </div>
+      }
+  
+      @else {
+        <div class="d-flex justify-content-center">
+          <div class="rr-hero mt-1">
+            <div class="hero-score">
+              <div class="big-rating" [style.color]="getRatingColor(summary.averageRating)">
+                {{ summary.averageRating }}
+              </div>
+              <div class="hero-stars">
+                @for (s of getStars(summary.averageRating); track $index) {
+                  <i class="bi" [class.bi-star-fill]="s" [class.bi-star]="!s"
+                     [class.star-on]="s" [class.star-off]="!s"></i>
+                }
+              </div>
+              <div class="rating-tag"
+                   [style.background]="getRatingColor(summary.averageRating) + '18'"
+                   [style.color]="getRatingColor(summary.averageRating)">
+                {{ getRatingLabel(summary.averageRating) }}
+              </div>
+              <div class="total-count">{{ summary.totalReviews }} reviews</div>
+            </div>
+  
+            <div class="hero-bars">
+              @for (star of stars; track star) {
+                <div class="bar-row">
+                  <span class="bar-label">{{ star }}</span>
+                  <i class="bi bi-star-fill bar-star"></i>
+                  <div class="bar-track">
+                    <div class="bar-fill"
+                         [style.width]="getBarWidth(star)"
+                         [style.background]="getRatingColor(star >= 4 ? 4 : star >= 3 ? 3 : 2)">
+                    </div>
+                  </div>
+                  <span class="bar-count">{{ getBarCount(star) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+  
+        <hr class="rr-divider" />
+  
+        <div class="rr-list">
+          <h6 class="list-heading">All Reviews</h6>
+
+          <div class="reviews-grid">
+            @for (review of summary.reviews; track review.createdAt) {
+              <div class="review-card">
+  
+                <div class="rv-top">
+                  <div class="rv-left">
+                    <div class="rv-avatar">
+                      @if (review.customerProfileImage) {
+                        <img [src]="BASE_URL + review.customerProfileImage" [alt]="review.customerName" />
+                      } @else {
+                        <span>{{ getInitial(review.customerName) }}</span>
+                      }
+                    </div>
+                    <div>
+                      <div class="rv-name">{{ review.customerName }}</div>
+                      <div class="rv-service">{{ review.serviceName }}</div>
+                    </div>
+                  </div>
+  
+                  <div class="rv-right">
+                    <div class="rv-stars">
+                      @for (s of getStars(review.rating); track $index) {
+                        <i class="bi" [class.bi-star-fill]="s" [class.bi-star]="!s"
+                           [class.star-on]="s" [class.star-off]="!s"></i>
+                      }
+                    </div>
+                    <div class="rv-time">{{ getTimeAgo(review.createdAt) }}</div>
+                  </div>
+                </div>
+  
+                @if (review.reviewText) {
+                  <p class="rv-text">{{ review.reviewText }}</p>
+                }
+  
+              </div>
+            }
+          </div>
+        </div>
+      }
+  
+    </div>
+  </div>

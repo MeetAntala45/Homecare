@@ -1,0 +1,118 @@
+<app-customer-header [showMenu]="false" [showLogin]="false" [showProfile]="false" [headerTitle]="true"
+  [isMobileMenu]="false" [isCheckoutHeader]="false">
+</app-customer-header>
+
+<div class="onboarding-page">
+  <div class="onboarding-container">
+    <form [formGroup]="onboardingForm" (ngSubmit)="onApplyClick()">
+      <div class="form-card">
+        <div class="layout-row">
+          <div class="profile-col">
+            <div class="profile-image-wrapper" (click)="profileInput.click()">
+              @if (profileImagePreview) {
+              <img [src]="profileImagePreview" class="profile-preview" alt="Profile" />
+              } @else {
+              <mat-icon class="profile-placeholder-icon">image</mat-icon>
+              <span class="profile-label">Profile Image</span>
+              }
+            </div>
+            <button mat-stroked-button class="btn-upload" type="button" (click)="profileInput.click()">
+              <mat-icon>upload</mat-icon>
+              {{ profileImagePreview ? 'Change' : 'Upload' }}
+            </button>
+            <input #profileInput type="file" hidden accept="image/png, image/jpeg" (change)="onProfileImageSelected($event)" />
+          </div>
+
+          <div class="content-col">
+            <h6 class="section-title">Personal Information</h6>
+            <div formGroupName="personalDetail">
+              <div class="row g-3">
+                @for (field of personalFields; track field; let j = $index) {
+                <div [class]="colClasses[j]">
+                  <app-input-fields [config]="field" [control]="getPersonalControl(controlNames[j])"
+                    (selectionChange)="j === 5 ? onServiceTypeChange($event) : null" />
+                </div>
+                }
+              </div>
+
+              <div class="section-divider"></div>
+
+              <div class="section-header">
+                <h6 class="section-title">Educational Information</h6>
+                <button class="btn-add" type="button" (click)="addEducationEntry()">
+                  <mat-icon>add</mat-icon> Add
+                </button>
+              </div>
+              <app-education-entry [educationFormArray]="educationFormArray" />
+
+              <div class="section-divider"></div>
+
+              <div class="section-header">
+                <h6 class="section-title">Professional Information</h6>
+                <button class="btn-add" type="button" (click)="addProfessionalEntry()">
+                  <mat-icon>add</mat-icon> Add
+                </button>
+              </div>
+              <app-professional-entry [professionalFormArray]="professionalFormArray" />
+
+              <div class="section-divider"></div>
+
+              <h6 class="section-title">Skills &amp; Expertise</h6>
+              <app-skill-expertise [categoryOptions]="categoryOptions" [subCategoryOptions]="subCategoryOptions"
+                (categorySelected)="onCategorySelected($event)" (skillsChanged)="onSkillsChanged($event)"
+                (servicesChanged)="onServicesChanged($event)" />
+
+              <div class="section-divider"></div>
+
+              <div class="section-header">
+                <h6 class="section-title">Languages</h6>
+                <button class="btn-add" type="button" (click)="addLanguageEntry()">
+                  <mat-icon>add</mat-icon> Add
+                </button>
+              </div>
+              <app-language-entry [languageFormArray]="languageFormArray" [languageOptions]="languageOptions"
+                [proficiencyOptions]="proficiencyOptions" />
+
+              <div class="section-divider"></div>
+
+              <h6 class="section-title">Attachments</h6>
+
+              <app-file-upload (filesChanged)="onFilesChanged($event)" />
+
+              @if (onboardingForm.get('attachmentList')?.invalid &&
+              onboardingForm.get('attachmentList')?.touched) {
+
+              <p class="error-text">At least one document is required</p>
+
+              }
+              <div class="form-actions">
+                <button type="button" class=" border-0 py-3 bg-transperent btn-secondary-custom w-50 rounded-pill fs-14"
+                  (click)="onCancelClick()">
+                  Cancel
+                </button>
+                <button type="submit" class=" border-0 py-3 bg-transperent btn-primary-custom w-50 rounded-pill fs-14"
+                  [disabled]="isSubmitting">
+                  Apply
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="container page-footer">
+    <div
+      class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 text-center text-md-start">
+      <p class="mb-0 text-light-custom small">© Copyright 2026 HomeCare</p>
+
+      <div class="d-flex justify-content-center gap-4 fs-5 social-icons">
+        <i class="bi bi-facebook text-light-custom"></i>
+        <i class="bi bi-instagram text-light-custom"></i>
+        <i class="bi bi-linkedin text-light-custom"></i>
+      </div>
+    </div>
+  </div>
+  <app-ai-chatbot></app-ai-chatbot>
+</div>

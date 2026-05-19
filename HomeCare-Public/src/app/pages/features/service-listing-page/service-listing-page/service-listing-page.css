@@ -1,0 +1,191 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.bg-select-subcategory {
+  background: #ececfc;
+}
+
+.border-dashed {
+  border-top: 2px dashed #c0cbdb;
+}
+
+.thumb-img {
+  min-width: 160px;
+  height: 100%;
+  border: 1px solid var(--field-border-color);
+  width: 120px;
+  object-fit: cover;
+}
+
+.img-container {
+  height: 160px;
+}
+
+.add-btn {
+  position: absolute;
+  white-space: nowrap;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.view-btn {
+  border: 2px solid var(--field-border-color);
+  width: 150px;
+}
+
+.subcategory-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.subcategory-wrapper.open {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.service-banner {
+  height: clamp(220px, 35vw, 440px);
+}
+
+.service-count {
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+}
+
+.service-heading {
+  max-width: clamp(300px, 50vw, 600px);
+  font-size: clamp(1.2rem, 3.7vw, 2.5rem);
+}
+
+.search-box-wrap {
+  width: clamp(50%, 100%, 100%);
+}
+
+.services-scroll-wrapper {
+  max-height: 550px;
+  overflow-y: auto;
+  padding-right: 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 transparent;
+}
+
+.border-fill {
+  border-color: #c0cbdb;
+}
+
+.arrow-icon {
+  color: var(--primary-300);
+}
+
+.cdk-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.see-more {
+  color: var(--primary-300);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50vh;
+  background: #fff;
+  z-index: 1001;
+  border-radius: 16px 16px 0 0;
+  animation: slideUp 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-sheet .header {
+  flex-shrink: 0;
+}
+
+.bottom-sheet .body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.body {
+  overflow-y: auto;
+}
+
+
+@media (max-width: 768px) {
+  :host {
+    display: block;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: -30px;
+  }
+
+  .img-container {
+    height: 30px;
+  }
+
+  .service-card {
+    display: block !important
+  }
+
+  .services-banner {
+    height: 200px;
+  }
+
+  .add-btn-overlay {
+    bottom: 5px;
+  }
+
+  .subcategory-wrapper.open {
+    max-height: 1000px;
+  }
+
+  .view-btn {
+    width: 100%;
+  }
+
+  .add-btn {
+    position: static;
+    transform: none;
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center !important;
+  }
+
+  .services-banner {
+    background: #f8f9fa;
+    height: auto;
+    padding: 20px 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}

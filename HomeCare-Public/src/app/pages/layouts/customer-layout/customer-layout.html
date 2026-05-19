@@ -1,0 +1,15 @@
+<div class="app-wrapper d-flex flex-column min-vh-100">
+  <app-customer-header
+    [showMenu]="true"
+    [showLogin]="true"
+    [showProfile]="true"
+    [headerTitle]="false"
+    [isCheckoutHeader]="false"
+  ></app-customer-header>
+
+  <div class="flex-grow-1 p-5 layout-content">
+    <router-outlet></router-outlet>
+  </div>
+  <app-customer-footer></app-customer-footer>
+  <app-ai-chatbot></app-ai-chatbot>
+</div>

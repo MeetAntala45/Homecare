@@ -1,0 +1,30 @@
+<div class="upload-wrapper">
+
+  <div
+    class="drop-zone"
+    [class.drop-zone--active]="isDragOver"
+    (click)="onDivClick()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+  >
+    <mat-icon class="upload-icon">upload</mat-icon>
+
+    <p class="drop-text">
+      Drag and drop attachments here, or
+      <label class="choose-file-link" (click)="$event.stopPropagation()">
+        choose a file
+        <input
+          #fileInput
+          type="file"
+          hidden
+          multiple
+          accept=".pdf,.jpg,.jpeg,.png"
+          (change)="onFileInputChange($event)"
+        />
+      </label>
+    </p>
+
+    <p class="drop-hint">Max size: {{ maxFileSizeMb }}MB</p>
+  </div>
+</div>

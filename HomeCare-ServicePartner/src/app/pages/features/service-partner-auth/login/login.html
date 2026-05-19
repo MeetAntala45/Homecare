@@ -1,0 +1,82 @@
+<div class="d-flex align-items-center justify-content-center min-vh-100 px-3">
+  <div class="login-box w-100">
+    <div class="text-center">
+      <a class="text-decoration-none text-dark-custom">
+        <span class="h4 fw-bold">
+          H<span class="text-primary-300">o</span>meCare
+        </span>
+      </a>
+
+      <h3 class="mt-5 text-light-custom fw-bold">Welcome Back!</h3>
+      <p class="text-muted mb-4">Sign in to your Service Partner account</p>
+
+      <div class="step-wrapper d-flex align-items-center justify-content-center mb-4 gap-2 flex-wrap">
+
+        <div class="d-flex align-items-center">
+          <div class="step-circle active">1</div>
+          <span class="ms-2 fw-medium">Enter Email</span>
+        </div>
+
+        <div class="step-divider mx-2 d-none d-sm-block"></div>
+
+        <div class="d-flex align-items-center">
+          <div class="step-circle inactive">2</div>
+          <span class="ms-2 text-secondary fw-medium">Verify OTP</span>
+        </div>
+
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email</mat-label>
+
+            <input matInput type="email" formControlName="email" />
+
+            <mat-icon matSuffix class="text-muted">mail</mat-icon>
+
+            @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
+            <mat-error>
+              @if (loginForm.get('email')?.errors?.['required']) {
+              <span>Email is required</span>
+              }
+              @if (loginForm.get('email')?.errors?.['email']) {
+              <span>Enter a valid email</span>
+              }
+            </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <button type="submit" class="btn login-btn w-100 py-3 fw-semibold text-white rounded-pill"
+          [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Sending OTP...' : 'Get OTP' }}
+        </button>
+      </form>
+
+      <div class="p-2 mt-3">
+        <div class="text-center text-light-custom fw-medium">
+          By clicking on Sign In, I accept the
+          <span class="text-primary-300 fw-bolder">Terms & Condition</span>
+          &
+          <span class="text-primary-300 fw-bolder">Privacy Policy</span>
+        </div>
+
+        <div class="or-divider my-4 d-flex align-items-center justify-content-center">
+          <span class="px-2 text-light-custom fs-14 fw-medium">OR</span>
+        </div>
+
+        <div class="text-center">
+          <div class="text-light-custom mb-2 fw-bold">
+            Register as a Service Partner
+          </div>
+          <div>
+            <a (click)="goToServicePartner()" class="text-primary-300 fw-bolder cursor-pointer">
+              Join Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

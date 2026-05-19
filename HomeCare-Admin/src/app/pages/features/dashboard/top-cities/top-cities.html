@@ -1,0 +1,105 @@
+<div class="card p-3 shadow-sm border-0 detail-card">
+    <div class="d-flex justify-content-between mb-3 mt-1">
+        <h5 class="fw-bold mb-0">Top Cities by Bookings</h5>
+        <app-period-picker (periodChanged)="onPeriodChanged($event)"></app-period-picker>
+    </div>
+
+    @if (citiesLoading) {
+    <div class="skeleton-chart">
+        <div class="d-flex h-100">
+
+            <div class="d-flex flex-column justify-content-between me-2 py-1">
+                @for (i of [1,2,3,4,5]; track i) {
+                <div class="skeleton skeleton-points"></div>
+                }
+            </div>
+
+            <div class="flex-grow-1 position-relative">
+                @for (i of [1,2,3,4,5]; track i) {
+                <div class="skeleton-grid-line" [style.top.%]="(i-1) * 25"></div>
+                }
+                <svg class="position-absolute w-100 h-100" preserveAspectRatio="none" viewBox="0 0 700 200">
+
+                    <line x1="0" y1="0" x2="0" y2="200" stroke="#e9edf7" stroke-width="1" />
+
+                    <line x1="0" y1="200" x2="700" y2="200" stroke="#e9edf7" stroke-width="1" />
+
+                    <path
+                        d="M0,180 C30,165 70,140 100,150 C130,160 170,125 200,130 C230,135 270,115 300,120 C330,125 370,145 400,140 C430,135 470,35 500,40 C530,45 570,55 600,60 C640,55 670,52 700,50"
+                        fill="none" stroke="#e9edf7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    @for (p of line1Points; track $index) {
+                    <circle [attr.cx]="p.x" [attr.cy]="p.y" r="5" fill="#e9edf7" />
+                    }
+                </svg>
+
+                <svg class="position-absolute w-100 h-100" preserveAspectRatio="none" viewBox="0 0 700 200">
+                    <path
+                        d="M0,80 C30,65 70,48 100,50 C130,52 170,62 200,60 C230,58 270,28 300,30 C330,32 370,162 400,160 C430,158 470,128 500,130 C530,132 570,158 600,155 C640,148 670,143 700,140"
+                        fill="none" stroke="#e9edf7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    @for (p of line2Points; track $index) {
+                    <circle [attr.cx]="p.x" [attr.cy]="p.y" r="5" fill="#e9edf7" />
+                    }
+                </svg>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-2 ps-4">
+            @for (i of [1,2,3,4,5,6,7]; track i) {
+            <div class="skeleton skeleton-points"></div>
+            }
+        </div>
+    </div>
+    <div class="d-flex justify-content-center gap-4 mt-2">
+        <div class="d-flex align-items-center gap-2">
+            <div class="skeleton skeleton-dot"></div>
+            <div class="skeleton skeleton-legend"></div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <div class="skeleton skeleton-dot"></div>
+            <div class="skeleton skeleton-legend"></div>
+        </div>
+    </div>
+
+    }@else if (isEmpty) {
+    <div class="d-flex justify-content-center align-items-center h-100 w-100 text-center mt-3">
+
+        <div class="col-12 col-sm-5 position-relative">
+
+            <div class="d-flex justify-content-center mb-2">
+                <img src="assets/no-data-chart.png" class="img-fluid no-data-img">
+            </div>
+
+            <div class="d-flex flex-column align-items-center">
+                <p class="fw-semibold mb-1">
+                    {{ getEmptyMessage() }}
+                </p>
+
+                @if(getEmptyStateType() === 'current' || getEmptyStateType() === 'future'){
+                <small class="text-muted">
+                    Data will appear here once customers start booking services
+                </small>
+                }
+            </div>
+
+        </div>
+
+    </div>
+    }
+    @else {
+    <div class="position-relative m-0 col-12">
+        <canvas baseChart [data]="lineChartData" [type]="'line'" [options]="lineChartOptions" class="w-100">
+        </canvas>
+    </div>
+
+    <div class="d-flex justify-content-center gap-4 mt-4">
+        @for (dataset of lineChartData.datasets; track dataset.label) {
+        <div class="d-flex align-items-center gap-2">
+            <span class="legend-dot" [style.background-color]="dataset.borderColor?.toString()"></span>
+            <small class="text-muted">{{ dataset.label }}</small>
+        </div>
+        }
+    </div>
+    }
+</div>

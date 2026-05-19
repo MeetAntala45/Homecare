@@ -1,0 +1,16 @@
+<div class="dropdown-wrapper">
+  <button class="action-btn" type="button" (click)="toggle($event)">
+    <i class="bi bi-three-dots-vertical fs-5"></i>
+  </button>
+
+  @if(isOpen) {
+    <ul class="custom-dropdown" [ngStyle]="menuStyle">
+      @for(item of actions; track item.action) {
+        <button class="dropdown-item" (click)="onActionClick(item.action)">
+          <i class="bi me-2" [ngClass]="item.icon"></i>
+          {{ item.label }}
+        </button>
+      }
+    </ul>
+  }
+</div>

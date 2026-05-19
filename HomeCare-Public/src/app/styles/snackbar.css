@@ -1,0 +1,20 @@
+    .success-snackbar.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+        background: #ffffff !important;
+        color: #16a34a !important;
+        border-left: 4px solid #16a34a;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+    
+    .error-snackbar.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+        background: #ffffff !important;
+        color: #dc2626 !important;
+        border-left: 4px solid #dc2626;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+    
+    .success-snackbar .mdc-button,
+    .error-snackbar .mdc-button {
+        color: #333 !important;
+    }

@@ -1,0 +1,204 @@
+.custom-table {
+  background: #fff;
+  border-radius: 8px;
+}
+
+.custom-row {
+  height: 60px;
+}
+
+.text-dark-custom {
+  color: #333333;
+}
+
+.action-col {
+  width: 60px;
+  text-align: right;
+}
+
+.sortable-col {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-col:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.sort-icon {
+  font-size: 11px;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.sort-active {
+  opacity: 1;
+  color: var(--primary-300);
+}
+
+.grid-header {
+  color: #8d8d8d;
+}
+
+.custom-table tbody td {
+  color: #252525;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.table-responsive {
+  background: white;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 4px;
+}
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #c7c7c7;
+  border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 6px;
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badge-active {
+  background-color: rgba(30, 163, 31, 0.14);
+  color: #1ea31f;
+}
+.badge-active .badge-dot {
+  background-color: #1ea31f;
+}
+
+.badge-inactive {
+  background-color: rgba(225, 29, 72, 0.12);
+  color: #e11d48;
+}
+.badge-inactive .badge-dot {
+  background-color: #e11d48;
+}
+
+.badge-blocked {
+  background-color: #80808024;
+  color: #525252;
+}
+.badge-blocked .badge-dot {
+  background-color: #525252;
+}
+
+.badge-pending {
+  background-color: rgba(234, 88, 12, 0.12);
+  color: #ea580c;
+}
+.badge-pending .badge-dot {
+  background-color: #ea580c;
+}
+
+.badge-rejected {
+  background-color: rgba(220, 38, 38, 0.12);
+  color: #e11d48;
+}
+.badge-rejected .badge-dot {
+  background-color: #e11d48;
+}
+
+.badge-sp-inactive {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+.badge-sp-inactive .badge-dot {
+  background-color: #6b7280;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+.clickable-row:hover td {
+  background-color: #f9fafb;
+}
+
+.expand-col {
+  width: 40px;
+}
+
+.expand-toggle-btn {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #666666;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666666;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  padding: 0;
+}
+
+.expand-toggle-btn:hover {
+  border-color: #666666;
+  color: #666666;
+  background: #f3f4f6;
+}
+
+.expand-toggle-btn i {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9edf7;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-cell {
+  margin: 3px 0;
+  height: 21px;
+  width: 80%;
+  border-radius: 5px;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}

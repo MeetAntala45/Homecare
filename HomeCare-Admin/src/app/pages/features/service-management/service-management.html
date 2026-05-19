@@ -1,0 +1,66 @@
+<div class="page-host">
+  <app-grid-layout title="Service Management" [showAdd]="true" addButtonLabel="Add" [showPagination]="false"
+    [showActions]="false" [columns]="[]" [data]="[]" (addClicked)="addServiceDialog()">
+    <ng-container slot>
+      @if (serviceTypes.length === 0) {
+      <div class="d-flex align-items-center justify-content-center py-5 text-muted small">
+        No service types found.
+      </div>
+      } @if (serviceTypes.length > 0) {
+      <div class="d-flex flex-column gap-3" title="">
+        @for (service of serviceTypes; track service.id) {
+        <div class="service-card bg-white rounded-3 ps-3 pe-4 py-3" (click)="toggleService(service)">
+          @if (loading) {
+          <div class="d-flex align-items-center gap-2">
+
+            <div class="skeleton skeleton-drag"></div>
+
+            <div class="skeleton skeleton-icon"></div>
+
+            <div class="skeleton skeleton-text flex-grow-1"></div>
+
+            <div class="d-flex align-items-center gap-3 ms-auto">
+              <div class="skeleton skeleton-circle"></div>
+            </div>
+
+          </div>
+          }
+          @else {
+          <div class="d-flex align-items-center gap-2">
+            <mat-icon class="drag-icon">drag_indicator</mat-icon>
+
+            <img [src]="service.imagePath" width="24" height="24" class="rounded-1 object-fit-cover"
+              [alt]="service.name" />
+
+            <span class="fw-semibold text-dark flex-grow-1">{{ service.name }}</span>
+
+            <div class="d-flex align-items-center gap-3 ms-auto">
+              @if (service.expanded) {
+              <button class="circle-btn add-btn" (click)="manageServiceDialog(service); $event.stopPropagation()"
+                aria-label="Manage service">
+                <i class="bi bi-plus"></i>
+              </button>
+              }
+
+              <button class="circle-btn toggle-btn" (click)="toggleService(service); $event.stopPropagation()"
+                [attr.aria-expanded]="service.expanded">
+                <i class="bi" [class.bi-chevron-down]="!service.expanded" [class.bi-chevron-up]="service.expanded"></i>
+              </button>
+            </div>
+          </div>
+
+          @if (service.expanded || service.id === expandedServiceTypeId) {
+          <div class="service-expanded" (click)="$event.stopPropagation()">
+            <hr class="my-3" />
+            <app-service-type-detail [serviceType]="service"
+              [restoreCategoryId]="service.id === expandedServiceTypeId ? activeCategoryId : null"></app-service-type-detail>
+          </div>
+          }
+          }
+        </div>
+        }
+      </div>
+      }
+    </ng-container>
+  </app-grid-layout>
+</div>

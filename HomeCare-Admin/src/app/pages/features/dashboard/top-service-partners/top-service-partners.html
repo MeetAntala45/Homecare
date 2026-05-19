@@ -1,0 +1,74 @@
+<div class="card p-3 shadow-sm border-0 detail-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-1">
+        <h5 class="fw-bold mb-0">Top Service Partners</h5>
+        <button class="btn-view-all button-text" (click)="viewAll()">View All</button>
+    </div>
+
+    <div class="d-flex flex-column gap-2">
+
+        @if (partnersLoading) {
+        @for (item of [1,2,3,4,5]; track item) {
+        <div class="d-flex align-items-center gap-3">
+
+            @if (item <= 5) { <div class="skeleton skeleton-badge-icon">
+        </div>
+        }
+
+        <div class="skeleton skeleton-avatar"></div>
+
+        <div class="flex-grow-1">
+            <div class="skeleton skeleton-text mb-1"></div>
+        </div>
+
+        <div class="text-end">
+            <div class="skeleton skeleton-title mb-1"></div>
+            <div class="skeleton skeleton-text"></div>
+        </div>
+
+    </div>
+    @if(item < 5){ <div class="sekeleton partner-divider ">
+</div>
+}
+}
+} @else {
+@for (partner of partners; track partner.name; let i = $index) {
+<div class="d-flex align-items-center gap-3 partner-row fade-in"
+[style.animationDelay.ms]="i * 120">
+
+    <div class="rank-badge">
+        @switch (getBadgeRank(partner)) {
+        @case (0) { <img src="assets/gold-medal.png" class="medal-icon" alt="1st"> }
+        @case (1) { <img src="assets/silver-medal.png" class="medal-icon" alt="2nd"> }
+        @case (2) { <img src="assets/bronze-medal.png" class="medal-icon" alt="3rd"> }
+        @default { <span class="rank-number">{{ i + 1 }}.</span> }
+        }
+    </div>
+
+    @if (partner.safeImage) {
+    <img [src]="baseUrl + partner.profileImage" class="partner-avatar" [alt]="">
+    } @else {
+    <div class="partner-avatar partner-initials" [style.background-color]="getAvatarColor(partner.name)">
+        {{ getInitials(partner.name) }}
+    </div>
+    }
+
+    <div class="flex-grow-1">
+        <p class="mb-0 name-text">{{ partner.name }}</p>
+        <p class="mb-0 fw-semibold completed-text">{{ partner.serviceTypeName }}</p>
+    </div>
+
+    <div class="text-end">
+        <p class="mb-0 completed-count">{{ partner.jobsCompleted }}</p>
+        <p class="mb-0 completed-text">Completed</p>
+    </div>
+
+</div>
+@if(i < partners.length-1){ <div class="partner-divider ">
+    </div>
+    }
+    }
+    }
+
+    </div>
+    </div>

@@ -1,0 +1,36 @@
+name: Deploy HomeCare Admin
+
+on:
+  push:
+    branches: [main]
+    paths: ['HomeCare-Admin/**']
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install
+        working-directory: HomeCare-Admin
+        run: npm ci
+
+      - name: Build
+        working-directory: HomeCare-Admin
+        run: npm run build
+
+      - name: Zip
+        run: |
+          cd HomeCare-Admin
+          zip -r ../admin-deploy.zip dist/ node_modules/ package.json server.js
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'homecare-admin'
+          publish-profile: ${{ secrets.AZURE_ADMIN_PUBLISH_PROFILE }}
+          package: admin-deploy.zip

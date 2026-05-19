@@ -1,0 +1,158 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.detail-card {
+    height: 100%;
+}
+
+.partner-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.partner-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.medal-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.rank-badge {
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rank-number {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+}
+
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background: #e9edf7;
+    border-radius: 6px;
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.7) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    animation: shimmer 1.2s infinite;
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 300ms ease-out forwards;
+}
+
+.skeleton-rank-placeholder {
+    width: 24px;
+    flex-shrink: 0;
+}
+
+.skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.skeleton-badge-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.skeleton-text {
+    height: 14px;
+    width: 60px;
+}
+
+.skeleton-title {
+    height: 8px;
+    width: 30px;
+}
+
+.completed-text {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.4%;
+    color: var(--color-text-secondary)
+}
+
+.name-text {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 700;
+    letter-spacing: 0.4%;
+    color: var(--color-text-primary)
+}
+
+.completed-count {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 700;
+    letter-spacing: 0.4%;
+    color: var(--color-text-primary)
+}
+
+.btn-view-all {
+    width: 112px;
+    height: 35px;
+    padding: 6px 12px;
+    border: 1px solid #DDE4EE;
+    color: var(--color-primary-900-light);
+    text-transform: capitalize;
+    background-color: white;
+    border-radius: 6px;
+}
+
+.btn-view-all:hover {
+    background-color: var(--color-primary-900-light);
+    color: white;
+}
+
+.partner-divider {
+    margin: 6px 0;
+    border: none;
+    border-top: 1px solid #DDE4EE;
+    
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

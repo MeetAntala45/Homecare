@@ -1,0 +1,431 @@
+/* You can add global styles to this file, and also import other style files */
+@import './app/styles/colors.css';
+@import './app/styles/typography.css';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+.mat-mdc-dialog-surface {
+  border-radius: 12px !important;
+}
+
+:root {
+  /* Primary */
+  --color-primary: #2555ff;
+
+  /* Primary Shades */
+  --primary-100: #6a66e7;
+  --primary-200: #5853e4;
+  --primary-300: #4540e1;
+  --primary-400: #3e3acb;
+  --primary-500: #3733b4;
+  --primary-600: #302d9e;
+
+  /* Neutrals */
+  --text-dark: #333333;
+  --text-light: #666666;
+  --border-dark: #dddddd;
+  --border-light: #cccccc;
+  --white: #ffffff;
+
+  /* Background */
+  --bg-light: #f1f3f8;
+}
+
+/* =========================
+   BACKGROUND COLORS
+========================= */
+
+.bg-primary-custom {
+  background-color: var(--color-primary);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+app-root {
+  display: block;
+  min-height: 100dvh;
+}
+
+/* =========================
+   Material-UI Font
+========================= */
+
+html,
+body,
+.mat-mdc-typography,
+.mdc-typography,
+.mat-mdc-dialog-container,
+.mdc-dialog__content,
+.mat-mdc-snack-bar-container,
+.mat-mdc-menu-panel,
+.mat-mdc-tooltip,
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel,
+.mat-mdc-bottom-sheet-container,
+.mat-mdc-form-field,
+.mat-mdc-form-field-label,
+.mdc-floating-label,
+.mat-mdc-input-element,
+.mat-mdc-select,
+.mat-mdc-option,
+.mat-mdc-radio-button,
+.mat-mdc-checkbox,
+.mat-mdc-slide-toggle,
+.mat-mdc-slider,
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-icon-button,
+.mat-mdc-form-field mat-error,
+.mat-mdc-fab,
+.mat-mdc-tab-group,
+.mat-mdc-tab,
+.mat-mdc-paginator,
+.mat-mdc-card,
+.mat-mdc-table,
+.mat-mdc-header-cell,
+.mat-mdc-cell,
+.mat-mdc-list,
+.mat-mdc-list-item,
+.mat-mdc-expansion-panel {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+.mat-mdc-dialog-surface {
+  border-radius: 12px !important;
+}
+
+.manage-service-dialog .mat-mdc-dialog-surface {
+  overflow: hidden;
+  /* stop full dialog scrolling */
+}
+
+.manage-service-dialog .mat-mdc-dialog-content {
+  overflow: hidden;
+  /* important */
+  max-height: 520px;
+  /* match dialog maxHeight */
+  padding: 0;
+  /* optional (you are using your own padding) */
+  display: flex;
+}
+
+/* .mdc-dialog--open .mat-mdc-dialog-inner-container {
+  opacity: 1;
+  margin: 20px;
+}
+  */
+
+/* OUTLINE border on focus */
+/* .mat-mdc-form-field .mdc-text-field--outlined.mdc-text-field--focused
+  .mdc-notched-outline__leading,
+.mat-mdc-form-field .mdc-text-field--outlined.mdc-text-field--focused
+  .mdc-notched-outline__notch,
+.mat-mdc-form-field .mdc-text-field--outlined.mdc-text-field--focused
+  .mdc-notched-outline__trailing {
+  border-color: var(--primary-100) !important;
+} */
+
+/* OUTLINE border when field has value (label floated) */
+/* .mat-mdc-form-field .mdc-text-field--outlined
+  .mdc-floating-label--float-above ~ .mdc-notched-outline
+  .mdc-notched-outline__leading,
+.mat-mdc-form-field .mdc-text-field--outlined
+  .mdc-floating-label--float-above ~ .mdc-notched-outline
+  .mdc-notched-outline__notch,
+.mat-mdc-form-field .mdc-text-field--outlined
+  .mdc-floating-label--float-above ~ .mdc-notched-outline
+  .mdc-notched-outline__trailing {
+  border-color: var(--primary-100) !important;
+} */
+
+/* Label color (focus + filled) */
+/* .mat-mdc-form-field .mdc-text-field--focused .mat-mdc-floating-label,
+.mat-mdc-form-field .mdc-floating-label--float-above {
+  color: var(--primary-100) !important;
+} */
+
+/* =========================
+   BACKGROUND COLORS
+========================= */
+
+.bg-primary-custom {
+  background-color: var(--color-primary);
+}
+
+.bg-primary-100 {
+  background-color: var(--primary-100);
+}
+
+.bg-primary-200 {
+  background-color: var(--primary-200);
+}
+
+.bg-primary-300 {
+  background-color: var(--primary-300);
+}
+
+.bg-primary-400 {
+  background-color: var(--primary-400);
+}
+
+.bg-primary-500 {
+  background-color: var(--primary-500);
+}
+
+.bg-primary-600 {
+  background-color: var(--primary-600);
+}
+
+.bg-primary-700 {
+  background-color: var(--primary-700);
+}
+
+.bg-primary-800 {
+  background-color: var(--primary-800);
+}
+
+.bg-primary-900 {
+  background-color: var(--primary-900);
+}
+
+.bg-light-custom {
+  background-color: var(--bg-light);
+}
+
+.bg-white-custom {
+  background-color: var(--white);
+}
+
+/* =========================
+     TEXT COLORS
+  ========================= */
+
+.text-primary-custom {
+  color: var(--color-primary);
+}
+
+/* =========================
+     TEXT COLORS
+  ========================= */
+
+.text-primary-custom {
+  color: var(--color-primary);
+}
+
+.text-primary-100 {
+  color: var(--primary-100);
+}
+
+.text-primary-200 {
+  color: var(--primary-200);
+}
+
+.text-primary-300 {
+  color: var(--primary-300);
+}
+
+.text-primary-400 {
+  color: var(--primary-400);
+}
+
+.text-primary-500 {
+  color: var(--primary-500);
+}
+
+.text-primary-600 {
+  color: var(--primary-600);
+}
+
+.text-primary-700 {
+  color: var(--primary-700);
+}
+
+.text-primary-800 {
+  color: var(--primary-800);
+}
+
+.text-primary-900 {
+  color: var(--primary-900);
+}
+
+.text-dark-custom {
+  color: var(--text-dark);
+}
+
+.text-light-custom {
+  color: var(--text-light);
+}
+
+/* =========================
+     BORDER COLORS
+  ========================= */
+
+.border-dark-custom {
+  border: 1px solid var(--border-dark);
+}
+
+.border-light-custom {
+  border: 1px solid var(--border-light);
+}
+
+.border-primary-custom {
+  border: 1px solid var(--color-primary);
+}
+
+/* =========================
+     BUTTONS
+  ========================= */
+
+.text-dark-custom {
+  color: var(--text-dark) !important;
+}
+
+.text-light-custom {
+  color: var(--text-light) !important;
+}
+
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+
+/* =========================
+     BORDER COLORS
+  ========================= */
+
+.border-dark-custom {
+  border: 1px solid var(--border-dark) !important;
+}
+
+.border-light-custom {
+  border: 1px solid var(--border-light) !important;
+}
+
+.border-primary-custom {
+  border: 1px solid var(--color-primary) !important;
+}
+
+/* =========================
+     BUTTONS
+  ========================= */
+
+.btn-primary-custom {
+  background-color: var(--primary-300);
+  border: none;
+  color: var(--white);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.btn-secondary-custom {
+  background-color: #e1e0fa;
+  border: none;
+  color: var(--primary-300);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.ellipsis-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fs-14 {
+  font-size: 14px;
+}
+
+.cdk-overlay-container {
+  z-index: 1050 !important;
+}
+
+/* Also fix the filter panel side-sheet specifically */
+.mat-mdc-dialog-container {
+  z-index: 1050 !important;
+}
+
+@keyframes snackbarSlideRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.success-snackbar .mdc-snackbar__surface,
+.error-snackbar .mdc-snackbar__surface {
+  animation: snackbarSlideRight 0.25s ease-out;
+}
+
+.mat-mdc-snack-bar-container {
+  margin-top: 12px !important;
+  margin-right: 20px !important;
+}
+
+.success-snackbar.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: #ecfdf5 !important;
+  color: #166534 !important;
+  border-left: 5px solid #22c55e;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  font-weight: 500;
+}
+
+.error-snackbar.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: #fef2f2 !important;
+  color: #991b1b !important;
+  border-left: 5px solid #ef4444;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  font-weight: 500;
+}
+
+.success-snackbar .mdc-button,
+.error-snackbar .mdc-button {
+  color: #374151 !important;
+}
+
+/* .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 0 !important;
+} */
+
+.filter-panel-dialog {
+  animation: slideInRight 0.3s ease forwards;
+  border-radius: 0 !important;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-item:active {
+  background-color: transparent !important;
+  color: black !important;
+}

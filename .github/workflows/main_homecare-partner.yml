@@ -1,0 +1,36 @@
+name: Deploy HomeCare ServicePartner
+
+on:
+  push:
+    branches: [main]
+    paths: ['HomeCare-ServicePartner/**']
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install
+        working-directory: HomeCare-ServicePartner
+        run: npm ci
+
+      - name: Build
+        working-directory: HomeCare-ServicePartner
+        run: npm run build
+
+      - name: Zip
+        run: |
+          cd HomeCare-ServicePartner
+          zip -r ../partner-deploy.zip dist/ node_modules/ package.json server.js
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'homecare-partner'
+          publish-profile: ${{ secrets.AZURE_PARTNER_PUBLISH_PROFILE }}
+          package: partner-deploy.zip

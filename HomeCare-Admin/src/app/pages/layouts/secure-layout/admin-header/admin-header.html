@@ -1,0 +1,56 @@
+<header class="navbar bg-white px-3 position-fixed top-0">
+  <div class="container-fluid justify-content-between">
+    <button class="btn d-lg-none border-0 fs-4" type="button" (click)="toggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="d-flex align-items-center gap-2 ms-auto" #dropdownRef>
+      
+      <app-notification-bell />
+
+      <div class="position-relative">
+        <button
+          class="btn d-flex align-items-center gap-2 border-0 bg-transparent"
+          type="button"
+          (click)="isDropdownOpen = !isDropdownOpen"
+        >
+          <div
+            class="rounded-circle bg-light d-flex align-items-center justify-content-center overflow-hidden"
+            style="width: 40px; height: 40px"
+          >
+            @if (photoPreview) {
+              <img [src]="photoPreview" alt="Profile" class="w-100 h-100 object-fit-cover rounded-circle" />
+            } @else {
+              <span class="avatar-initials">{{ getAvatarText() }}</span>
+            }
+          </div>
+
+          <div class="text-start d-none d-sm-block">
+            <div class="fw-semibold">{{ profile.name || '—' }}</div>
+            <small class="text-muted">{{ profile.role || '—' }}</small>
+          </div>
+
+          <i class="bi fw-semibold fs-6" [ngClass]="isDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+        </button>
+
+        @if (isDropdownOpen) {
+          <ul class="dropdown-menu dropdown-menu-end shadow show" style="display: block; right: 0">
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" routerLink="profile" (click)="closeDropdown()">
+                <mat-icon class="dropdown-icon">person</mat-icon>
+                <span class="text-dark-custom fw-semibold">My Profile</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:void(0)" (click)="logout()">
+                <mat-icon class="dropdown-icon">logout</mat-icon>
+                <span class="text-dark-custom fw-semibold">Logout</span>
+              </a>
+            </li>
+          </ul>
+        }
+      </div>
+
+    </div>
+  </div>
+</header>

@@ -1,0 +1,60 @@
+<div class="review-backdrop" (click)="close()"></div>
+
+<div class="review-modal">
+  <div class="modal-header-custom d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h6 class="fw-bold mb-0">Rate Your Experience</h6>
+      <small class="text-muted">{{ serviceName }}</small>
+    </div>
+    <button class="close-btn" (click)="close()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="stars-wrapper d-flex justify-content-center gap-2 my-3"
+       (mouseleave)="clearHover()">
+    @for (star of stars; track star) {
+      <i
+        class="bi star-icon"
+        [class.bi-star-fill]="star <= activeRating"
+        [class.bi-star]="star > activeRating"
+        [class.star-filled]="star <= activeRating"
+        (mouseenter)="hoverRating(star)"
+        (click)="setRating(star)"
+      ></i>
+    }
+  </div>
+
+  <div class="text-center mb-3">
+    <span class="rating-label fw-semibold"
+          [class.label-visible]="activeRating > 0">
+      {{ ratingLabel }}
+    </span>
+  </div>
+
+  <div class="mb-3">
+    <textarea
+      class="form-control review-textarea"
+      rows="3"
+      placeholder="Share your experience (optional)"
+      [(ngModel)]="reviewText"
+      maxlength="1000"
+    ></textarea>
+    <div class="text-end">
+      <small class="text-muted">{{ reviewText.length }}/1000</small>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button class="w-100 py-3 btn-secondary-custom fw-bold rounded-pill fs-14 " (click)="close()">
+      Cancel
+    </button>
+    <button
+      class="w-100 btn-primary-custom rounded-pill fw-semibold"
+      (click)="submit()"
+      [disabled]="isSubmitting || !selectedRating"
+    >
+      {{ isSubmitting ? 'Submitting...' : 'Submit Review' }}
+    </button>
+  </div>
+</div>

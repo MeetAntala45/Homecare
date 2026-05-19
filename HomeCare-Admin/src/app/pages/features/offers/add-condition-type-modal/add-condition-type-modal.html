@@ -1,0 +1,109 @@
+<div class="p-4">
+  <div class="d-flex justify-content-between align-items-center mb-1">
+    <h6 class="fw-bold body-1 mb-0">Add Condition Type</h6>
+
+    <button class="border-0 bg-transparent text-light-custom" (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form">
+    <mat-dialog-content class="dialog-body">
+      <div class="row gx-3 gy-3">
+        <div class="col-12">
+          <app-offer-input-fields
+            [config]="{
+              type: 'text',
+              label: 'Label',
+              placeholder: 'e.g. Minimum Cart Amount',
+              requiredMessage: 'Label is required.'
+            }"
+            [control]="getControl('label')"
+          >
+          </app-offer-input-fields>
+        </div>
+
+        <div class="col-12">
+          <app-offer-input-fields
+            [config]="{
+              type: 'select',
+              label: 'Context Key',
+              options: contextKeyOptions,
+              requiredMessage: 'Context key is required.'
+            }"
+            [control]="getControl('contextKey')"
+            (selectionChange)="onContextKeyChange($event)"
+          >
+          </app-offer-input-fields>
+        </div>
+
+        <div class="col-12">
+          <app-offer-input-fields
+            [config]="{
+              type: 'select',
+              label: 'Input Type',
+              options: filteredInputTypeOptions,
+              requiredMessage: 'Input type is required.'
+            }"
+            [control]="getControl('inputType')"
+            (selectionChange)="onInputTypeChange($event)"
+          >
+          </app-offer-input-fields>
+        </div>
+
+        <div class="col-12">
+          <app-offer-input-fields
+            [config]="{
+              type: 'select',
+              label: 'Default Operator',
+              options: filteredOperatorOptions,
+              requiredMessage: 'Default operator is required.'
+            }"
+            [control]="getControl('defaultOperator')"
+          >
+          </app-offer-input-fields>
+        </div>
+
+        <div class="col-12">
+          <app-offer-input-fields
+            [config]="{
+              type: 'select',
+              label: 'Default Fail Behaviour',
+              options: failBehaviourOptions,
+              requiredMessage: 'Behaviour is required.'
+            }"
+            [control]="getControl('defaultFailBehaviour')"
+          >
+          </app-offer-input-fields>
+        </div>
+      </div>
+    </mat-dialog-content>
+
+    <div class="row mt-4">
+      <div class="col-6">
+        <button
+          type="button"
+          class="w-100 btn-secondary-custom py-3 fw-bold rounded-3 fs-14"
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+      </div>
+
+      <div class="col-6">
+        <button
+          type="button"
+          class="w-100 btn-primary-custom py-3 fw-bold rounded-3 fs-14"
+          (click)="onSave()"
+          [disabled]="isLoading"
+        >
+          @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+
+          {{ isLoading ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

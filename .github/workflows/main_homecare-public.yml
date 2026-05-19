@@ -1,0 +1,36 @@
+name: Deploy HomeCare Public
+
+on:
+  push:
+    branches: [main]
+    paths: ['HomeCare-Public/**']
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install
+        working-directory: HomeCare-Public
+        run: npm ci
+
+      - name: Build
+        working-directory: HomeCare-Public
+        run: npm run build
+
+      - name: Zip
+        run: |
+          cd HomeCare-Public
+          zip -r ../public-deploy.zip dist/ node_modules/ package.json server.js
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'homecare-public'
+          publish-profile: ${{ secrets.AZURE_PUBLIC_PUBLISH_PROFILE }}
+          package: public-deploy.zip

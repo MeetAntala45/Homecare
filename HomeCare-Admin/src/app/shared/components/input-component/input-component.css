@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+::ng-deep .eye-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  padding: 0 !important;
+
+  min-width: unset !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+::ng-deep .eye-btn:hover {
+  background: transparent !important;
+}
+
+::ng-deep .eye-btn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .eye-btn .mat-mdc-button-ripple,
+::ng-deep .eye-btn .mdc-button__ripple {
+  display: none !important;
+}
+
+.custom-icon {
+  cursor: pointer;
+  color: #9e9e9e;
+  font-size: 20px;
+  user-select: none;
+}
+
+.custom-icon-all {
+  color: #9e9e9e;
+  font-size: 20px;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__leading {
+  border-radius: 12px 0 0 12px !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline .mdc-notched-outline__trailing {
+  border-radius: 0 12px 12px 0 !important;
+}
+
+::ng-deep .mat-mdc-form-field-bottom-align::before {
+  display: none !important;
+}
+ 
+::ng-deep .mat-mdc-form-field-error-wrapper {
+  position: relative !important;
+  padding-left: 8px !important;
+}
+ 
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  position: relative !important;
+  min-height: 26px;
+}
+ 

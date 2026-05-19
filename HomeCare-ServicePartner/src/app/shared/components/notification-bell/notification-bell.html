@@ -1,0 +1,52 @@
+<div class="nbell-wrap">
+  <button class="nbell-trigger" (click)="toggle()">
+    <i class="bi bi-bell-fill"></i>
+    @if (unreadCount > 0) {
+      <span class="nbell-badge">
+        {{ unreadCount > 99 ? '99+' : unreadCount }}
+      </span>
+    }
+  </button>
+
+  @if (isOpen) {
+    <div class="nbell-backdrop" (click)="close()"></div>
+    <div class="nbell-panel">
+
+      <div class="nbell-panel-head">
+        <span class="nbell-panel-title">
+          {{ filterTypeId !== null ? 'Leave Updates' : 'Notifications' }}
+        </span>
+        @if (unreadCount > 0) {
+          <button class="nbell-mark-all" (click)="markAllRead()">
+            Mark all read
+          </button>
+        }
+      </div>
+
+      <div class="nbell-list">
+        @if (notifications.length === 0) {
+          <div class="nbell-empty">
+            <i class="bi bi-bell-slash-fill nbell-empty-icon"></i>
+            <p>No notifications yet</p>
+          </div>
+        }
+        @for (n of notifications; track n.id) {
+          <div class="nbell-item" [class.nbell-unread]="!n.isRead">
+            <div class="nbell-icon" [ngClass]="colorClass(n.typeId)">
+              <i class="bi" [ngClass]="iconForType(n.typeId)"></i>
+            </div>
+            <div class="nbell-content">
+              <p class="nbell-title">{{ n.title }}</p>
+              <p class="nbell-msg">{{ n.message }}</p>
+              <span class="nbell-time">{{ n.timeAgo }}</span>
+            </div>
+            @if (!n.isRead) {
+              <span class="nbell-dot"></span>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+  }
+</div>

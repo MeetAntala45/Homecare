@@ -1,0 +1,70 @@
+.category-card{
+  min-width: 290px;
+  border: 1px solid #DDE4EE;
+  background: #FFFFFF;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.category-card.active{
+  background: #F2F2F2;
+  border-color: #F2F2F2;
+}
+
+.category-card:hover{
+  background: #eef1f6;
+}
+
+.drag-icon{
+  font-size:20px;
+  opacity:.5;
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9edf7;
+  border-radius: 4px;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.7) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+.skeleton-drag {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  opacity: 0.7;
+}
+
+.skeleton-text {
+  width: 150px;
+  height: 14px;
+}
+
+.skeleton-count {
+  width: 30px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.category-card {
+  min-width: 180px;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

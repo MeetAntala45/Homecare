@@ -1,0 +1,90 @@
+<div class="modal-backdrop-custom d-flex align-items-center justify-content-center p-2">
+    <div class="card border-0 shadow-lg rounded-4 w-100 search-modal-card">
+
+        <div class="card-header border-0 bg-white rounded-top-4 px-4 pt-4 pb-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold mb-0">Add Address</h5>
+                <button class="btn btn-link text-secondary p-0 border-0 d-flex align-items-center" (click)="close()"
+                    type="button">
+                    <i class="bi bi-x-lg fs-5 x-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body px-4 pb-4 pt-0">
+
+            <div class="position-relative mb-2">
+                <div class="d-flex align-items-center bg-light border rounded-3 px-3 gap-2 search-input-box"
+                    [class.search-border]="searchFocused">
+                    <i class="bi bi-search flex-shrink-0" [class.pin]="searchFocused"></i>
+                    <input #searchInput type="text" class="flex-grow-1 border-0 bg-transparent py-0 search-input"
+                        placeholder="Search your location..." [(ngModel)]="searchQuery" (input)="onSearchInput()"
+                        (focus)="searchFocused = true" (blur)="searchFocused = false" autocomplete="off" />
+                    @if(isSearching){
+                    <span class="flex-shrink-0">
+                        <span class="spinner-border spinner-border-sm text-primary-300 search-spinner"></span>
+                    </span>
+                    }
+
+                    @if(searchQuery && !isSearching){
+                    <button class="btn btn-link text-secondary p-0 border-0 d-flex align-items-center flex-shrink-0"
+                        (click)="clearSearch()" type="button">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                    }
+                </div>
+
+                @if(searchResults.length > 0){
+                <div
+                    class="position-absolute w-100 bg-white border rounded-3 shadow-sm mt-1 overflow-hidden search-dropdown">
+                    @for(r of searchResults; track r.display_name) {
+                        <div class="d-flex align-items-center gap-2 px-3 py-2 search-result-item"
+                          (click)="selectSearchResult(r)">
+                          <i class="bi bi-geo-alt-fill pin flex-shrink-0 mt-1"></i>
+                          <div class="overflow-hidden">
+                            <div class="fw-medium text-dark text-truncate result-title">{{ r.display_name.split(',')[0] }}</div>
+                            <div class="text-secondary text-truncate result-subtitle">{{ r.display_name.split(',').slice(1,4).join(',') }}</div>
+                          </div>
+                        </div>
+                      }
+                </div>
+                }
+            </div>
+
+            <button
+                class="btn w-100 d-flex align-items-center gap-2 px-3 py-3 mb-2  text-start current-location-btn"
+                (click)="useCurrentLocation()" type="button"> 
+                    <i class="bi bi-crosshair2 icon-gps fs-6"></i>
+                    <div class="fw-semibold fs-14">Use current location</div>
+            </button>
+
+            @if(isLoadingRecents) {
+                <div class="d-flex justify-content-center py-3">
+                  <span class="spinner-border spinner-border-sm text-primary-300"></span>
+                </div>
+              } @else if(recentSearches.length > 0) {
+                <div>
+                  <p class="text-uppercase fw-semibold mb-2 text-secondary recent-label">
+                    Recent Searches
+                  </p>
+                  @for(recent of recentSearches; track recent.id) {
+                    <div class="d-flex align-items-start gap-3 px-2 py-2 rounded-3 recent-item"
+                      (click)="selectRecent(recent)">
+                      <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 mt-1 recent-icon-wrap">
+                        <i class="bi bi-clock-history pin"></i>
+                      </div>
+                      <div class="overflow-hidden flex-grow-1">
+                        <div class="fw-medium text-dark text-truncate result-title">{{ recent.title }}</div>
+                        <div class="text-secondary text-truncate result-subtitle">{{ recent.description }}</div>
+                      </div>
+                    </div>
+                  }
+                </div>
+            }@else{
+                <div class="px-2 pb-2 text-secondary fs-14">
+                    Search your location or use your current location to add address.
+                </div>
+            }
+        </div>
+    </div>
+</div>

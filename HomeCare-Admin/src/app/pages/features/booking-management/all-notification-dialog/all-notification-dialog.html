@@ -1,0 +1,78 @@
+<div class="dialog-wrapper">
+
+    <div class="dialog-header">
+      <span class="dialog-title">All Notifications</span>
+      <div class="dialog-header-actions">
+        @if (unreadCount() > 0) {
+          <button class="mark-all-btn" (click)="markAllRead()">
+            <i class="bi bi-check-all"></i> Mark all as read
+          </button>
+        }
+        <button class="close-btn" (click)="close()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  
+    <div class="dialog-body">
+  
+      @if (isLoading()) {
+        <div class="loading-state">
+          @for (i of [1,2,3,4,5]; track i) {
+            <div class="skeleton-row">
+              <div class="skeleton skeleton-dot"></div>
+              <div class="skeleton-content">
+                <div class="skeleton skeleton-line wide"></div>
+                <div class="skeleton skeleton-line narrow"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (notifications().length === 0) {
+        <div class="empty-state">
+          <i class="bi bi-bell-slash"></i>
+          <p>No unread notifications</p>
+        </div>
+      } @else {
+        @for (n of notifications(); track n.id) {
+          <div class="notification-row" [class.unread]="!n.isRead">
+  
+            <div class="dot-col">
+              @if (!n.isRead) { <span class="unread-dot"></span> }
+            </div>
+  
+            <div class="notification-content">
+              <p class="notification-message">{{ n.message }}</p>
+              <p class="notification-meta">{{ n.serviceName }}</p>
+              <p class="notification-time">{{ n.createdAt | Timezone | date:'dd MMM, h:mm a' }}</p>
+            </div>
+  
+            <div class="action-col">
+              <button
+                class="pill-btn view-pill"
+                [disabled]="n.id === 0"
+                [class.pill-disabled]="n.id === 0"
+                (click)="viewAndRead($event, n)"
+              >
+                <i class="bi bi-arrow-right"></i> View
+              </button>
+  
+              @if (!n.isRead) {
+                <button
+                  class="pill-btn read-pill"
+                  [disabled]="n.id === 0"
+                  [class.pill-disabled]="n.id === 0"
+                  (click)="markOneRead($event, n)"
+                >
+                  <i class="bi bi-check2"></i>
+                </button>
+              }
+            </div>
+  
+          </div>
+        }
+      }
+  
+    </div>
+  
+  </div>

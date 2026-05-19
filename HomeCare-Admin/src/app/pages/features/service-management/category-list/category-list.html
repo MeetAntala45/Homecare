@@ -1,0 +1,36 @@
+<div class="d-flex gap-3 flex-wrap mt-3">
+
+  @for (cat of categories; track cat.id) {
+  @if (loadingCategories) {
+
+  <div class="category-card d-flex align-items-center justify-content-between px-3 py-3 rounded-3 gap-4">
+
+    <div class="d-flex align-items-center gap-2">
+      <div class="skeleton skeleton-drag"></div>
+      <div class="skeleton skeleton-text"></div>
+    </div>
+
+    <div class="skeleton skeleton-count"></div>
+  </div>
+  }
+
+  @else {
+
+  <div class="category-card d-flex align-items-center justify-content-between px-3 py-3 rounded-3 gap-4"
+    [class.active]="cat.id === activeCategoryId" (click)="select(cat)">
+    <div class="d-flex align-items-center gap-2">
+      <mat-icon class="drag-icon">drag_indicator</mat-icon>
+
+      <span class="fw-medium">
+        {{ cat.name }}
+      </span>
+    </div>
+
+    <span class="fw-bold text-secondary">
+      {{ cat.serviceCount }}
+    </span>
+  </div>
+  }
+  }
+
+</div>

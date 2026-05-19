@@ -1,0 +1,21 @@
+<app-category-list
+  [categories]="categories"
+  [loadingCategories]="loadingCategories"
+  [activeCategoryId]="activeCategory?.id ?? null"
+  (categorySelected)="selectCategory($event)"
+>
+</app-category-list>
+
+<app-service-table
+  [services]="serviceRows"
+  [categoryName]="activeCategory?.name ?? null"
+  [serviceTypeName]="serviceType.name"
+  [loadingServices]="loadingServices"
+  [serviceTypeId]="serviceType.id"
+  [activeCategory]="activeCategory"
+  [subCategories]="subCategories"
+  (reload)="loadServices(activeCategory!.id)"
+  (filterChanged)="onFilterChanged($event)"
+  (availability)="onAvailabilityChange($event.service, $event.event)"
+>
+</app-service-table>

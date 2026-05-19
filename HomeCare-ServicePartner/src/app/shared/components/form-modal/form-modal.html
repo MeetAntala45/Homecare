@@ -1,0 +1,64 @@
+<div class="p-4">
+
+  <div class="d-flex justify-content-between align-items-center">
+    <h6 class="fw-bold pb-1 body-1">{{ modalData.title }}</h6>
+    <button (click)="onCancelClick()" class="border-0 pb-1 bg-transparent text-light-custom">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form">
+
+    <mat-dialog-content class="p-0 pt-2 overflow-auto">
+
+      @for (field of modalData.fields; track field.name) {
+      <app-input-component [label]="field.label" [type]="field.type" [icon]="field.icon"
+        [control]="getControl(field.name)" [options]="getOptions(field.name)" [maxLength]="field.maxLength">
+      </app-input-component>
+      }
+
+      @if (form.hasError('passwordMismatch') && form.get('confirmPassword')?.touched) {
+      <div class="err small ms-2 mb-2">
+        Password and Confirm Password must match
+      </div>
+      }
+
+      @if (modalData.enableFileUpload) {
+      <div class="upload-container mb-4">
+        <input type="file" #fileInput hidden accept=".svg,.png,.jpeg" (change)="onFileSelected($event)" />
+        <button type="button" class="upload-btn d-flex align-items-center btn-secondary-custom"
+          (click)="fileInput.click()">
+          <mat-icon class="me-2">north</mat-icon>
+          Upload icon
+        </button>
+        <p class="text-light-custom small mt-2 mb-0">
+          Icon size must be 64px * 64px. svg or png file format.
+        </p>
+      </div>
+      }
+
+    </mat-dialog-content>
+
+    <div class="row w-100 m-0 mt-2">
+
+      <div class="col-6 ps-0">
+        <button type="button" class="w-100 btn-secondary-custom py-3 fw-bold rounded-3 fs-14" (click)="onCancelClick()">
+          Cancel
+        </button>
+      </div>
+
+      <div class="col-6 pe-0">
+        <button type="button" class="w-100 btn-primary-custom py-3 fw-bold rounded-3 fs-14" (click)="onSaveClick()"
+          [disabled]="isLoading">
+          @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          }
+          {{ isLoading ? loadingLabel : (modalData.submitLabel ?? 'Save') }}
+        </button>
+      </div>
+
+    </div>
+
+  </form>
+
+</div>

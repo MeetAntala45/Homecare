@@ -1,0 +1,194 @@
+<div class="container">
+  <div class="row g-4">
+    <div class="col-lg-9">
+      <div class="row g-3">
+        <div class="container py-4 d-none d-md-block">
+          @if (imageCount === 3 || imageCount === 5) {
+          <div class="row g-3">
+            <div class="col-md-6">
+              <img [src]="images[0]" class="img-fluid w-100 rounded-4 img-fit main-img" />
+            </div>
+            <div class="col-md-6">
+              <div class="row g-3">
+                @for (img of images.slice(1); track img) {
+                <div [class]="imageCount === 3 ? 'col-12' : 'col-6'">
+                  <img [src]="img" class="img-fluid w-100 rounded-4 img-fit" [class.medium-img]="imageCount === 3"
+                    [class.small-img]="imageCount !== 3" />
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+          } @else if (imageCount == 0) {
+          <div class="col-md-12">
+            <img src="assets/images/default_image.png" class="img-fluid w-100 rounded-4 img-fit main-img" />
+          </div>
+          } @else {
+          <div class="row g-3">
+            @for (img of images; track img) {
+            <div [class]="getGridClass()">
+              <img [src]="img" class="img-fluid w-100 rounded-4 img-fit" [class.large-img]="imageCount <= 2"
+                [class.small-img]="imageCount > 2" />
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mt-4">
+        <div>
+          <h2 class="fw-bold mb-2">{{ service.name | titlecase }}</h2>
+          <h4 class="fw-bold mb-0 text-light-custom">${{ service.price }}</h4>
+        </div>
+
+        @if (service.isAvailable && canBook(service)) {
+        <button class="btn-primary-custom fs-14 d-inline-flex align-items-center rounded-pill"
+          (click)="goToCheckOutPage(service.id!)">
+          <mat-icon class="me-1 text-white">add</mat-icon>
+          Add
+        </button>
+        }@else {
+        <button class="btn-secondary-custom fs-14 d-inline-flex align-items-center rounded-pill" disabled>
+          Not Available
+        </button>
+        }
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-6 mb-4 mb-md-0">
+          <h6 class="fw-bold mb-4">{{ service.serviceTypeName | titlecase }} Includes</h6>
+          <ul class="list-unstyled mb-0">
+            @if(includes.length != 0){ @for (item of includes ; track item) {
+            <li class="d-flex gap-2 mb-3 text-secondary">
+              <i class="bi bi-check-circle-fill text-success"></i>
+              <span>{{ item }}</span>
+            </li>
+            } } @else {
+            <div>No Includes available</div>
+            }
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <h6 class="fw-bold mb-4">{{ service.serviceTypeName | titlecase }} Excludes</h6>
+          <ul class="list-unstyled mb-0">
+            @if(excludes.length != 0){ @for (item of excludes ; track item) {
+            <li class="d-flex gap-2 mb-3 text-secondary">
+              <i class="bi bi-x-circle-fill text-danger"></i>
+              <span>{{ item }}</span>
+            </li>
+            } } @else {
+            <div>No Excludes available</div>
+            }
+          </ul>
+        </div>
+      </div>
+
+      @if (reviewSummary && reviewSummary.totalReviews > 0) {
+      <div class="reviews-section mt-5">
+
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+          <h6 class="fw-bold mb-0">Customer Reviews</h6>
+
+          <div class="rating-summary-pill d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+            [ngClass]="getRatingColor(reviewSummary.averageRating)">
+            <i class="bi bi-star-fill star-filled-sm"></i>
+            <span class="fw-bold fs-6">{{ reviewSummary.averageRating }}</span>
+            <span class="rating-divider">|</span>
+            <span class="fw-semibold">{{ getRatingLabel(reviewSummary.averageRating) }}</span>
+            <span class="review-count-text">({{ reviewSummary.totalReviews }} {{ reviewSummary.totalReviews === 1 ?
+              'review' : 'reviews' }})</span>
+          </div>
+        </div>
+
+        <div class="reviews-grid">
+          @for (review of reviewSummary.reviews; track review.createdAt) {
+          <div class="review-card">
+
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="d-flex align-items-center gap-2">
+
+                @if (review.customerProfileImage) {
+                <img [src]="BASE_URL + review.customerProfileImage" class="reviewer-avatar"
+                  [alt]="review.customerName" />
+                } @else {
+                <div class="reviewer-avatar-placeholder">
+                  {{ getInitial(review.customerName) }}
+                </div>
+                }
+
+                <div>
+                  <div class="fw-semibold reviewer-name">{{ review.customerName }}</div>
+                  <div class="text-muted time-ago">{{ getTimeAgo(review.createdAt) }}</div>
+                </div>
+              </div>
+
+              <div class="d-flex gap-1">
+                @for (star of getStarArray(review.rating); track $index) {
+                <i class="bi" [class.bi-star-fill]="star.filled" [class.bi-star]="!star.filled"
+                  [class.star-filled-sm]="star.filled" [class.star-empty-sm]="!star.filled">
+                </i>
+                }
+              </div>
+            </div>
+
+            @if (review.reviewText) {
+            <p class="review-text mb-0">{{ review.reviewText }}</p>
+            }@else{
+              <p class="review-text mb-0">{{ review.rating }} stars rating.</p>
+            }
+          </div>
+          }
+        </div>
+
+      </div>
+      }
+    </div>
+
+    <div class="col-lg-3 px-lg-4 px-0 py-1">
+      <div class="bg-white rounded-4 h-100">
+        <h4 class="fw-bold mb-4">Other {{ service.serviceTypeName | titlecase }}</h4>
+        @if(visibleOtherServices.length != 0){
+        <div class="services-scroll-wrapper" [class.scroll-enabled]="showAllServices">
+          @for (service of visibleOtherServices; track $index) {
+          <div class="d-flex justify-content-between align-items-center gap-3 pb-3 mb-3 cursor-pointer"
+            [class.border-bottom]="
+              service.id != visibleOtherServices[visibleOtherServices.length - 1].id
+            " (click)="goToServiceDetail(service.id!)">
+            <div class="flex-grow-1">
+              <h6 class="fw-semibold mb-1">{{ service.name | titlecase }}</h6>
+              <p class="fw-bold mb-0 text-light-custom">${{ service.price }}</p>
+            </div>
+
+            <div class="position-relative text-center mb-3">
+              <img [src]="getImageUrl(service.imagePaths[0])" class="rounded-3 img-fit thumb-img" alt="service" />
+              <button
+                class="border border-2 bg-white d-inline-flex align-items-center rounded-pill position-absolute start-50 translate-middle-x px-2 py-1 text-primary-300 fw-bold add-btn-overlay"
+                [disabled]="!service.isAvailable || !service.hasPartner" [title]="getUnavailableReason(service)"
+                (click)="goToCheckOutPage(service.id!); $event.stopPropagation()">
+                @if (service.isAvailable && service.hasPartner) {
+                <mat-icon class="me-1 text-primary-300 fw-bold icon-sm">add</mat-icon>
+                } <span style="white-space: nowrap;">
+                  {{ service.isAvailable && service.hasPartner ? 'Add' : 'N/A' }}
+                </span>
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+        @if (otherServices.length > 4) {
+        <div class="text-center">
+          <button type="button"
+            class="border border-2 bg-white text-primary-300 fs-14 fw-bold rounded-pill px-4 py-2 mt-3"
+            (click)="toggleViewAll()">
+            {{ showAllServices ? 'View Less' : 'View All' }}
+          </button>
+        </div>
+        } } @else {
+        <div>No other services available</div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+@if(loading){
+<div class="loading-wrapper text-center">
+    <div class="spinner-border text-primary-custom" role="status">
+    </div>
+    <p class="loading-text">Loading...</p>
+</div>
+}
+
+@else if (userPayment) {
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn p-1 border-0 bg-transparent fs-5 me-2 text-secondary" (click)="goBack()">
+            <i class="bi bi-arrow-left"></i>
+        </button>
+        <h2 class="fw-bold mb-0 h5">{{ userPayment.userName }}</h2>
+    </div>
+</div>
+
+<div class="bg-white rounded-3 p-3 p-md-4">
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <span class="info-label">User ID</span>
+            <span class="fw-semibold">{{ userPayment.userId }}</span>
+        </div>
+        <div class="col-6 col-md-3">
+            <span class="info-label">Mobile Number</span>
+            <span class="fw-semibold">{{ userPayment.mobileNumber || "-" }}</span>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <span class="info-label">Transaction ID</span>
+            <span class="fw-semibold text-truncate" 
+                [matTooltip]="userPayment.transactionId">
+                {{ userPayment.transactionId }}
+            </span>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <span class="info-label">Service</span>
+            <span class="fw-semibold text-truncate" 
+                [matTooltip]="userPayment.serviceName">
+                {{ userPayment.serviceName }}
+            </span>
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <span class="info-label">Service ID</span>
+            <span class="fw-semibold">{{ userPayment.serviceId }}</span>
+        </div>
+        <div class="col-6 col-md-3">
+            <span class="info-label">Amount</span>
+            <span class="fw-semibold currency-color">+${{ userPayment.amount }}</span>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <span class="info-label">Payment Method</span>
+            <span class="fw-semibold">{{ userPayment.paymentMethod }}</span>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <span class="info-label">Date & Time</span>
+            <span class="fw-semibold text-truncate"
+                [matTooltip]="userPayment.transactionDateTime | Timezone | date: 'dd MMM yyyy, hh:mm a' : 'Asia/Kolkata'">
+                {{ userPayment.transactionDateTime | Timezone | date: 'dd MMM yyyy, hh:mm a' : 'Asia/Kolkata' }}</span>
+        </div>
+    </div>
+</div>
+<div class="mt-4">
+
+    <app-grid-layout
+      title="Other Payments & Transactions"
+      [exportConfig]="exportConfig"
+      [showFilter]="true"
+      [columns]="columns"
+      [data]="data"
+      [isLoading]="isLoading"
+      [skeletonRowCount]="filter.pageSize"
+      [showActions]="false"
+      [showPagination]="true"
+      [totalCount]="totalCount"
+      [pageNumber]="filter.pageNumber"
+      [pageSize]="filter.pageSize"
+      [sortBy]="filter.sortBy"
+      [sortOrder]="filter.sortOrder"
+      (pageChanged)="onPageChanged($event)"
+      (sortChanged)="onSortChanged($event)"
+      (filterClicked)="openFilter()"
+      (rowClicked)="onRowClicked($event)"
+    >
+    </app-grid-layout>
+  
+  </div>
+}

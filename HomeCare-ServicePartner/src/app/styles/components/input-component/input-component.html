@@ -1,0 +1,65 @@
+@if (type === 'dropdown' || type === 'select') {
+
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+
+  <mat-select [formControl]="control">
+    @for (opt of options; track opt.value) {
+    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+    }
+  </mat-select>
+
+  @if (control.touched && control.invalid) {
+  <mat-error>
+    @if (control.errors?.['required']) {
+    <span>{{ label }} is required</span>
+    }
+  </mat-error>
+  }
+</mat-form-field>
+
+} @else if (type === 'textarea') {
+
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+  <textarea matInput [formControl]="control" [rows]="rows"></textarea>
+  @if (control.touched && control.invalid) {
+  <mat-error>
+    @if (control.errors?.['required']) {
+    <span>{{ label }} is required</span>
+    }
+  </mat-error>
+  }
+</mat-form-field>
+
+} @else {
+
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+
+  <input matInput [type]="inputType" [formControl]="control" />
+
+  @if (icon && type !== 'password') {
+  <mat-icon matSuffix class="custom-icon-all">{{ icon }}</mat-icon>
+  } @if (type === 'password') {
+  <mat-icon matSuffix (click)="togglePassword($event)" class="custom-icon">
+    {{ hide() ? 'visibility_off' : 'visibility' }}
+  </mat-icon>
+  } @if (control.touched && control.invalid) {
+  <mat-error class="p-0">
+    @if (control.errors?.['required']) {
+    <span>{{ label }} is required</span>
+    } @if (control.errors?.['maxlength']) {
+    <span> Max {{ control.errors?.['maxlength'].requiredLength }} characters allowed.</span>
+    } @if (control.errors?.['email']) {
+    <span>Invalid email</span>
+    } @if (control.errors?.['pattern']) { @if (type === 'tel') {
+    <span>Enter a valid 10 digit mobile number</span>
+    }@else{
+    <span>{{ errorMessage ?? patternMessage }}</span>
+    } }
+  </mat-error>
+  }
+</mat-form-field>
+
+}

@@ -1,0 +1,57 @@
+<div class="d-flex align-items-center justify-content-between px-4 py-3">
+  <a class="text-decoration-none text-dark" routerLink="admin/dashboard" (click)="onMenuClick()">
+    <h2 class="fw-bold mb-0">H<span class="text-primary-300">o</span>meCare</h2>
+  </a>
+</div>
+
+<ul class="sidebar-menu list-unstyled px-3">
+  @for (item of menu; track item) {
+  <li class="mb-2">
+    @if (!item.children) {
+    <a class="menu-item fw-semibold d-flex align-items-center gap-3 px-3 py-2 rounded-3 text-decoration-none"
+      [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
+      (click)="onMenuClick()">
+      <i class="bi fw-semibold fs-5" [ngClass]="item.icon"></i>
+      <span #labelRef class="ellipsis-text" [matTooltip]="item.label" matTooltipPosition="above"
+        [matTooltipDisabled]="!isTextOverflow(labelRef)">
+        {{ item.label }}
+      </span>
+      @if (item.route === '/admin/leave-requests' && leaveUnreadCount() > 0) {
+        <span class="sp-leave-badge">
+          {{ leaveUnreadCount() > 99 ? '99+' : leaveUnreadCount() }}
+        </span>
+      }
+    </a>
+    } @if (item.children) {
+    <div>
+      <a class="menu-item fw-semibold d-flex align-items-center justify-content-between px-3 py-2 rounded-3 text-decoration-none"
+        [class.active]="item.expanded || isAnyChildActive(item)" (click)="toggleDropdown(item)">
+        <span #labelRef class="d-flex align-items-center gap-3 ellipsis-text" [matTooltip]="item.label"
+          matTooltipPosition="above" [matTooltipDisabled]="!isTextOverflow(labelRef)">
+          <i class="bi fw-semibold fs-5" [ngClass]="item.icon"></i>
+          {{ item.label }}
+        </span>
+
+        <i class="bi fw-semibold fs-6"
+          [ngClass]="item.expanded || isAnyChildActive(item) ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      </a>
+
+      @if (item.expanded || isAnyChildActive(item)) {
+      <ul class="submenu list-unstyled ps-4">
+        @for (child of item.children; track child) {
+        <li class="mb-1">
+          <a class="submenu-item fw-semibold d-flex align-items-center gap-1 py-1 rounded text-decoration-none"
+            [routerLink]="child.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
+            (click)="onMenuClick()">
+            <i class="bi bi-dot fw-semibold fs-4"></i>
+            <span>{{ child.label }}</span>
+          </a>
+        </li>
+        }
+       </ul>
+      }
+    </div>
+    }
+  </li>
+  }
+</ul>

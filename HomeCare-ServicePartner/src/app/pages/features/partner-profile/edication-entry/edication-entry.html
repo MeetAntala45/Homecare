@@ -1,0 +1,40 @@
+@for (edu of educationFormArray.controls; track edu; let i = $index) {
+
+  <div class="entry-row">
+
+    <div class="entry-fields">
+
+      <div class="field-item field-wide">
+        <app-input-fields
+          [config]="educationFields[0]"
+          [control]="getControl(getEducationGroup(i), controlNames[0])">
+        </app-input-fields>
+      </div>
+
+      <div class="field-item field-medium">
+        <app-input-fields
+          [config]="educationFields[1]"
+          [control]="getControl(getEducationGroup(i), controlNames[1])">
+        </app-input-fields>
+      </div>
+
+      <div class="field-item field-narrow">
+        <app-input-fields
+          [config]="educationFields[2]"
+          [control]="getControl(getEducationGroup(i), controlNames[2])">
+        </app-input-fields>
+      </div>
+
+    </div>
+
+    @if (educationFormArray.length > 1) {
+      <button class="btn-delete" type="button"
+              (click)="educationFormArray.removeAt(i)"
+              matTooltip="Remove entry">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    }
+
+  </div>
+
+}

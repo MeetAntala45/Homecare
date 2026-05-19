@@ -1,0 +1,15 @@
+.subtitle-1{
+  color: #666666;
+}
+
+.body-1{
+  font-weight: 700;
+}
+
+.final-btn{
+  border-radius: 40px;
+}
+
+::ng-deep .mat-mdc-form-field-error-wrapper{
+  padding: 0px;
+}

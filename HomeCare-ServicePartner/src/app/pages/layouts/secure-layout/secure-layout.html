@@ -1,0 +1,25 @@
+<div class="d-flex position-relative w-100 ">
+  <aside
+    class="bg-white position-fixed top-0 start-0 vh-100 sidebar-custom"
+    [class.open]="sidebarOpen"
+  >
+    <app-admin-sidebar (sidebarClose)="sidebarOpen = false"></app-admin-sidebar>
+  </aside>
+
+  @if (sidebarOpen) {
+  <div
+    class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-25 d-lg-none"
+    (click)="closeSidebar()"
+    style="z-index: 1040"
+  ></div>
+  }
+
+  <div class="flex-grow-1 main-content-custom bg-light-custom">
+    <app-admin-header (menuToggle)="toggleSidebar()"></app-admin-header>
+
+    <div class="p-4">
+      <router-outlet></router-outlet>
+      <app-ai-chatbot></app-ai-chatbot>
+    </div>
+  </div>
+</div>

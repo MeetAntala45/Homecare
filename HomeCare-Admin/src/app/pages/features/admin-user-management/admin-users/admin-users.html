@@ -1,0 +1,44 @@
+@if(role === 'Super Admin'){
+    <app-grid-layout
+      title="Admin Users"
+      [showFilter]="true"
+      [showAdd]="true"
+      addButtonLabel="Add"
+      [columns]="columns"
+      [data]="data"
+      [isLoading]="isLoading"
+      [skeletonRowCount]="pageSize"
+      [showActions]="true"
+      [totalCount]="totalCount"
+      [pageNumber]="pageNumber"
+      [pageSize]="pageSize"
+      [sortBy]="filter.sortBy"
+      [sortOrder]="filter.sortOrder"
+      (pageChanged)="onPageChanged($event)"
+      (addClicked)="openAdminModal()"
+      (actionClicked)="handleAction($event)"
+      (filterClicked)="openFilter()"
+      (sortChanged)="onSortChanged($event)">
+    </app-grid-layout>
+  }@else{
+    <app-grid-layout
+      title="Admin Users"
+      [showFilter]="true"
+      [showAdd]="false"
+      addButtonLabel="Add"
+      [columns]="columns"
+      [data]="data"
+      [isLoading]="isLoading"
+      [skeletonRowCount]="pageSize"
+      [showActions]="false"
+      [totalCount]="totalCount"
+      [pageNumber]="pageNumber"
+      [pageSize]="pageSize"
+      [sortBy]="filter.sortBy"
+      [sortOrder]="filter.sortOrder"
+      (pageChanged)="onPageChanged($event)"
+      (actionClicked)="handleAction($event)"
+      (filterClicked)="openFilter()"
+      (sortChanged)="onSortChanged($event)">
+    </app-grid-layout>
+}

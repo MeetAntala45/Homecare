@@ -1,0 +1,136 @@
+<div>
+  <div class="grid-header d-flex flex-wrap justify-content-between align-items-sm-center align-items-start flex-sm-row flex-column gap-1">
+    <h5 class="h5 fw-bold text-dark-custom m-0">
+      {{ title }}
+    </h5>
+
+    <div class="d-flex gap-2 flex-wrap">
+
+      <div class="d-flex gap-2">
+        @if (exportConfig?.csvUrl) {
+        <div class="custom-dropdown" [class.active]="activeMenu === 'csv'">
+          <button class="btn csv-btn button-text" [disabled]="isExportingCsv" (click)="toggleMenu('csv', $event)">
+            @if (isExportingCsv) {
+              <span class="loader csv-loader me-1"></span>
+            } @else {
+              <i class="bi bi-filetype-csv me-1"></i>
+            }
+            CSV
+          </button>
+          <div class="menu">
+            <button class="csv-menu" (mousedown)="exportCSV('all')">
+              <i class="bi bi-table"></i> All Records
+            </button>
+            <button class="csv-menu" (mousedown)="exportCSV('currentPage')">
+              <i class="bi bi-file-earmark"></i> Current Page
+            </button>
+          </div>
+        </div>
+        }
+      
+        @if (exportConfig?.pdfUrl) {
+        <div class="custom-dropdown" [class.active]="activeMenu === 'pdf'">
+          <button class="btn pdf-btn button-text" [disabled]="isExportingPdf" (click)="toggleMenu('pdf', $event)">
+            @if (isExportingPdf) {
+              <span class="loader pdf-loader me-1"></span>
+            } @else {
+              <i class="bi bi-file-earmark-pdf me-1"></i>
+            }
+            PDF
+          </button>
+          <div class="menu">
+            <button class="pdf-menu" (mousedown)="exportPDF('all')">
+              <i class="bi bi-table"></i> All Records
+            </button>
+            <button class="pdf-menu" (mousedown)="exportPDF('currentPage')">
+              <i class="bi bi-file-earmark"></i> Current Page
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="d-flex gap-2">
+        @if(showFilter){
+        <button class="btn filter-btn button-text" (click)="filterClicked.emit()">
+          <i class="bi bi-funnel me-1"></i>
+          <span>Filter</span>
+        </button>
+        }
+
+        @if(showAdd){
+        <button class="btn add-btn button-text" (click)="addClicked.emit()">
+          <i class="bi bi-plus-lg me-1"></i>
+          <span>{{ addButtonLabel }}</span>
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="grid-container mt-4">
+      @if (!expandable) {
+        @if (data.length > 0 || columns.length > 0 || isLoading) {
+          <app-data-grid
+            [columns]="columns"
+            [data]="data"
+            [isLoading]="internalLoading"
+            [skeletonRowCount]="skeletonRowCount"
+            [showActions]="showActions"
+            [sortBy]="sortBy"
+            [sortOrder]="sortOrder"
+            [directActions]="directActions"
+            (actionClicked)="onGridAction($event)"
+            (rowClicked)="onRowClicked($event)"
+            (sortChanged)="onGridSort($event)"
+            (expertDetailClicked)="expertDetailClicked.emit($event)"
+          />
+        }
+      } @else {
+        <app-expandable-grid
+          [columns]="columns"
+          [data]="data"
+          [isLoading]="internalLoading"
+          [skeletonRowCount]="skeletonRowCount"
+          [sortBy]="sortBy"
+          [sortOrder]="sortOrder"
+          [rowDetailTemplate]="rowDetailTemplate!"
+          [expandedCustomerId]="expandedCustomerId"
+          [expandedPaymentMethod]="expandedPaymentMethod"
+          [expandTriggered]="expandTriggered"
+          (sortChanged)="onGridSort($event)"
+          (deleteClicked)="onRowDelete($event)"
+          (rowExpanded)="onRowExpanded($event)"
+          (expertDetailClicked)="expertDetailClicked.emit($event)"
+          [highlightRowKey]="highlightRowKey"
+        />
+      }
+
+      <ng-content></ng-content>
+
+      @if(showPagination) {
+      <div class="pagination-bar ps-3 pe-3 pb-2 rounded-bottom-3">
+        <div class="pagination-size">
+          <span class="pagination-label">Rows per page:</span>
+          <select class="pagination-select" [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            @for(opt of pageSizeOptions; track opt){
+            <option [value]="opt">{{ opt }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <span class="pagination-label">
+            {{ rangeStart }}-{{ rangeEnd }} of {{ totalCount }}
+          </span>
+          <button class="page-btn" (click)="goToPrev()" [disabled]="isFirstPage || internalLoading">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button class="page-btn" (click)="goToNext()" [disabled]="isLastPage || internalLoading">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

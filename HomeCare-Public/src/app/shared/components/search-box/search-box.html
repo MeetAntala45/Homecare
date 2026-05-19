@@ -1,0 +1,43 @@
+<div class="position-relative w-75 d-flex justify-content-center">
+  <div class="position-relative search-wrapper" [ngClass]="variant">
+    <mat-icon class="position-absolute top-50 start-0 translate-middle-y ms-3"> search </mat-icon>
+
+    @if(!searchText){
+    <label class="search-label ellipsis-text pe-3 text-start" [title]="placeholder">
+      {{ placeholder }}
+    </label>
+    }
+
+    <input
+      type="text"
+      class="form-control rounded-pill ps-5 pe-5 shadow-sm border d-flex search-input"
+      [(ngModel)]="searchText"
+      (input)="onSearchChange()"
+      (keydown.enter)="onEnterPress()"
+    />
+
+    <button
+      class="btn-search border-0 bg-primary-400 text-white fw-semibold fs-14 rounded-pill position-absolute top-50 end-0 translate-middle-y me-3 px-3 py-2 d-flex align-items-center justify-content-center"
+      [disabled]="isSearchDisabled"
+      (click)="onSearchClick()"
+    >
+      <span class="search-text">Search</span>
+      <mat-icon class="search-icon">search</mat-icon>
+    </button>
+  </div>
+  @if(showDropdown){
+  <div class="search-dropdown shadow border-top mx-4 w-75">
+    @if(filteredItems.length > 0){ @for(item of filteredItems; track item[displayKey]){
+    <div
+      class="dropdown-item px-4 ellipsis-text"
+      (click)="selectItem(item)"
+      [title]="item[displayKey]"
+    >
+      {{ item[displayKey] }}
+    </div>
+    } } @else {
+    <div class="dropdown-item text-muted pe-none ellipsis-text">No result found</div>
+    }
+  </div>
+  }
+</div>

@@ -1,0 +1,64 @@
+<div class="">
+  <div class="mb-4">
+    <h5 class="h5 fw-bold text-dark-custom">Master Data</h5>
+  </div>
+
+  <div class="card border-0 p-3 px-4 rounded-3 shadow-sm">
+    <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 px-0 pb-3">
+      <h5 class="fw-bold mb-0 text-dark-custom">Service Types</h5>
+
+      <button class="btn-add-service btn-primary-custom shadow-sm px-3 py-2 d-inline-flex align-items-center rounded-3"
+        (click)="addServiceDialog()">
+        <mat-icon class="me-1 text-white">add</mat-icon>
+        Add
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table mb-0 align-middle">
+        <tbody>
+          <tr class="fs-14 fw-semibold serviceTypeTableHead">
+            <td class="text-start text-muted-custom">Name</td>
+            <td class="text-end text-muted-custom">Action</td>
+          </tr>
+
+          @for (service of serviceTypes; track $index) {
+          @if (loading) {
+          <tr>
+            <td class="p-3">
+              <div class="skeleton-wrapper">
+                <div class="skeleton skeleton-icon"></div>
+                <div class="skeleton skeleton-text"></div>
+              </div>
+            </td>
+
+            <td class="text-end">
+              <div class="skeleton skeleton-action"></div>
+            </td>
+          </tr>
+          }
+          @else {
+          <tr>
+            <td class="fs-14 fw-semibold text-dark-custom">
+              <div class="d-flex">
+                <img [src]="service.imagePath" width="24" height="24" class="me-2" />
+                <div>{{ service.name }}</div>
+              </div>
+            </td>
+
+            <td class="text-end">
+              <app-action-dropdown [actions]="getActions(service)" (actionClicked)="handleAction($event, service)">
+              </app-action-dropdown>
+            </td>
+          </tr>
+          }
+          }@empty {
+          <tr>
+            <td colspan="2" class="text-center text-muted py-5 fs-14">No data found.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

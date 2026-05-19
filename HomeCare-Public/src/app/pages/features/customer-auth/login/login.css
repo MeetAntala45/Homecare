@@ -1,0 +1,27 @@
+.login-box {
+    width: 400px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.right-img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+.or-divider::after,
+.or-divider::before {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-light);
+}
+
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__leading,
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__notch,
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__trailing {
+    border-color: #c0c8d3 !important;
+}

@@ -1,0 +1,199 @@
+
+<div class="al-page">
+
+  <div class="al-header d-flex align-items-center justify-content-between">
+    <div>
+      <h4 class="al-title">Leave Requests</h4>
+      <p class="al-sub">Manage and review partner leave applications</p>
+    </div>
+  
+    <app-notification-bell
+      [role]="'admin'"
+      [filterTypeId]="null">
+    </app-notification-bell>
+  </div>
+    <div class="al-filters">
+      <button class="al-ftab" [class.active]="filterStatus === null"
+        (click)="setFilter(null)">
+        All <span class="al-ftab-count">{{ totalCount }}</span>
+      </button>
+      <button class="al-ftab al-ftab-warn" [class.active]="filterStatus === 1"
+        (click)="setFilter(1)">Pending</button>
+      <button class="al-ftab al-ftab-succ" [class.active]="filterStatus === 2"
+        (click)="setFilter(2)">Approved</button>
+      <button class="al-ftab al-ftab-dang" [class.active]="filterStatus === 3"
+        (click)="setFilter(3)">Rejected</button>
+    </div>
+  
+    <div class="al-card">
+      <div class="al-table-wrap">
+        <table class="al-table">
+          <thead>
+            <tr>
+              <th>Partner</th>
+              <th>Leave Period</th>
+              <th>Days</th>
+              <th>Reason</th>
+              <th>Applied On</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (leaves.length === 0) {
+              <tr>
+                <td colspan="7" class="al-empty">
+                  <i class="bi bi-inbox al-empty-icon"></i>
+                  <p>No leave requests found</p>
+                </td>
+              </tr>
+            }
+            @for (leave of leaves; track leave.id) {
+              <tr>
+                <td>
+                  <div class="al-partner">
+                    <div class="al-avatar">
+                      {{ leave.partnerName.charAt(0).toUpperCase() }}
+                    </div>
+                    <div>
+                      <div class="al-name">{{ leave.partnerName }}</div>
+                      <div class="al-email">{{ leave.partnerEmail }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="al-period">
+                    <span class="al-date">{{ leave.fromDate }}</span>
+                    <i class="bi bi-arrow-right al-arrow"></i>
+                    <span class="al-date">{{ leave.toDate }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="al-badge al-days">{{ leave.totalDays }}d</span>
+                </td>
+                <td>
+                  <span class="al-reason" [title]="leave.reason">
+                    {{ leave.reason }}
+                  </span>
+                </td>
+                <td class="al-meta">{{ leave.appliedOn }}</td>
+                <td>
+                  <span class="al-badge" [ngClass]="badgeClass(leave.statusId)">
+                    {{ leave.status }}
+                  </span>
+                </td>
+                <td>
+                  @if (leave.statusId === 1) {
+                    <button class="al-btn-review" (click)="openReview(leave)">
+                      <i class="bi bi-eye"></i> Review
+                    </button>
+                  } @else {
+                    <span class="al-meta">{{ leave.adminRemarks || '—' }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="al-pagination">
+      <div class="al-page-size">
+        <span>Rows per page:</span>
+        <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          <option [value]="5">5</option>
+          <option [value]="10">10</option>
+          <option [value]="25">25</option>
+          <option [value]="50">50</option>
+        </select>
+      </div>
+    
+      <div class="al-page-info">
+        {{ startItem }}–{{ endItem }} of {{ totalCount }}
+      </div>
+    
+      <div class="al-page-actions">
+        <button (click)="prevPage()" [disabled]="page === 1">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button (click)="nextPage()" [disabled]="page === totalPages">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    
+    </div>
+   
+  </div>
+  
+  @if (reviewingLeave) {
+    <div class="al-overlay" (click)="reviewingLeave = null">
+      <div class="al-modal" (click)="$event.stopPropagation()">
+        <div class="al-modal-head">
+          <div class="al-partner">
+            <div class="al-avatar al-avatar-lg">
+              {{ reviewingLeave.partnerName.charAt(0).toUpperCase() }}
+            </div>
+            <div>
+              <div class="al-modal-title">{{ reviewingLeave.partnerName }}</div>
+              <div class="al-email">{{ reviewingLeave.partnerEmail }}</div>
+            </div>
+          </div>
+          <button class="al-close" (click)="reviewingLeave = null">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+  
+        <div class="al-modal-body">
+          <div class="al-info-grid">
+            <div class="al-info-box">
+              <span class="al-info-label">From</span>
+              <span class="al-info-val">{{ reviewingLeave.fromDate }}</span>
+            </div>
+            <div class="al-info-box">
+              <span class="al-info-label">To</span>
+              <span class="al-info-val">{{ reviewingLeave.toDate }}</span>
+            </div>
+            <div class="al-info-box">
+              <span class="al-info-label">Duration</span>
+              <span class="al-info-val">
+                <span class="al-badge al-days">
+                  {{ reviewingLeave.totalDays }} day{{ reviewingLeave.totalDays > 1 ? 's' : '' }}
+                </span>
+              </span>
+            </div>
+            <div class="al-info-box">
+              <span class="al-info-label">Applied On</span>
+              <span class="al-info-val">{{ reviewingLeave.appliedOn }}</span>
+            </div>
+          </div>
+  
+          <div class="al-reason-box">
+            <span class="al-info-label">Reason</span>
+            <p class="al-reason-text">{{ reviewingLeave.reason }}</p>
+          </div>
+  
+          <div class="al-field">
+            <label class="al-label">
+              Remarks <span class="al-opt">(optional)</span>
+            </label>
+            <textarea class="al-textarea" rows="3" [(ngModel)]="remarks"
+              placeholder="Add a note for the partner..."></textarea>
+          </div>
+        </div>
+  
+        <div class="al-modal-foot">
+          <button class="al-btn-close" (click)="reviewingLeave = null">
+            Close
+          </button>
+          <button class="al-btn-reject" (click)="review(false)" [disabled]="reviewing">
+            <i class="bi bi-x-lg"></i> Reject
+          </button>
+          <button class="al-btn-approve" (click)="review(true)" [disabled]="reviewing">
+            @if (reviewing) { <span class="al-spin"></span> }
+            @else { <i class="bi bi-check-lg"></i> }
+            Approve
+          </button>
+        </div>
+      </div>
+    </div>
+  }

@@ -1,0 +1,141 @@
+.drop-zone {
+  border: 2px dashed #B5B3F3;
+  border-radius: 8px;
+  background: rgba(69, 64, 225, 0.04);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.drop-zone--active,
+.drop-zone:hover {
+  background: rgba(69, 64, 225, 0.08);
+  border-color: #8F8CED;
+}
+
+.upload-icon {
+  font-size: 40px !important;
+  height: 40px !important;
+  width: 40px !important;
+  color: #4540E1;
+  margin-bottom: 8px;
+}
+
+.drop-text {
+  font-size: 16px;
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  color: #333333;
+  margin: 0;
+  line-height: 22px;
+  letter-spacing: 0.0015em;
+}
+
+.choose-file-link {
+  color: #4540E1;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.drop-hint {
+  font-size: 12px;
+  font-family: var(--font-family-base);
+  font-weight: 500;
+  color: #808080;
+  margin: 0;
+  line-height: 16px;
+  letter-spacing: 0.004em;
+}
+
+.drop-hint:last-of-type {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666666;
+  line-height: 20px;
+  letter-spacing: 0.0025em;
+}
+
+.uploaded-files {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #DDE4EE;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.file-icon {
+  color: #4540E1;
+  font-size: 20px !important;
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-name {
+  font-size: 14px;
+  font-family: var(--font-family-base);
+  font-weight: 500;
+  color: #333333;
+  line-height: 20px;
+  letter-spacing: 0.0025em;
+}
+
+.file-size {
+  font-size: 12px;
+  font-family: var(--font-family-base);
+  font-weight: 400;
+  color: #666666;
+  line-height: 16px;
+}
+
+.btn-remove-file {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-remove-file mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  color: #808080;
+}
+
+.btn-remove-file:hover {
+  background: #fef2f2;
+}
+
+.btn-remove-file:hover mat-icon {
+  color: #dc2626;
+}

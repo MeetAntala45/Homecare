@@ -1,0 +1,92 @@
+<div>
+  <div class="grid-header d-flex flex-wrap justify-content-between align-items-center">
+    <h5 class="h5 fw-bold text-dark-custom m-0">
+      {{ title }}
+    </h5>
+
+    <div class="d-flex gap-2">
+      <div class="view-toggle">
+        <div class="view-indicator" [ngStyle]="indicatorStyle"></div>
+      
+        <button class="view-btn"
+          #listBtn
+          (click)="setViewMode('list', listBtn)">
+          <i class="bi bi-list-ul primary-icon"></i>
+          <span>List</span>
+        </button>
+
+        <button class="view-btn"
+          #calendarBtn
+          (click)="setViewMode('calendar', calendarBtn)">
+          <i class="bi bi-calendar3 primary-icon"></i>
+          <span>Calendar</span>
+        </button>
+      </div>
+
+      @if (viewMode === 'list') {
+        @if(showFilter){
+        <button class="btn filter-btn button-text" (click)="filterClicked.emit()">
+          <i class="bi bi-funnel me-1"></i>
+          <span>Filter</span>
+        </button>
+        } 
+        
+        @if(showAdd){
+        <button class="btn add-btn button-text" (click)="addClicked.emit()">
+          <i class="bi bi-plus-lg me-1 text-white"></i>
+          <span>{{ addButtonLabel }}</span>
+        </button>
+        }
+      }
+    </div>
+
+    <div class="grid-container mt-4">
+      @if (viewMode === 'list') {
+        @if(!expandable){
+          @if(data.length > 0 || columns.length > 0 || isLoading){
+            <app-data-grid [columns]="columns" [data]="data" [isLoading]="internalLoading"
+              [skeletonRowCount]="skeletonRowCount" [showActions]="showActions" [sortBy]="sortBy" [sortOrder]="sortOrder"
+              [directActions]="directActions" (actionClicked)="onGridAction($event)" (rowClicked)="onRowClicked($event)"
+              (sortChanged)="onGridSort($event)" [activeStatus]="activeStatus" [showPendingButton]="showPending" [showCompletedButton]="true" (statusChanged)="onStatusChanged($event)" (filterClicked)="dataFilterClicked.emit()"
+              (expertDetailClicked)="expertDetailClicked.emit  ($event)" [showFilter]="showFilterInData" [highlightRowKey]="highlightRowKey" [highlightedRowId]="highlightedRowId"/>
+            } } @else {
+            <app-expandable-grid [columns]="columns" [data]="data" [isLoading]="internalLoading"
+              [skeletonRowCount]="skeletonRowCount" [sortBy]="sortBy" [sortOrder]="sortOrder"
+              [rowDetailTemplate]="rowDetailTemplate!" [expandedCustomerId]="expandedCustomerId"
+              [expandedPaymentMethod]="expandedPaymentMethod" [expandTriggered]="expandTriggered"
+              (sortChanged)="onGridSort($event)" (deleteClicked)="onRowDelete($event)" (rowExpanded)="onRowExpanded($event)"
+              (expertDetailClicked)="expertDetailClicked.emit($event)" [highlightRowKey]="highlightRowKey" />
+          }
+
+        @if(showPagination) {
+        <div class="pagination-bar ps-3 pe-3 pb-2 rounded-bottom-3">
+          <div class="pagination-size">
+            <span class="pagination-label">Rows per page:</span>
+            <select class="pagination-select" [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+              @for(opt of pageSizeOptions; track opt){
+              <option [value]="opt">{{ opt }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="pagination-controls">
+            <span class="pagination-label">
+              {{ rangeStart }}-{{ rangeEnd }} of {{ totalCount }}
+            </span>
+            <button class="page-btn" (click)="goToPrev()" [disabled]="isFirstPage || internalLoading">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="page-btn" (click)="goToNext()" [disabled]="isLastPage || internalLoading">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        }
+      }
+
+      @if (viewMode === 'calendar') {
+        <ng-content select="[calendarSlot]"></ng-content>
+      }
+    </div>
+  </div>
+</div>

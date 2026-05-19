@@ -1,0 +1,76 @@
+  <div class="mb-4">
+    <h4 class="fw-bold text-dark-custom">My Profile</h4>
+  </div>
+
+  <div class="bg-white rounded-3 profile-card">
+    <div class="profile-banner rounded-top-3">
+      <div class="avatar-wrapper" (mouseenter)="isHoveringPhoto = true" (mouseleave)="isHoveringPhoto = false"
+        (click)="onPhotoClick()">
+
+        @if(photoPreview) {
+          <img [src]="photoPreview" alt="Profile Photo" class="avatar-img" />
+        }
+        @if(!photoPreview) {
+          <div class="avatar-initials">
+            {{ getAvatarText() }}
+          </div>
+        }
+
+        <div class="avatar-overlay" [class.visible]="isHoveringPhoto">
+          <i class="bi bi-pencil-fill"></i>
+        </div>
+      </div>
+
+      <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" class="d-none"
+        (change)="onPhotoSelected($event)" />
+    </div>
+
+    <div class="text-center mt-5 mb-4">
+      <h5 class="text-dark-custom h6 pt-2 mb-1 fw-bold">{{ profile.name || '—' }}</h5>
+      <span class="text-light-custom body2 fw-medium">{{ profile.role || '—' }}</span>
+    </div>
+
+    <div class="container">
+      <div class="info-card mx-auto mb-3 p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-nowrap">
+          <h6 class="text-dark-custom fw-bold">Contact Information</h6>
+          <button class="btn btn-edit fs-14 fw-bold px-3 py-2 flex-shrink-0" (click)="openEditContact()">
+            <i class="bi bi-pencil me-1"></i> Edit
+          </button>
+        </div>
+
+        <div class="row d-flex flex-sm-row flex-column gap-sm-0 gap-3">
+
+          <div class="col-sm-3 col-12 d-flex flex-sm-column align-items-center align-items-sm-start gap-sm-2 gap-3">
+            <i class="bi bi-telephone info-icon"></i>
+            <span class="info-value fs-14 text-dark-custom fw-medium">{{ profile.mobileNumber || '—' }}</span>
+          </div>
+
+          <div class="col-sm-5 col-12 d-flex flex-sm-column align-items-center align-items-sm-start gap-sm-2 gap-3">
+            <i class="bi bi-envelope info-icon"></i>
+            <span class="info-value fs-14 text-dark-custom fw-medium">{{ (profile.email || '—') | lowercase }}</span>
+          </div>
+
+          <div class="col-sm-4 col-12 d-flex flex-sm-column align-items-center align-items-sm-start gap-sm-2 gap-3">
+            <i class="bi bi-geo-alt info-icon"></i>
+            <span class="info-value fs-14 text-dark-custom fw-medium ellipsis-text" [title]="profile.address">{{ profile.address || '—' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="info-card mx-auto p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-nowrap">
+          <h6 class="text-dark-custom fw-bold">Security</h6>
+          <button class="btn btn-change-pwd fs-14 fw-bold px-3 py-2" (click)="openChangePassword()">
+            Change Password
+          </button>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-lock info-icon"></i>
+          <span class="password-dots fw-bold">••••••••••</span>
+        </div>
+      </div>
+    </div>
+  </div>

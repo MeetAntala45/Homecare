@@ -1,0 +1,178 @@
+<nav class="navbar bg-white py-3 border-color customer-navbar">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <div class="d-flex align-items-center flex-wrap qgap-2">
+        <a class="navbar-brand m-0" routerLink="/">
+          <h3 class="fw-bold text-dark-custom m-0">
+            H<span class="text-primary-300">o</span>meCare
+          </h3>
+        </a>
+
+        @if(headerTitle){
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            class="border-0 bg-transparent text-primary-300 ps-sm-4 pe-1 d-flex align-items-center"
+            (click)="goBack()"
+          >
+            <mat-icon>west</mat-icon>
+          </button>
+
+          <span class="fw-bold text-dark-custom fs-6 fs-md-5 fs-lg-4">
+            Fill Out Below Details to Join Us
+          </span>
+        </div>
+        }
+      </div>
+      @if(isCheckoutHeader){
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <button
+          (click)="goBackFromCheckout()"
+          class="d-flex align-items-center text-primary-300 bg-transparent border-1 fw-bold rounded-5 px-3 py-2 gap-2"
+        >
+          <i class="bi bi-arrow-left back-icon fs-5"></i>Back
+        </button>
+      </div>
+      }
+
+      <div class="d-none d-lg-flex align-items-center">
+        <ul class="navbar-nav flex-row align-items-center gap-4">
+          @if(showMenu){ @for(item of menuItems; track item.route){
+          <li class="nav-item">
+            <a
+              class="nav-link text-light-custom fw-semibold"
+              [routerLink]="item.route"
+              (click)="closeDropdown()"
+            >
+              {{ item.label }}
+            </a>
+          </li>
+          } } @if(showLogin && !isLoggedIn){
+          <li class="nav-item">
+            <button
+              routerLink="/login"
+              class="border-0 bg-primary-300 text-white rounded-pill px-4 py-2 fw-semibold"
+            >
+              Sign In
+            </button>
+          </li>
+          } @else if(showProfile && isLoggedIn){
+          <li class="nav-item dropdown position-relative" #dropdownRef>
+            <button
+              type="button"
+              class="nav-link border-0 bg-transparent p-0"
+              (click)="toggleDropdown()"
+            >
+              <i class="bi bi-person-circle fs-4"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" [class.show]="isDropdownOpen">
+              <li>
+                <a
+                  class="dropdown-item text-dark-custom fw-semibold"
+                  routerLink="/customer/profile"
+                  (click)="closeDropdown()"
+                >
+                  My Profile
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item text-dark-custom fw-semibold py-2"
+                  routerLink="/customer/my-bookings"
+                  (click)="closeDropdown()"
+                >
+                  My Bookings
+                </a>
+              </li>
+              <li>
+                <button class="dropdown-item text-dark-custom fw-semibold" (click)="logout()">
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </li>
+          }
+        </ul>
+      </div>
+
+      @if (isMobileMenu) {
+      <button type="button" class="mobile-menu-btn d-lg-none" (click)="toggleMobileMenu()">
+        <mat-icon>menu</mat-icon></button
+      >}
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu-wrapper d-lg-none" [class.show]="isMobileMenuOpen">
+  <div class="mobile-left-sheet" [class.open]="isMobileMenuOpen">
+    <div class="mobile-left-sheet-header">
+      <a
+        class="text-decoration-none text-dark-custom"
+        routerLink="customer/home"
+        (click)="closeMobileMenu()"
+        ><h5 class="fw-bold text-dark-custom m-0 fs-3">
+          H<span class="text-primary-300">o</span>meCare
+        </h5></a
+      >
+
+      <button type="button" class="mobile-close-btn" (click)="closeMobileMenu()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="mobile-left-sheet-links">
+      @if(showMenu){ @for(item of menuItems; track item.route; let i = $index){
+      <a
+        class="mobile-left-sheet-link stagger-item"
+        [style.animation-delay.ms]="100 + i * 90"
+        [routerLink]="item.route"
+        (click)="closeMobileMenu()"
+      >
+        {{ item.label }}
+      </a>
+      } } @if(showLogin && !isLoggedIn){
+      <button
+        routerLink="/login"
+        class="mobile-left-sheet-link mobile-signin-btn stagger-item bg-transparent"
+        [style.animation-delay.ms]="400"
+        (click)="closeMobileMenu()"
+      >
+        Sign In
+      </button>
+      } @if(showProfile && isLoggedIn){
+      <a
+        class="mobile-left-sheet-link stagger-item"
+        [style.animation-delay.ms]="400"
+        routerLink="profile"
+        (click)="closeMobileMenu()"
+      >
+        My Profile
+      </a>
+
+      <a
+        class="mobile-left-sheet-link stagger-item"
+        [style.animation-delay.ms]="490"
+        routerLink="/customer/my-bookings"
+        (click)="closeMobileMenu()"
+      >
+        My Bookings
+      </a>
+
+      <button
+        class="mobile-left-sheet-link stagger-item bg-transparent text-danger"
+        [style.animation-delay.ms]="580"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+      }
+    </div>
+  </div>
+
+  <div
+    class="mobile-menu-overlay"
+    [class.show]="isMobileMenuOpen"
+    (click)="closeMobileMenu()"
+  ></div>
+</div>

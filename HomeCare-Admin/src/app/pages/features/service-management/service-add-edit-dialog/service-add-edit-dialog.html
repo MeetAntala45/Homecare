@@ -1,0 +1,251 @@
+<div class="d-flex justify-content-between align-items-center px-3 px-sm-4 py-3" mat-dialog-title>
+  <span class="fw-semibold p-2 p-sm-3 fs-6 text-dark">
+    {{ isEditMode ? 'Edit' : 'Add' }} {{ data.serviceTypeName }} Service
+  </span>
+  <button type="button" class="close-btn me-1 me-sm-3" (click)="cancel()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="px-3 px-sm-4 dialog-body">
+  <div class="row mb-1">
+    <div class="col-12 col-sm-6">
+      <mat-form-field
+        appearance="outline"
+        class="w-100 field"
+        [class.field-error]="isFieldInvalid('name')"
+      >
+        <mat-label>Name*</mat-label>
+        <input
+          matInput
+          [(ngModel)]="form.name"
+          [errorStateMatcher]="matchers['name']"
+          (ngModelChange)="onFieldChange('name')"
+          autocomplete="off"
+        />
+      </mat-form-field>
+      @if (isFieldInvalid('name')) {
+      <div class="invalid-feedback-text">{{ errorMsg('name') }}</div>
+      }
+    </div>
+    <div class="col-12 col-sm-6">
+      <mat-form-field
+        appearance="outline"
+        class="w-100 field"
+        [class.field-error]="isFieldInvalid('subCategoryId')"
+      >
+        <mat-label>Sub Category*</mat-label>
+        <mat-select
+          [(ngModel)]="form.subCategoryId"
+          [errorStateMatcher]="matchers['subCategoryId']"
+          (ngModelChange)="onFieldChange('subCategoryId')"
+        >
+          @for (sub of data.subCategories; track sub.id) {
+          <mat-option [value]="sub.id">{{ sub.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (isFieldInvalid('subCategoryId')) {
+      <div class="invalid-feedback-text">{{ errorMsg('subCategoryId') }}</div>
+      }
+    </div>
+  </div>
+
+  <div class="row g-3 mb-1">
+    <div class="col-12 col-sm-4">
+      <mat-form-field
+        appearance="outline"
+        class="w-100 field"
+        [class.field-error]="isFieldInvalid('durationMin')"
+      >
+        <mat-label>Duration (min)*</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="form.durationMin"
+          [errorStateMatcher]="matchers['durationMin']"
+          (ngModelChange)="onFieldChange('durationMin')"
+          min="1"
+        />
+        <mat-icon matSuffix class="suffix-icon">schedule</mat-icon>
+      </mat-form-field>
+      @if (isFieldInvalid('durationMin')) {
+      <div class="invalid-feedback-text">{{ errorMsg('durationMin') }}</div>
+      }
+    </div>
+    <div class="col-12 col-sm-4">
+      <mat-form-field
+        appearance="outline"
+        class="w-100 field"
+        [class.field-error]="isFieldInvalid('price')"
+      >
+        <mat-label>Price*</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="form.price"
+          [errorStateMatcher]="matchers['price']"
+          (ngModelChange)="onFieldChange('price')"
+          min="0"
+        />
+        <span matTextSuffix class="suffix-text fw-semibold">$</span>
+      </mat-form-field>
+      @if (isFieldInvalid('price')) {
+      <div class="invalid-feedback-text">{{ errorMsg('price') }}</div>
+      }
+    </div>
+    <div class="col-12 col-sm-4">
+      <mat-form-field
+        appearance="outline"
+        class="w-100 field"
+        [class.field-error]="isFieldInvalid('commissionPct')"
+      >
+        <mat-label>Commission*</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="form.commissionPct"
+          [errorStateMatcher]="matchers['commissionPct']"
+          (ngModelChange)="onFieldChange('commissionPct')"
+          min="0"
+          max="100"
+        />
+        <span matTextSuffix class="suffix-text fw-semibold">%</span>
+      </mat-form-field>
+      @if (isFieldInvalid('commissionPct')) {
+      <div class="invalid-feedback-text">{{ errorMsg('commissionPct') }}</div>
+      }
+    </div>
+
+    <mat-form-field
+      appearance="outline"
+      class="w-100 field m-0"
+      [class.field-error]="isFieldInvalid('description')"
+    >
+      <mat-label>Description*</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="form.description"
+        [errorStateMatcher]="matchers['description']"
+        (ngModelChange)="onFieldChange('description')"
+        maxlength="300"
+        autocomplete="off"
+      ></textarea>
+      <mat-hint align="end">
+        {{ form.description.length || 0 }}/300
+      </mat-hint>
+    </mat-form-field>
+    @if (isFieldInvalid('description')) {
+      <div class="invalid-feedback-text ms-2">{{ errorMsg('description') }}</div>
+      }
+  </div>
+
+  <div class="border-top pt-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="fw-semibold small text-dark">Service Images</span>
+      <button type="button" class="btn-circle-add" (click)="triggerImageUpload()">
+        <mat-icon class="small-icon">add</mat-icon>
+      </button>
+    </div>
+    <input
+      #imageInput
+      type="file"
+      accept="image/*"
+      multiple
+      hidden
+      (change)="onImageSelected($event)"
+    />
+    @if (uploadedImages.length > 0) {
+    <div class="d-flex flex-wrap gap-2">
+      @for (img of uploadedImages; track $index) {
+      <div class="img-thumb">
+        <img [src]="img.preview" alt="service image" />
+        <button type="button" class="img-delete-btn" (click)="removeImage($index)">
+          <mat-icon class="small-icon">delete</mat-icon>
+        </button>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center border-top py-3">
+    <span class="fw-semibold small text-dark">Availability</span>
+    <mat-slide-toggle color="primary" [(ngModel)]="form.isAvailable"></mat-slide-toggle>
+  </div>
+
+  <div class="border-top pt-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="fw-semibold small text-dark">{{ data.serviceTypeName }} Includes</span>
+      <mat-slide-toggle color="primary" [(ngModel)]="showIncludes"></mat-slide-toggle>
+    </div>
+    @if (showIncludes) {
+    <mat-form-field appearance="outline" class="w-100 field">
+      <mat-label>Inclusion Points</mat-label>
+      <input
+        matInput
+        [(ngModel)]="includeInput"
+        (keydown)="onIncludeKeydown($event)"
+        (blur)="addIncludeTag()"
+        autocomplete="off"
+      />
+    </mat-form-field>
+    @if (includeTags.length > 0) {
+    <div class="d-flex flex-wrap gap-2">
+      @for (tag of includeTags; track $index) {
+      <span class="tag-chip">
+        {{ tag }}
+        <button type="button" class="tag-remove" (click)="removeIncludeTag($index)">
+          <mat-icon class="small-icon">close</mat-icon>
+        </button>
+      </span>
+      }
+    </div>
+    } }
+  </div>
+
+  <div class="border-top pt-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="fw-semibold small text-dark">{{ data.serviceTypeName }} Excludes</span>
+      <mat-slide-toggle color="primary" [(ngModel)]="showExcludes"></mat-slide-toggle>
+    </div>
+    @if (showExcludes) {
+    <mat-form-field appearance="outline" class="w-100 field">
+      <mat-label>Exclusion Points</mat-label>
+      <input
+        matInput
+        [(ngModel)]="excludeInput"
+        (keydown)="onExcludeKeydown($event)"
+        (blur)="addExcludeTag()"
+        autocomplete="off"
+      />
+    </mat-form-field>
+    @if (excludeTags.length > 0) {
+    <div class="d-flex flex-wrap gap-2">
+      @for (tag of excludeTags; track $index) {
+      <span class="tag-chip">
+        {{ tag }}
+        <button type="button" class="tag-remove" (click)="removeExcludeTag($index)">
+          <mat-icon class="small-icon">close</mat-icon>
+        </button>
+      </span>
+      }
+    </div>
+    } }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="px-3 px-sm-4 py-3 border-top gap-2 flex-wrap">
+  <button class="btn filter-btn rounded-3 py-2 px-4" (click)="cancel()" [disabled]="saving">
+    Cancel
+  </button>
+  <button
+    class="btn add-btn rounded-3 px-4 py-2 d-inline-flex align-items-center gap-2"
+    (click)="save()"
+    [disabled]="saving"
+  >
+    @if (saving) {
+    <span class="spinner-border spinner-border-sm" role="status"></span>
+    } Save
+  </button>
+</mat-dialog-actions>

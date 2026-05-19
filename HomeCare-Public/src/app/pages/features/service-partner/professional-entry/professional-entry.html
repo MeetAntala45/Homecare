@@ -1,0 +1,52 @@
+@for (prof of professionalFormArray.controls; track prof; let i = $index) {
+  <div class="entry-row">
+    <div class="row g-2 fields-wrap">
+      <div class="col-12 col-md-3">
+        <app-input-fields
+          [config]="professionalFields[0]"
+          [control]="getProfessionalGroup(i).get('companyName') | asFormControlpipe" />
+      </div>
+      <div class="col-12 col-md-3">
+        <app-input-fields
+          [config]="professionalFields[1]"
+          [control]="getProfessionalGroup(i).get('role') | asFormControlpipe" />
+      </div>
+ 
+      <div class="col-12 col-md-3">
+        <app-input-fields
+          [config]="professionalFields[2]"
+          [class.date-field-error]="hasDateRangeError(i) && getProfessionalGroup(i).get('fromDate')?.touched"
+          [control]="getProfessionalGroup(i).get('fromDate') | asFormControlpipe" />
+        @if (hasDateRangeError(i) && getProfessionalGroup(i).get('fromDate')?.touched) {
+          <span class="field-error">From date must be earlier than To date.</span>
+        }
+        @if (hasDateEqualError(i) && getProfessionalGroup(i).get('fromDate')?.touched) {
+          <span class="field-error">From and To date cannot be the same.</span>
+        }
+      </div>
+ 
+      <div class="col-12 col-md-3">
+        <app-input-fields
+          [config]="professionalFields[3]"
+          [class.date-field-error]="hasDateRangeError(i) && getProfessionalGroup(i).get('toDate')?.touched"
+          [control]="getProfessionalGroup(i).get('toDate') | asFormControlpipe" />
+        @if (hasDateRangeError(i) && getProfessionalGroup(i).get('toDate')?.touched) {
+          <span class="field-error">To date must be later than From date.</span>
+        }
+        @if (hasDateEqualError(i) && getProfessionalGroup(i).get('toDate')?.touched) {
+          <span class="field-error">From and To date cannot be the same.</span>
+        }
+      </div>
+ 
+    </div>
+ 
+    @if (professionalFormArray.length > 1) {
+      <button class="btn-delete" type="button"
+        (click)="professionalFormArray.removeAt(i)"
+        matTooltip="Remove entry">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    }
+ 
+  </div>
+}

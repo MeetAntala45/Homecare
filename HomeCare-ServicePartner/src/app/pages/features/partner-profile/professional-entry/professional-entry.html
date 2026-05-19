@@ -1,0 +1,59 @@
+@for (prof of professionalFormArray.controls; track prof; let i = $index) {
+
+  <div class="entry-row">
+
+    <div class="entry-fields">
+
+      <div class="field-item field-wide">
+        <app-input-fields
+          [config]="professionalFields[0]"
+          [control]="getProfessionalGroup(i).get('companyName') | asFormControlpipe">
+        </app-input-fields>
+      </div>
+
+      <div class="field-item field-wide">
+        <app-input-fields
+          [config]="professionalFields[1]"
+          [control]="getProfessionalGroup(i).get('role') | asFormControlpipe">
+        </app-input-fields>
+      </div>
+
+      <div class="field-item field-date">
+        <app-input-fields
+          [config]="professionalFields[2]"
+          [class.field-error-outline]="hasDateRangeError(i) && getProfessionalGroup(i).get('fromDate')?.touched"
+          [control]="getProfessionalGroup(i).get('fromDate') | asFormControlpipe">
+        </app-input-fields>
+        @if ((hasDateRangeError(i) || hasDateEqualError(i)) && getProfessionalGroup(i).get('fromDate')?.touched) {
+          <span class="inline-error">
+            {{ hasDateEqualError(i) ? 'Dates cannot be the same.' : 'From must be earlier.' }}
+          </span>
+        }
+      </div>
+
+      <div class="field-item field-date">
+        <app-input-fields
+          [config]="professionalFields[3]"
+          [class.field-error-outline]="hasDateRangeError(i) && getProfessionalGroup(i).get('toDate')?.touched"
+          [control]="getProfessionalGroup(i).get('toDate') | asFormControlpipe">
+        </app-input-fields>
+        @if ((hasDateRangeError(i) || hasDateEqualError(i)) && getProfessionalGroup(i).get('toDate')?.touched) {
+          <span class="inline-error">
+            {{ hasDateEqualError(i) ? 'Dates cannot be the same.' : 'To must be later.' }}
+          </span>
+        }
+      </div>
+
+    </div>
+
+    @if (professionalFormArray.length > 1) {
+      <button class="btn-delete" type="button"
+              (click)="professionalFormArray.removeAt(i)"
+              matTooltip="Remove">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    }
+
+  </div>
+
+}

@@ -1,0 +1,56 @@
+.sidebar-menu {
+  height: 100%;
+  width: 260px;
+}
+
+.menu-item,
+.submenu-item {
+  font-size: 14px;
+  color: var(--text-light);
+  transition: all 0.2s ease;
+  cursor: pointer
+}
+
+.menu-item i,
+.submenu-item i {
+  color: var(--text-light);
+  transition: 0.2s ease;
+}
+
+.menu-item.active{
+  background-color: #F2F5F9;
+  color: #4f46e5;
+}
+
+.submenu-item.active {
+  color: #4f46e5;
+}
+
+.menu-item.active i,
+.submenu-item.active i {
+  color: #4f46e5;
+}
+
+.ellipsis-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13.5px;
+}
+
+
+.sp-leave-badge {
+  background: #dc3545;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}

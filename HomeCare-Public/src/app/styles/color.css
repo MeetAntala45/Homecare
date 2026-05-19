@@ -1,0 +1,46 @@
+:root {
+
+    /* =========================
+       PRIMARY BASE
+    ========================== */
+    --color-primary: #2555FF;
+  
+    /* =========================
+       PRIMARY DARK SHADES
+    ========================== */
+    --color-primary-900: #070616;
+    --color-primary-800: #0e0d2d;
+    --color-primary-700: #151343;
+    --color-primary-600: #1c1a5a;
+    --color-primary-500: #232071;
+    --color-primary-400: #292687;
+    --color-primary-300: #302d9e;
+    --color-primary-200: #3733b4;
+    --color-primary-100: #3e3acb;
+  
+    /* =========================
+       PRIMARY LIGHT TINTS
+    ========================== */
+    --color-primary-50:  #ececfc;
+    --color-primary-100-light: #dad9f9;
+    --color-primary-200-light: #c7c6f6;
+    --color-primary-300-light: #b5b3f3;
+    --color-primary-400-light: #a2a0f0;
+    --color-primary-500-light: #8f8ced;
+    --color-primary-600-light: #7d79ea;
+    --color-primary-700-light: #6a66e7;
+    --color-primary-800-light: #5853e4;
+    --color-primary-900-light: #4540e1;
+  
+    /* =========================
+       NEUTRAL COLORS
+    ========================== */
+    --color-text-primary: #333333;
+    --color-text-secondary: #666666;
+  
+    --color-border-default: #DDDDDD;
+    --color-border-light: #CCCCCC;
+  
+    --color-background: #FFFFFF;
+  
+  }

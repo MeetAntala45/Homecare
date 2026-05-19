@@ -1,0 +1,136 @@
+<div class="mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 px-1">
+    <h5 class="fw-semibold fs-6 text-dark m-0">{{ categoryName }} Services</h5>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm filter-btn button-text" (click)="openFilter()">
+        <i class="bi bi-funnel me-1"></i>Filter
+      </button>
+      <button class="btn btn-sm add-btn button-text" (click)="openAdd()">
+        <i class="bi bi-plus-lg me-1"></i>Add
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive rounded-3">
+    <table class="table  align-middle mb-0 bg-white" title="">
+      <thead>
+        <tr class="border-bottom border-top">
+          <th class="text-secondary fw-semibold small py-3  px-3 text-nowrap sortable-col" (click)="onSort('id')">
+            ID <i class="bi {{ getSortIcon('id') }} ms-1 sort-icon" [class.sort-active]="sortBy === 'id'"></i>
+          </th>
+          <th class="text-secondary fw-semibold small py-3 px-3 col-3 sortable-col" (click)="onSort('name')">
+            Name <i class="bi {{ getSortIcon('name') }} ms-1 sort-icon" [class.sort-active]="sortBy === 'name'"></i>
+          </th>
+          <th class="text-secondary fw-semibold small py-3 px-3 col-2 sortable-col" (click)="onSort('subCategoryName')">
+            Sub Category <i class="bi {{ getSortIcon('subCategoryName') }} ms-1 sort-icon"
+              [class.sort-active]="sortBy === 'subCategoryName'"></i>
+          </th>
+          <th class="text-secondary fw-semibold small py-3 px-3 text-nowrap sortable-col" (click)="onSort('price')">
+            Price <i class="bi {{ getSortIcon('price') }} ms-1 sort-icon" [class.sort-active]="sortBy === 'price'"></i>
+          </th>
+          <th class="text-secondary fw-semibold small py-3 px-3 text-nowrap sortable-col"
+            (click)="onSort('commissionPct')">
+            Commission <i class="bi {{ getSortIcon('commissionPct') }} ms-1 sort-icon"
+              [class.sort-active]="sortBy === 'commissionPct'"></i>
+          </th>
+          <th class="text-secondary fw-semibold small py-3 px-3">Availability</th>
+          <th class="text-secondary fw-semibold small py-3 px-3 text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!loadingServices && services.length === 0) {
+        <tr>
+          <td colspan="7" class="text-center text-secondary py-5 small">No services found.</td>
+        </tr>
+        }
+        @for (row of pagedServices; track row.id) {
+        @if(loadingServices){
+        <tr class="border-bottom">
+
+          <td class="py-2 ps-3">
+            <div class="skeleton skeleton-id"></div>
+          </td>
+
+          <td class="py-2 px-3">
+            <div class="skeleton skeleton-text"></div>
+          </td>
+
+          <td class="py-2 px-3">
+            <div class="skeleton skeleton-text short"></div>
+          </td>
+
+          <td class="py-2 px-3">
+            <div class="skeleton skeleton-small"></div>
+          </td>
+
+          <td class="py-2 px-3">
+            <div class="skeleton skeleton-small"></div>
+          </td>
+
+          <td class="py-2 px-3">
+            <div class="skeleton skeleton-toggle"></div>
+          </td>
+
+          <td class="py-2 px-3 text-end">
+            <div class="skeleton skeleton-action ms-auto"></div>
+          </td>
+
+        </tr>
+        }@else {
+
+        <tr class="border-bottom table-row-hover cursor-pointer" (click)="onRowClick(row)">
+          <td class="fw-semibold small py-1 ps-3 text-nowrap text-dark">
+            {{ row.id | idFormat }}
+          </td>
+          <td class="fw-semibold small py-1 px-3 text-dark" style="max-width: 150px;">
+            <span class="d-block text-truncate" [truncateTooltip]="row.name">{{ row.name }}</span>
+          </td>
+          <td class="fw-semibold small py-1 px-3 text-dark" style="max-width: 120px;">
+            <span class="d-block text-truncate" [truncateTooltip]="row.subCategoryName">{{ row.subCategoryName }}</span>
+          </td>
+          <td class="fw-semibold small py-1 px-3 text-nowrap text-dark">
+            {{ row.priceFormatted }}
+          </td>
+          <td class="fw-semibold small py-1 px-3 text-nowrap text-dark">
+            {{ row.commissionFormatted }}
+          </td>
+          <td class="py-1 px-3" (click)="$event.stopPropagation()">
+            <mat-slide-toggle color="primary" [checked]="row.isAvailable"
+              (change)="onAvailability(row, $event)"></mat-slide-toggle>
+          </td>
+          <td class="py-1 px-3 text-end" (click)="$event.stopPropagation()">
+            <app-action-dropdown [actions]="rowActions"
+              (actionClicked)="onRowAction($event, row)"></app-action-dropdown>
+          </td>
+        </tr>
+        }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (totalCount > 0 && !loadingServices) {
+  <div class="d-flex justify-content-end align-items-center gap-3 mt-3 flex-wrap">
+    <div class="d-flex align-items-center gap-2">
+      <span class="text-secondary small">Rows per page:</span>
+      <select class="border bg-transparent fw-semibold small text-dark" [ngModel]="pageSize"
+        (ngModelChange)="onPageSizeChange($event)">
+        @for (opt of pageSizeOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <span class="text-secondary small">{{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }}</span>
+      <button class="btn btn-sm border-0 bg-transparent d-flex align-items-center justify-content-center"
+        (click)="goToPrev()" [disabled]="isFirstPage">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button class="btn btn-sm border-0 bg-transparent d-flex align-items-center justify-content-center"
+        (click)="goToNext()" [disabled]="isLastPage">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,123 @@
+  
+@if (type === 'text') {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ label }}</mat-label>
+      @if (prefixIcon) { <mat-icon matPrefix class="field-icon">{{ prefixIcon }}</mat-icon> }
+      @if (prefixBsIcon) { <i matPrefix class="bi bi-{{ prefixBsIcon }} field-icon"></i> }
+      <input matInput [formControl]="control" [placeholder]="placeholder" />
+      @if (suffixIcon) { <mat-icon matSuffix class="field-icon">{{ suffixIcon }}</mat-icon> }
+      @if (suffixBsIcon) { <i matSuffix class="bi bi-{{ suffixBsIcon }} field-icon"></i> }
+      @if (suffixText) { <span matSuffix class="field-suffix-text">{{ suffixText }}</span> }
+      @if (control.invalid && control.touched) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+    }
+    
+    @if (type === 'email') {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ label }}</mat-label>
+      @if (prefixIcon) { <mat-icon matPrefix class="field-icon">{{ prefixIcon }}</mat-icon> }
+      @if (prefixBsIcon) { <i matPrefix class="bi bi-{{ prefixBsIcon }} field-icon"></i> }
+      <input matInput type="email" [formControl]="control" [placeholder]="placeholder" />
+      @if (suffixIcon) { <mat-icon matSuffix class="field-icon">{{ suffixIcon }}</mat-icon> }
+      @if (suffixBsIcon) { <i matSuffix class="bi bi-{{ suffixBsIcon }} field-icon"></i> }
+      @if (control.invalid && control.touched) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+    }
+    
+    @if (type === 'tel')
+    {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ label }}</mat-label>
+      @if (prefixIcon) { <mat-icon matPrefix class="field-icon">{{ prefixIcon }}</mat-icon> }
+      @if (prefixBsIcon) { <i matPrefix class="bi bi-{{ prefixBsIcon }} field-icon"></i> }
+      <input matInput type="tel" [formControl]="control" [placeholder]="placeholder" maxlength="15" />
+      @if (suffixIcon) { <mat-icon matSuffix class="field-icon">{{ suffixIcon }}</mat-icon> }
+      @if (suffixBsIcon) { <i matSuffix class="bi bi-{{ suffixBsIcon }} field-icon"></i> }
+      @if (control.invalid && control.touched) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+    }
+    
+    @if (type === 'number') {
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ label }}</mat-label>
+      @if (prefixIcon) { <mat-icon matPrefix class="field-icon">{{ prefixIcon }}</mat-icon> }
+      @if (prefixBsIcon) { <i matPrefix class="bi bi-{{ prefixBsIcon }} field-icon"></i> }
+      <input matInput type="number" [formControl]="control" [placeholder]="placeholder" />
+      @if (suffixIcon) { <mat-icon matSuffix class="field-icon">{{ suffixIcon }}</mat-icon> }
+      @if (suffixBsIcon) { <i matSuffix class="bi bi-{{ suffixBsIcon }} field-icon"></i> }
+      @if (suffixText) { <span matSuffix class="field-suffix-text">{{ suffixText }}</span> }
+      @if (control.invalid && control.touched) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+    }
+    
+    @if (type === 'date') {
+    <mat-form-field appearance="outline" class="w-100">
+    
+      <mat-label>{{ label }}</mat-label>
+    
+      <input matInput [matDatepicker]="picker" panelClass="custom-datepicker-panel" [formControl]="control" [max]="maxDate"
+        [min]="minDate" placeholder="MM/DD/YYYY" (input)="onDateInput($event)" (keypress)="onDateKeyPress($event)"
+        (blur)="onDateBlur($event)" />
+    
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon>
+      </mat-datepicker-toggle>
+    
+      <mat-datepicker #picker></mat-datepicker>
+      @if (control.invalid && (control.touched || control.dirty) && !dateError) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    
+      @if (dateError) {
+      <mat-error>{{ dateError }}</mat-error>
+      }
+    
+    </mat-form-field>
+    }
+    
+    @if (type === 'select') {
+    <mat-form-field appearance="outline" class="w-100 custom-select">
+    
+      <mat-label>{{ label }}</mat-label>
+    
+      <mat-select #selectRef="matSelect" [formControl]="control" [placeholder]="placeholder"
+        panelClass="custom-dropdown-panel" (selectionChange)="onSelectChange($event.value)">
+    
+        @for (option of options; track option.value) {
+        <mat-option [value]="option.value">
+          {{ option.label }}
+        </mat-option>
+        }
+    
+      </mat-select>
+    
+      <mat-icon matSuffix class="custom-dropdown-icon" [class.rotate]="selectRef.panelOpen">
+        keyboard_arrow_down
+      </mat-icon>
+    
+      @if (control.invalid && (control.touched || control.dirty)) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    
+    </mat-form-field>
+    }
+    
+    @if (type === 'textarea') {
+    <mat-form-field appearance="outline" class="w-100 textarea-field">
+      <mat-label>{{ label }}</mat-label>
+      @if (prefixIcon) { <mat-icon matPrefix class="field-icon">{{ prefixIcon }}</mat-icon> }
+      @if (prefixBsIcon) { <i matPrefix class="bi bi-{{ prefixBsIcon }} field-icon"></i> }
+      <textarea matInput [formControl]="control" [placeholder]="placeholder" [rows]="rows"></textarea>
+      @if (control.invalid && control.touched) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+    }

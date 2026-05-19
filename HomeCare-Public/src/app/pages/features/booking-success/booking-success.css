@@ -1,0 +1,32 @@
+.custom-border {
+  border: 2px solid var(--border-dark);
+}
+
+.primary-icon {
+  color: var(--primary-300);
+}
+
+.tel-icon {
+  height: 36px;
+  width: 36px;
+  cursor: copy;
+}
+
+.custom-divider {
+  border-bottom: 1px solid #c0cbdb;
+  opacity: 0.5;
+}
+
+.divider {
+  border-bottom: 1px dashed #c0cbdb;
+  margin: 20px 0px;
+  opacity: 0.7;
+}
+
+.booking-button {
+  border: var(--primary-300);
+}
+
+.telephone-icon {
+  color: var(--primary-300);
+}

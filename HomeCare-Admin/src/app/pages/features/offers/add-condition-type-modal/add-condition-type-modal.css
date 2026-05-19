@@ -1,0 +1,21 @@
+.dialog-body {
+    padding: 4px 2px 0;
+    overflow-x: hidden;
+  }
+  
+  .row.gx-3 {
+    --bs-gutter-x: 12px;
+  }
+  
+  .row.gy-3 {
+    --bs-gutter-y: 14px;
+  }
+  
+  mat-dialog-content {
+    overflow-x: hidden !important;
+  }
+  
+  app-offer-input-fields {
+    width: 100%;
+    display: block;
+  }

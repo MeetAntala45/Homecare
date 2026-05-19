@@ -1,0 +1,290 @@
+<div class="container booking-layout">
+  <div
+    class="booking-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4"
+  >
+    <h4 class="fw-bold mb-0">My Bookings</h4>
+
+    <div class="booking-tabs d-flex flex-wrap gap-2">
+      <button
+        type="button"
+        class="tab-btn rounded-pill fw-semibold"
+        [class.active]="activeTab === 'pending'"
+        (click)="setTab('pending')"
+      >
+        Upcoming
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn rounded-pill fw-semibold"
+        [class.active]="activeTab === 'completed'"
+        (click)="setTab('completed')"
+      >
+        Completed
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn rounded-pill fw-semibold"
+        [class.active]="activeTab === 'cancelled'"
+        (click)="setTab('cancelled')"
+      >
+        Cancelled
+      </button>
+    </div>
+  </div>
+
+  <div class="booking-list" [class.scroll-enabled]="shouldScroll">
+    @if (isLoading) { @for (item of [1,2,3,4]; track item; let last = $last) {
+    <div class="position-relative" [class.mb-5]="!last">
+      <div
+        class="date-badge position-absolute top-0 start-0 rounded-3 skeleton-box skeleton-date"
+      ></div>
+
+      <div
+        class="bg-white cart-border rounded-3 cart-shadow px-4 py-3 position-relative"
+        style="margin-left: 60px"
+      >
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-3">
+          <div class="flex-grow-1 min-w-0 w-100">
+            <div
+              class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 gap-md-3"
+            >
+              <div class="min-w-0 w-100">
+                <div class="skeleton-line skeleton-title mb-2"></div>
+                <div class="skeleton-line skeleton-small"></div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2 flex-shrink-0 mb-2 action-wrap">
+                <div class="skeleton-pill"></div>
+                <div class="skeleton-btn"></div>
+                <div class="skeleton-btn"></div>
+              </div>
+            </div>
+
+            <div
+              class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 gap-md-3 mt-3"
+            >
+              <div class="flex-grow-1 w-100">
+                <div class="skeleton-line skeleton-address mb-2"></div>
+                <div class="skeleton-line skeleton-address short"></div>
+              </div>
+
+              <div class="skeleton-line skeleton-price flex-shrink-0"></div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-3 dashed-line" />
+
+        <div class="skeleton-line skeleton-partner-label mb-3"></div>
+
+        <div
+          class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-3"
+        >
+          <div class="d-flex align-items-center gap-3 mt-1">
+            <div class="partner-img-box rounded-circle skeleton-box"></div>
+
+            <div>
+              <div class="skeleton-line skeleton-partner-name"></div>
+            </div>
+          </div>
+
+          <div class="skeleton-call rounded-circle"></div>
+        </div>
+      </div>
+    </div>
+    } } @else if (bookings.length) { @for (booking of bookings; track booking.serviceName +
+    booking.date; let last = $last; let i = $index) {
+    <div class="position-relative" [class.mb-5]="!last">
+      <div
+        class="date-badge position-absolute top-0 start-0 text-white rounded-3 d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="fw-bold fs-5 lh-1">{{ booking.date }}</div>
+        <div class="fs-14">{{ booking.month }}</div>
+      </div>
+
+      <div
+        class="bg-white cart-border rounded-3 cart-shadow px-4 py-3 position-relative"
+        style="margin-left: 60px"
+      >
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-3">
+          <div class="flex-grow-1 min-w-0">
+            <div
+              class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 gap-md-3"
+            >
+              <div class="min-w-0">
+                <h6 class="mb-1 fw-bold text-primary-300">
+                  {{ booking.serviceName }}
+                </h6>
+                <div class="small fw-semibold">{{ booking.duration }} Min</div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2 flex-shrink-0 mb-2 action-wrap">
+                <span
+                  class="badge text-white px-3 py-2 rounded-pill"
+                  [ngClass]="{
+                    'pending-badge': booking.bookingStatus === 'Pending',
+                    'completed-badge': booking.bookingStatus === 'Completed',
+                    'cancelled-badge': booking.bookingStatus === 'Cancelled',
+                  }"
+                >
+                  {{ booking.bookingStatus }}
+                </span>
+                @if(activeTab === 'pending' || activeTab === 'completed'){
+                <button
+                  class="border border-2 px-3 py-1 bg-transparent rounded-pill text-primary-300 fw-semibold"
+                  (click)="downloadReceipt(booking.id)"
+                  [disabled]="downloadingIds.has(booking.id)"
+                >
+                  @if (downloadingIds.has(booking.id)) { Downloading... } @else {
+                  <i class="bi bi-download receipt-icon"></i>
+                  <span class="receipt-text ms-2">Receipt</span>
+                  }
+                </button>
+
+                @if (activeTab === 'pending') {
+                  @if (isTrackingAvailable(booking)) {
+                    <button
+                      class="border border-2 px-3 py-1 bg-transparent rounded-pill fw-semibold text-primary-300"
+                      (click)="openTracking(booking)">
+                      <i class="bi bi-geo-alt-fill receipt-icon"></i>
+                      <span class="receipt-text ms-2 ">Track</span>
+                    </button>
+                  } @else {
+                    <span
+                      class="track-soon-badge px-3 py-1 bg-transparent rounded-pill fw-semibold text-primary-300"
+                      [matTooltip]="getTrackingAvailableMessage(booking)"
+                      matTooltipPosition="above">
+                      <i class="bi bi-geo-alt"></i>
+                      <span class="receipt-text ms-2">Track</span>
+                    </span>
+                  }
+                }
+                @if (activeTab === 'completed' && !reviewedBookingIds.has(booking.id)) {
+                  <button
+                    class="border border-2 px-3 py-1 bg-transparent rounded-pill fw-semibold rate-btn"
+                    (click)="openReviewModal(booking.id, booking.serviceName)"
+                  >
+                    <i class="bi bi-star star-icon"></i>
+                    <span class="receipt-text ms-2">Rate</span>
+                  </button>
+                }
+                
+                @if (activeTab === 'completed' && reviewedBookingIds.has(booking.id)) {
+                  <div class="rated-badge d-flex align-items-center gap-1 px-2">
+                    <i class="bi bi-star-fill text-warning" style="font-size: 0.8rem"></i>
+                    <span class="small text-muted fw-semibold">Rated</span>
+                  </div>
+                }
+                }
+              </div>
+            </div>
+
+            <div
+              class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 gap-md-3 mt-2"
+            >
+              <div class="d-flex resp-text text-light-custom small flex-grow-1 address-text">
+                <i class="bi bi-geo-alt me-1"></i>
+                <div>
+                  <p class="m-0 address-para" #descRef [class.clamp]="!expanded[i]">
+                    {{ getFullAddress(booking) }}
+                  </p>
+
+                  @if (isOverflow[i]) {
+                  <span class="see-more" (click)="toggleAddress(i)">
+                    {{ expanded[i] ? 'See Less' : 'See More' }}
+                  </span>
+                  }
+                </div>
+              </div>
+
+              <div class="fw-bold fs-6 flex-shrink-0">
+                <span class="text-primary-300">$ </span>{{ booking.price }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-3 dashed-line" />
+
+        @if(activeTab === 'cancelled'){
+        <div class="mb-2 d-flex align-items-start gap-2 reason-wrapper">
+          <i class="bi bi-exclamation-triangle-fill text-warning reason-icon"></i>
+
+          <div
+            class="small px-2 py-2 rounded bg-warning-subtle text-warning-emphasis border border-warning-subtle w-100 reason-box"
+          >
+            <span class="fw-semibold me-1">Reason:</span>
+            <span>
+              {{ booking.cancellationReason || 'No cancellation reason provided' }}
+            </span>
+          </div>
+        </div>
+        } @else {
+        <div class="small text-light-custom fw-semibold mb-1">Assigned Service Partner</div>
+        <div
+          class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-3"
+        >
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <div class="partner-img-box d-flex align-items-center justify-content-center">
+              @if (booking.profileImage) {
+              <img [src]="BASE_URL + booking.profileImage" class="avatar-img" />
+              } @else {
+              <mat-icon class="text-primary-100">person</mat-icon>
+              }
+            </div>
+
+            <div>
+              <div class="resp-text fw-semibold text-dark-custom small">
+                {{ booking.partnerName }}
+              </div>
+            </div>
+          </div>
+
+          <button
+            matTooltip="{{ copiedIndex === i ? 'Copied!' : booking.mobileNumber }}"
+            matTooltipPosition="above"
+            #tooltip="matTooltip"
+            (click)="onCallClick(booking.mobileNumber, i, tooltip)"
+            class="border border-2 rounded-circle px-2 py-1 d-flex align-items-center justify-content-center bg-transparent flex-shrink-0"
+          >
+            <i class="bi bi-telephone telephone-icon"></i>
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+    } } @else {
+    <div class="text-center text-muted py-5">No {{ activeTab }} bookings found</div>
+    }
+  </div>
+</div>
+
+@if (reviewModalBookingId !== null) {
+  <app-review-modal
+    [bookingId]="reviewModalBookingId"
+    [serviceName]="reviewModalServiceName"
+    (closed)="closeReviewModal()"
+    (submitted)="onReviewSubmitted($event)"
+  />
+}
+
+@if (trackingBookingId !== null && trackingBooking) {
+  <div class="tracking-backdrop" (click)="closeTracking()"></div>
+  <div class="tracking-modal">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="fw-bold mb-0">Track Your Partner</h6>
+      <button class="close-btn" (click)="closeTracking()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <app-track-partner
+      [bookingId]="trackingBookingId"
+      [customerLat]="trackingBooking.latitude"
+      [customerLng]="trackingBooking.longitude"
+      [partnerName]="trackingBooking.partnerName"
+      [partnerMobileNumber]="trackingBooking.mobileNumber"
+    />
+  </div>
+}

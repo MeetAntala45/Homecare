@@ -1,0 +1,45 @@
+<div class="row g-3">
+  <div class="col-12 col-md-12">
+    <app-input-fields [config]="categoryFieldConfig" [control]="categoryControl"
+      (selectionChange)="onCategorySelected($event)">
+    </app-input-fields>
+  </div>
+</div>
+
+@if (selectedCategories.length > 0) {
+<div class="selected-chips-container">
+  @for (cat of selectedCategories; track cat.categoryId) {
+  <div class="chip-selected">
+    <span>{{ cat.categoryName }}</span>
+    <button type="button" class="chip-remove" (click)="removeCategory(cat.categoryId)">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  }
+</div>
+}
+
+<div class="section-divider"></div>
+
+<p class="services-title">Services Offered</p>
+<p class="services-subtitle">Select the services which you can offer to our users.</p>
+
+<div class="chips-container">
+
+  @for (option of allSubCategoryOptions; track option.value) {
+  <button type="button" class="chip-service" [class.chip-service--selected]="isServiceSelected(option.value)"
+    (click)="onServiceChipClick(option)">
+    {{ option.label }}
+  </button>
+  }
+
+  @if (allSubCategoryOptions.length === 0) {
+  <p class="empty-state">Select a category above to see available services.</p>
+  }
+</div>
+
+@if (servicesError) {
+<mat-error class="field-error">
+  At least one service must be selected.
+</mat-error>
+}

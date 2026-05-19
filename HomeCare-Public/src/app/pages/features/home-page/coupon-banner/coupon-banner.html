@@ -1,0 +1,32 @@
+@if (coupon) {
+<div class="coupon-banner" [class.visible]="visible">
+    <div class="coupon-banner__inner">
+
+        <div class="coupon-banner__badge">
+            🔥 {{ coupon.discountPct }}% OFF
+        </div>
+
+        <div class="coupon-banner__body">
+            <p class="coupon-banner__desc">{{ coupon.description }}</p>
+
+            <div class="coupon-banner__code-row">
+                <span class="coupon-banner__label">Use code</span>
+                <button class="coupon-banner__code" (click)="copyCode()">
+                    {{ coupon.couponCode }}
+                    <span class="coupon-banner__copy-icon">{{ copied ? '✓' : '⧉' }}</span>
+                </button>
+            </div>
+
+            @if (coupon.conditions.length) {
+            <div class="coupon-banner__conditions">
+                @for (c of coupon.conditions; track c.label) {
+                <span class="coupon-banner__tag">{{ c.summary }}</span>
+                }
+            </div>
+            }
+        </div>
+
+        <button class="coupon-banner__close" (click)="dismiss()">✕</button>
+    </div>
+</div>
+}

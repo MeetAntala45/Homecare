@@ -1,0 +1,35 @@
+<app-grid-layout
+  title="Booking Management"
+  [showFilter]="true"
+  [expandable]="true"
+  [rowDetailTemplate]="innerGridTemplate"
+  [columns]="columns"
+  [data]="data"
+  [isLoading]="isLoading"
+  [skeletonRowCount]="filter.pageSize"
+  [totalCount]="totalCount"
+  [pageNumber]="filter.pageNumber"
+  [pageSize]="filter.pageSize"
+  [sortBy]="filter.sortBy"
+  [sortOrder]="filter.sortOrder"
+  [expandedCustomerId]="expandedCustomerId"
+  [expandedPaymentMethod]="expandedPaymentMethod"
+  [expandTriggered]="expandTriggered"
+  [highlightRowKey]="highlightRowKey"
+  (pageChanged)="onPageChanged($event)"
+  (sortChanged)="onSortChanged($event)"
+  (deleteClicked)="onDeleteCustomer($event)"
+  (filterClicked)="openFilter()"
+/>
+
+<ng-template #innerGridTemplate let-row>
+  <app-booking-detail-grid
+    [customerId]="row.customerId"
+    [paymentMethodValue]="row.paymentMethodValue"
+    [sharedFilters]="sharedFilters"
+    [forceReloadKey]="row.customerId === expandedCustomerId && row.paymentMethodValue === expandedPaymentMethod ? forceReloadKey : 0"
+    [highlightBookingId]="row.customerId === expandedCustomerId && row.paymentMethodValue === expandedPaymentMethod ? highlightBookingId : null"
+    (bookingDeleted)="loadData()"
+    (bookingUpdated)="loadData()"
+  />
+</ng-template>

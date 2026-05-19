@@ -1,0 +1,40 @@
+.service-card {
+    width: 100%;
+    min-height: 180px;
+    max-width: 260px;
+    transition: all .25s ease;
+    cursor: pointer;
+}
+
+.service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.service-icon {
+    width: 55px;
+}
+
+@media (min-width: 768px) {
+    .service-card {
+        min-height: 200px;
+    }
+
+    .service-icon {
+        width: 60px;
+    }
+}
+
+@media (min-width: 992px) {
+    .service-card {
+        min-height: 220px;
+    }
+
+    .service-icon {
+        width: 70px;
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

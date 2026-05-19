@@ -1,0 +1,107 @@
+.footer-bg {
+  background-color: #f8f9fa;
+}
+
+.footer-bg h3,
+.footer-bg h6 {
+  color: #212529;
+}
+
+.footer-links {
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li a {
+  display: inline-block;
+  color: #212529;
+  word-break: break-word;
+  line-height: 1.6;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-links li a:hover {
+  color: var(--bs-primary);
+  transform: translateX(2px);
+}
+
+.app-badges {
+  width: 100%;
+}
+
+.store-badge {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.footer-bottom {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+.social-icons i {
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.social-icons i:hover {
+  color: var(--bs-primary);
+  transform: translateY(-2px);
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+@media (max-width: 575.98px) {
+  .footer-bg {
+    padding-top: 2rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .footer-bg .row > div {
+    text-align: center;
+  }
+
+  .footer-links {
+    gap: 0.35rem !important;
+  }
+
+  .footer-links li a {
+    font-size: 14px;
+  }
+
+  .store-badge {
+    max-width: 170px;
+  }
+
+  .social-icons {
+    gap: 1rem !important;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .footer-bg .row {
+    row-gap: 2rem;
+  }
+
+  .store-badge {
+    max-width: 150px;
+  }
+
+  .footer-links li a {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  .footer-bg .row {
+    align-items: flex-start;
+  }
+
+  .store-badge {
+    max-width: 150px;
+  }
+}

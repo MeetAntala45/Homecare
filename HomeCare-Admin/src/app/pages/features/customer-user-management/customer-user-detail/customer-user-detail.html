@@ -1,0 +1,74 @@
+@if(isPageLoading){
+    <div class="loading-wrapper">
+        <div class="spinner-border text-primary-custom" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="loading-text">Loading...</p>
+      </div>
+}
+@else if (customer) {
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn p-1 border-0 bg-transparent fs-5 text-secondary" (click)="goBack()">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <h2 class="fw-bold mb-0 h5">{{ customer.name }}</h2>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-3 p-3 p-md-4 mb-3">
+      <div class="row g-3">
+        <div class="col-6 col-md-3">
+          <span class="info-label">ID</span>
+          <span class="info-value d-block">{{ customer.id }}</span>
+        </div>
+        <div class="col-6 col-md-3">
+          <span class="info-label">Name</span>
+          <span class="info-value d-block">{{ customer.name }}</span>
+        </div>
+        <div class="col-12 col-md-3">
+          <span class="info-label">Mobile Number</span>
+          <span class="info-value d-block">{{ customer.mobileNumber }}</span>
+        </div>
+        <div class="col-12 col-md-3">
+          <span class="info-label">Email</span>
+          <span class="info-value d-block text-truncate" [matTooltip]="customer.email">{{ customer.email }}</span>
+        </div>
+      </div>
+    
+      <div class="my-4">
+        <span class="info-label">Status</span>
+        <span class="badge-status" [ngClass]="{
+            'badge-active': customer.status === ECustomerStatus.Active,
+            'badge-inactive': customer.status === ECustomerStatus.Inactive,  
+            'badge-blocked': customer.status === ECustomerStatus.Blocked
+          }">
+          <span class="badge-dot"></span>
+          {{
+            customer.status
+          }}
+        </span>
+      </div>
+  </div>
+    <app-grid-layout
+  title="Service Bookings"
+  [columns]="columns"
+  [data]="bookingData"
+  [isLoading]="isLoading"
+  [skeletonRowCount]="bookingFilter.pageSize"
+  [showActions]="true"
+  [showPagination]="true"
+  [totalCount]="bookingTotalCount"
+  [pageNumber]="bookingFilter.pageNumber"
+  [pageSize]="bookingFilter.pageSize"
+  [sortBy]="bookingFilter.sortBy"
+  [sortOrder]="bookingFilter.sortOrder"
+  [showFilter]="true"
+  (pageChanged)="onBookingPageChanged($event)"
+  (sortChanged)="onBookingSortChanged($event)"
+  (filterClicked)="openBookingFilter()"
+  (actionClicked)="handleBookingAction($event)"
+  (expertDetailClicked)="onExpertDetailClicked($event)"></app-grid-layout>   
+}
+

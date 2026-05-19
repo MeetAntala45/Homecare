@@ -1,0 +1,127 @@
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: #DDE4EE;
+  --mdc-outlined-text-field-focus-outline-color: var(--color-primary);
+}
+
+.selected-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip-selected {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #EEF0FF;
+  border: 1px solid var(--primary-400);
+  border-radius: 20px;
+  padding: 5px 8px 5px 14px;
+  font-size: var(--body2-size);
+  font-family: var(--font-family-base);
+  color: var(--primary-400);
+  font-weight: 600;
+}
+
+.chip-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.chip-remove mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  color: var(--primary-400);
+}
+
+.chip-remove:hover mat-icon {
+  color: #dc2626;
+}
+.section-divider {
+  height: 1px;
+  background: #DDE4EE;
+  margin: 20px 0 12px;
+}
+::ng-deep .custom-select .mat-mdc-select-arrow-wrapper {
+  display: none !important;
+}
+.services-title {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0.15%;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+.services-subtitle {
+  font-size: var(--body2-size);
+  color: var(--color-text-secondary);
+  margin: 0 0 12px;
+  font-family: var(--font-family-base);
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chip-service {
+  background: transparent;
+  border: 1px solid #DDE4EE;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: var(--font-family-base);
+  font-size: var(--body2-size);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chip-service:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.chip-service.chip-service--selected {
+  background: var(--primary-400);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.chip-service.chip-service--selected:hover {
+  opacity: 0.88;
+}
+
+.empty-state {
+  font-size: var(--body2-size);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  font-family: var(--font-family-base);
+  margin: 0;
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  margin-top: 2px;
+  color:  #e64848;
+  
+}
+.chips-container--error {
+  border-radius: 4px;
+  padding: 8px;
+}

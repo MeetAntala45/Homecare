@@ -1,0 +1,128 @@
+.fs-13 {
+  font-size: 13px;
+}
+
+.pagination-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: white;
+}
+
+.pagination-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination-label {
+  font-size: 13px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.pagination-select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-family: 'Montserrat', sans-serif;
+  appearance: auto;
+}
+
+.page-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  font-size: 13px;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+.page-btn:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.custom-grid ::ng-deep .table-responsive {
+  padding-top: 8px !important;
+  padding-bottom: 0 !important;
+}
+
+.custom-grid ::ng-deep table tbody td {
+  vertical-align: middle;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+.inner-grid-wrapper ::ng-deep .table-responsive {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .custom-table thead tr {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .custom-table tbody tr {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .custom-table tbody tr:hover {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .custom-table thead tr th {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .custom-table tbody tr td {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .custom-table tbody tr:hover td {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .pagination-bar {
+  background-color: #f8fbfc;
+}
+
+.inner-grid-wrapper ::ng-deep .pagination-select {
+  background-color: #f8fbfc;
+}
+
+.inner-loading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 220px;
+}
+
+::ng-deep .inner-grid-wrapper app-data-grid tr {
+  height: 60px;
+}
+
+::ng-deep .inner-grid-wrapper app-data-grid .skeleton-cell {
+  height: 22px;
+}

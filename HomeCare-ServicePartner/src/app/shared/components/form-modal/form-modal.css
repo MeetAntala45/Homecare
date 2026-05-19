@@ -1,0 +1,17 @@
+mat-error {
+  margin-left: -4px;
+  font-size: 12px;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  padding-left: 2px;
+}
+
+.body-1{
+  font-weight: 700;
+}
+
+.err {
+  color: #F44336;
+  font-size: 13px;
+}

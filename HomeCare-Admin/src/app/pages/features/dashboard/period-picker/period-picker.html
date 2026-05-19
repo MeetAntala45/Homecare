@@ -1,0 +1,71 @@
+<div appClickOutside (clickOutside)="close()" (click)="$event.stopPropagation()" class="position-relative">
+
+    <div class="bg-duration d-flex change-text p-1 gap-1 rounded-2 period-buttons">
+        <button [ngClass]="selectedTab === 'week' ? 'bg-white' : 'bg-transparent'"
+            class="border-0 rounded-2 fw-semibold" (click)="openPicker('week')">
+            {{ selectedWeek === 'this' ? 'This Week' : 'Last Week' }}
+            <i class="bi small" [ngClass]="pickerView === 'week' ? 'bi-chevron-up' : 'bi-chevron-down'">
+            </i>
+        </button>
+        <button [ngClass]="(selectedTab === 'month') ? 'bg-white' : 'bg-transparent'"
+            class="border-0 rounded-2 fw-semibold" (click)="selectMonth()">
+            This Month
+        </button>
+        <button [ngClass]="(selectedTab === 'year') ? 'bg-white' : 'bg-transparent'"
+            class="border-0 rounded-2 fw-semibold" (click)="selectYear()">
+            This Year
+        </button>
+    </div>
+
+    <div class="period-dropdown">
+        <button
+            class="dropdown-toggle-btn d-flex justify-content-between align-items-center bg-duration border-0 rounded-2 fw-semibold change-text p-1 px-2"
+            (click)="toggleMobileDropdown()">
+            {{ getPeriodLabel() }}
+            <i class="bi small" [ngClass]="dropdownOpen ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+        </button>
+    </div>
+
+    @if (pickerView === 'week' && !isMobileDropdown) {
+    <div class="picker-dropdown shadow-sm">
+        <button (click)="selectWeek('this')" [ngClass]="selectedWeek === 'this' ? 'active-option' : ''">This
+            Week</button>
+        <button (click)="selectWeek('last')" [ngClass]="selectedWeek === 'last' ? 'active-option' : ''">Last
+            Week</button>
+    </div>
+    }
+
+
+    @if (dropdownOpen && isMobileDropdown && !pickerView) {
+    <div class="dropdown-menu-custom shadow-sm">
+        <button (click)="openMobilePicker('week')">
+            Week <i class="bi bi-chevron-right float-end"></i>
+        </button>
+
+        <button (click)="selectMonth()">
+            This Month
+        </button>
+
+        <button (click)="selectYear()">
+            This Year
+        </button>
+    </div>
+    }
+
+    @if (dropdownOpen && isMobileDropdown && pickerView === 'week') {
+    <div class="dropdown-menu-custom shadow-sm">
+
+        <button class="back-btn" (click)="goBack()">
+            <i class="bi bi-chevron-left"></i> Week
+        </button>
+        <hr class="my-1">
+        <button (click)="selectWeek('this')" [ngClass]="selectedWeek === 'this' ? 'active-option' : ''">
+            This Week
+        </button>
+        <button (click)="selectWeek('last')" [ngClass]="selectedWeek === 'last' ? 'active-option' : ''">
+            Last Week
+        </button>
+    </div>
+    }
+
+</div>

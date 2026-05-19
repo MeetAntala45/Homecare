@@ -1,0 +1,128 @@
+<div class="table-responsive p-4 pe-5 rounded-top-3">
+  <div style="min-width: 1000px">
+    <table class="table custom-table align-middle w-100" style="table-layout: fixed" title="">
+      <thead>
+        <tr>
+          <th class="subtitle-2 grid-header expand-col"></th>
+
+          @for(col of columns; track col.header){
+          <th
+            class="subtitle-2 grid-header overflow-hidden text-truncate text-nowrap"
+            [ngStyle]="{ width: col.width }"
+            [class.sortable-col]="col.sortable"
+            (click)="onSort(col)"
+            [truncateTooltip]="col.header"
+          >
+            {{ col.header }}
+            @if(col.sortable){
+            <i
+              class="bi {{ getSortIcon(col) }} ms-1 sort-icon"
+              [class.sort-active]="sortBy === col.field"
+            ></i>
+            }
+          </th>
+          }
+
+          <th class="subtitle-2 grid-header action-col">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @if(isLoading){
+          @for(row of skeletonRows; track $index){
+            <tr>
+              <td class="py-3">
+                <div class="skeleton skeleton-cell" style="width: 15px; border-radius: 50%;"></div>
+              </td>
+              @for(col of columns; track col.field){
+                <td class="py-3" [ngStyle]="{ width: col.width }">
+                  <div class="skeleton skeleton-cell"></div>
+                </td>
+              }
+              <td class="py-3">
+                <div class="skeleton skeleton-cell" style="width: 24px;"></div>
+              </td>
+            </tr>
+          }
+      
+        } @else {
+          @for(row of data; track $index){
+            <tr
+              class="clickable-row"
+              [id]="'row-' + row.customerId + '_' + row.paymentMethodValue"
+              [class.row-highlight]="isHighlighted(row)"
+              (click)="toggleRow(row, $event)"
+            >
+              <td class="custom-row expand-col text-center body-2 fs-14 fw-semibold text-dark-custom">
+                <button class="expand-toggle-btn" (click)="toggleRow(row, $event)">
+                  <i class="bi" [ngClass]="isExpanded(row) ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                </button>
+              </td>
+      
+              @for(col of columns; track col.field){
+                <td class="body-2 fs-14 fw-semibold text-dark-custom py-3">
+                  @if(!col.type || col.type === 'text'){
+                    <span class="d-block text-truncate" [truncateTooltip]="row[col.field]">
+                      {{ row[col.field] }}
+                    </span>
+                  }
+                  @if(col.type === 'id'){
+                    <ng-container>{{ row[col.field] | idFormat }}</ng-container>
+                  }
+                  @if(col.type === 'status'){
+                    <ng-container>
+                      <span class="badge-status" [ngClass]="{
+                        'badge-active': row[col.field] === true || row[col.field] === 'Active',
+                        'badge-inactive': row[col.field] === false || row[col.field] === 'Inactive',
+                        'badge-blocked': row[col.field] === 'Blocked'
+                      }">
+                        <span class="badge-dot"></span>
+                        {{ row[col.field] === true ? 'Active' : row[col.field] === false ? 'Inactive' : row[col.field] }}
+                      </span>
+                    </ng-container>
+                  }
+                  @if(col.type === 'currency'){
+                    <ng-container>{{ row[col.field] | currency }}</ng-container>
+                  }
+                  @if(col.type === 'partner-status'){
+                    <ng-container>
+                      <span class="badge-status" [ngClass]="row[col.field + 'Class']">
+                        <span class="badge-dot"></span>
+                        {{ row[col.field + 'Label'] }}
+                      </span>
+                    </ng-container>
+                  }
+                </td>
+              }
+      
+              <td class="text-end" (click)="$event.stopPropagation()">
+                <button class="btn btn-sm delete-btn" matTooltip="Delete" (click)="onDelete(row, $event)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+      
+            @if(isExpanded(row)){
+              <tr class="expanded-row">
+                <td [colSpan]="columns.length + 2" class="p-0">
+                  <div class="expanded-content">
+                    <ng-container *ngTemplateOutlet="rowDetailTemplate; context: { $implicit: row }">
+                    </ng-container>
+                  </div>
+                </td>
+              </tr>
+            }
+      
+          } @empty {
+            <tr>
+              <td [colSpan]="columns.length + 2" class="text-center text-muted py-5 fs-14">
+                No data found.
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

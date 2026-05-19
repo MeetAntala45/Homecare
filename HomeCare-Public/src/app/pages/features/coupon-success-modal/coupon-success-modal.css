@@ -1,0 +1,32 @@
+:host {
+    display: block;
+    border-radius: 16px;
+}
+
+.btn-close:focus,
+.btn-close:active {
+    outline: none !important;
+    box-shadow: none !important;
+    height: 10px;
+    width: 10px;
+}
+
+.custom-dialog .mat-mdc-dialog-container {
+    border-radius: 18px !important;
+    padding: 0;
+}
+
+.progress-bar{
+    background:var(--color-primary-300);
+    transition: width 3s linear;
+}
+
+.badge{
+    background:#e6dfff;
+    color:var(--color-primary-300);
+    font-weight:500;
+}
+
+.yayText{
+    font-size: 20px;
+}

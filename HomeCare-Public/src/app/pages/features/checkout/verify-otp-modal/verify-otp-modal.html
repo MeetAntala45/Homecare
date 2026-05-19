@@ -1,0 +1,40 @@
+<div class="modal-backdrop-custom d-flex align-items-center justify-content-center p-2">
+    <div class="card border-0 shadow-lg rounded-4 w-100 verify-otp-card">
+  
+      <div class="d-flex align-items-center justify-content-between px-4 pt-4 pb-2">
+        <h5 class="fw-bold mb-0">Verify OTP</h5>
+        <button class="btn btn-link text-secondary p-0 border-0 d-flex align-items-center"
+          (click)="onClose()" type="button">
+          <i class="bi bi-x-lg fs-5 x-icon"></i>
+        </button>
+      </div>
+  
+      <div class="px-4 pb-4 pt-2 d-flex flex-column gap-2">
+  
+        <p class="text-light-custom mb-0 fs-14 mb-2">
+        We have sent you code on
+          <span class="fw-medium">{{ pendingEmail }}</span>
+        </p>
+  
+        <div>
+            <app-input-component label="OTP" type="otp" [control]="otpControl">
+            </app-input-component>
+        </div>
+  
+        <div class="text-light-custom fw-medium fs-14 mb-1">
+            By clicking on Sign In, I accept the
+            <span class="text-primary-300 fw-bolder">Terms & Condition</span>
+            & <span class="text-primary-300 fw-bolder">Privacy Policy</span>
+        </div>
+
+        <button class="border-0 bg-primary-300 text-white rounded-pill py-3 fw-medium w-100 mt-2"
+          (click)="onVerify()" [disabled]="isVerifying" type="button">
+          @if(isVerifying) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          Verify & Sign In
+        </button>
+  
+      </div>
+    </div>
+  </div>

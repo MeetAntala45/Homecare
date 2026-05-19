@@ -1,0 +1,112 @@
+<div class="modal-backdrop-custom d-flex align-items-center justify-content-center">
+    <div class="card border-0 shadow-lg rounded-4 w-100 map-picker-card">
+  
+      <div class="d-flex align-items-center justify-content-between px-4 pt-4 pb-2">
+        <h5 class="fw-bold mb-0">
+          {{ mode === 'edit' ? 'Edit Address' : mode === 'select' ? 'Select Address' : 'Add Address' }}
+        </h5>
+        <button class="btn btn-link text-secondary p-0 border-0 d-flex align-items-center" (click)="onClose()" type="button">
+          <i class="bi bi-x-lg fs-5 x-icon"></i>
+        </button>
+      </div>
+  
+      <div class="map-area position-relative px-3 py-2">
+        <div #mapContainer class="leaflet-map"></div>
+  
+        <button class="btn btn-white shadow-sm position-absolute bottom-0 end-2 my-3 mx-2 z-3
+             d-flex align-items-center gap-2 rounded-pill px-3 py-2 fw-medium my-location-btn"
+          (click)="getCurrentLocation()" type="button">
+          <i class="bi bi-crosshair2 my-location-btn pt-1"></i>
+          My Location
+        </button>
+      </div>
+  
+      <div class="card-body px-4 pt-2 pb-4">
+  
+        <p class="d-flex align-items-center text-uppercase mb-3 mt-1 selected-address-label">
+          Selected Address
+        </p>
+  
+        <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4 selected-address-box gap-3">
+          <span class="text-dark flex-grow-1 address-text">
+            {{ selectedAddress || 'Move the pin to select a location' }}
+          </span>
+          <button type="button" (click)="onChangeLocation()"
+                    class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5">
+                    Change
+                </button>
+        </div>
+  
+        <div class="row g-sm-3 g-1 mb-3">
+            <div class="col-12 col-sm-6">
+              <app-input-component
+                label="House / Flat Number"
+                type="text"
+                [control]="houseNumberControl">
+              </app-input-component>
+            </div>
+            <div class="col-12 col-sm-6">
+              <app-input-component
+                label="Landmark"
+                type="text"
+                [control]="landmarkControl">
+              </app-input-component>
+            </div>
+          </div>
+
+        
+      <div class="mb-3">
+        <label class="fw-bold mb-2 ps-1">Save As</label>
+
+        @if(isLoadingLabels) {
+          <div class="d-flex gap-2">
+            <span class="spinner-border spinner-border-sm text-primary mt-1"></span>
+            <span class="text-secondary" style="font-size:13px;">Loading labels...</span>
+          </div>
+        } @else {
+          <div class="d-flex flex-wrap gap-2">
+            @for(label of labels; track label) {
+              <button
+                class="btn rounded-pill px-3 py-2 tag-btn"
+                [class.active-tag]="selectedLabel === label && !showCustomLabelInput"
+                [class.btn-outline-secondary]="selectedLabel !== label || showCustomLabelInput"
+                (click)="onLabelSelect(label)" type="button">
+                {{ label }}
+              </button>
+            }
+
+            <button
+              class="btn rounded-pill px-3 py-2 tag-btn"
+              [class.active-tag]="showCustomLabelInput"
+              [class.btn-outline-secondary]="!showCustomLabelInput"
+              (click)="onLabelSelect(null)" type="button">
+              Other
+            </button>
+          </div>
+        }
+      </div>
+  
+      @if(showCustomLabelInput) {
+        <div class="mb-3">
+          <app-input-component
+            label="Label Name"
+            type="text"
+            [control]="nicknameControl">
+          </app-input-component>
+        </div>
+      }
+  
+        <div class="d-flex justify-content-end gap-2">
+          <button class="btn btn-outline-secondary btn-cancel rounded-pill px-4 py-2" type="button" (click)="onClose()">
+            Cancel
+          </button>
+          <button class=" btn-save rounded-pill px-4 py-2 d-flex align-items-center" type="button"
+            (click)="saveAddress()">
+             {{ mode === 'edit' ? 'Save Changes' : mode === 'select' ? 'Select' : 'Add' }}
+          </button>
+        </div>
+        
+      </div>
+  
+    </div>
+  </div>

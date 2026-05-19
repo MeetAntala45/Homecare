@@ -1,0 +1,182 @@
+<div class="header mb-3">Payment Summary</div>
+<div class="d-flex flex-column gap-3">
+
+  <div class="card border summary-card rounded-3">
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between mb-2">
+        <span class="body-2 text-dark-custom">{{ summary.serviceName }}</span>
+        <span class="body-2 text-dark-custom">{{ summary.servicePrice | currency:'$':'symbol':'1.2-2' }}</span>
+      </div>
+
+      <div class="d-flex justify-content-between mb-2">
+        <span class="body-2 text-dark-custom">Taxes ({{ summary.taxPct }}%)</span>
+        <span class="body-2 text-dark-custom">{{ summary.taxAmount | currency:'$':'symbol':'1.2-2' }}</span>
+      </div>
+
+      <hr class="my-3 hr-dashed">
+
+      <div class="d-flex justify-content-between mb-2">
+        <span class="fw-semibold">Total</span>
+        <span class="fw-semibold">
+          {{ (summary.servicePrice + summary.taxAmount) | currency:'$':'symbol':'1.2-2' }}
+        </span>
+      </div>
+
+      @if (selectedCouponCode) {
+      <div class="d-flex justify-content-between align-items-center
+                      rounded-2 py-2 mb-2 coupon-applied-row">
+        <span class="body-2">
+          Coupon code
+          <strong class="text-primary-300">{{ selectedCouponCode }}</strong>
+          Added
+        </span>
+        <span class="body-2 fw-semibold text-success">
+          -{{ summary.discountAmount | currency:'$':'symbol':'1.2-2' }}
+        </span>
+      </div>
+      }
+
+      <hr class="my-3 hr-dashed">
+
+      <div class="d-flex justify-content-between">
+        <span class="fw-bold">Total Amount to Pay</span>
+        <span class="fw-bold">
+          {{ summary.totalAmount | currency:'$':'symbol':'1.2-2' }}
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="card coupon-card">
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
+        <span class="header">Coupons & Offers</span>
+        <button class="view-all bg-white text-primary-300 rounded-pill d-flex
+                       align-items-center justify-content-center gap-1 fw-bold" (click)="toggleView()">
+          {{ isExpanded ? 'Show Less' : 'View All' }}
+          <i class="bi ms-1 add-btn" [class.bi-arrow-right]="!isExpanded" [class.bi-arrow-up]="isExpanded"></i>
+        </button>
+      </div>
+
+      @if (coupons.length === 0) {
+      <div class="text-muted small text-center py-2">
+        Select a slot to see available coupons.
+      </div>
+      }
+
+      @if (!isExpanded && coupons.length > 0) {
+      <div class="position-relative popular-slider-wrapper px-2">
+        @if (!sliderState.coupons.isPrevDisabled) {
+        <button class="slider-btn start-0 ms-2" (click)="prevSlide()">
+          <mat-icon class="fs-5">west</mat-icon>
+        </button>
+        }
+
+        <div #sliderRef class="keen-slider">
+          @for (c of coupons; track c.id ) {
+          <div class="keen-slider__slide">
+            <div class="card border-card flex-shrink-0 coupon-slide-card"
+              [class.cursor-pointer]="c.isEligible || selectedCouponCode === c.couponCode"
+              (click)="selectedCouponCode == c.couponCode ? removeCoupon() : (c.isEligible ? applyCoupon(c) : null)">
+              <div class="card-body p-2 d-flex align-items-center gap-2">
+
+                <div class="rounded-2 p-2 d-flex align-items-center
+                          justify-content-center coupon-icon">
+                  <img src="assets/images/offers.png" alt="">
+                </div>
+
+                <div class="flex-grow-1 overflow-hidden">
+                  <div class="fw-semibold body-2 coupon-code text-truncate">
+                    {{ c.couponCode }}
+                  </div>
+                  <div class="body-2 text-truncate coupon-desc" [truncateTooltip]="c.description">
+                    {{ c.description }}
+                  </div>
+                  @if (!c.isEligible) {
+                  <div class="text-danger text-truncate fs-12">
+                    {{ c.ineligibleReason }}
+                  </div>
+                  }
+                </div>
+
+                <div class="flex-shrink-0">
+                  @if (selectedCouponCode === c.couponCode) {
+                  <button class="fw-semibold applied-btn text-success">
+                    Applied
+                  </button>
+                  } @else {
+                  @if (c.isEligible) {
+                  <button class="fw-semibold p-0 add-btn">
+                    Add
+                  </button>
+                  } @else {
+                  <i class="bi bi-arrow-right text-secondary"></i>
+                  }
+                  }
+                </div>
+
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+
+        @if (!sliderState.coupons.isNextDisabled) {
+        <button class="slider-btn end-0 me-2" (click)="nextSlide()">
+          <mat-icon class="fs-5">east</mat-icon>
+        </button>
+        }
+      </div>
+      }
+
+      @if (isExpanded) {
+      <div class="coupon-vertical-list">
+        @for (c of coupons; track c.id) {
+        <div class="card border-card coupon-vertical-card"
+          [class.coupon-applied-card]="selectedCouponCode === c.couponCode"
+          [class.coupon-ineligible-card]="!c.isEligible">
+
+          <div class="card-body p-2 d-flex align-items-center gap-2">
+
+            <div class="rounded-2 p-2 d-flex align-items-center
+                            justify-content-center coupon-icon">
+              <img src="assets/images/offers.png" alt="">
+            </div>
+
+            <div class="flex-grow-1 overflow-hidden">
+              <div class="fw-semibold body-2 coupon-code">{{ c.couponCode }}</div>
+              <div class="body-2 text-muted">{{ c.description }}</div>
+              @if (!c.isEligible) {
+              <div class="text-danger fs-12 mt-1">{{ c.ineligibleReason }}</div>
+              }
+            </div>
+
+            <div class="flex-shrink-0">
+              @if (selectedCouponCode === c.couponCode) {
+              <button class="fw-semibold applied-btn text-success" (click)="removeCoupon()">
+                Applied
+              </button>
+              } @else {
+              @if (c.isEligible) {
+              <button class="fw-semibold p-0 add-btn" (click)="applyCoupon(c)">
+                Add
+              </button>
+              } @else {
+              <span class="text-muted fs-12">Not eligible</span>
+              }
+              }
+            </div>
+
+          </div>
+        </div>
+        }
+      </div>
+      }
+
+    </div>
+  </div>
+</div>

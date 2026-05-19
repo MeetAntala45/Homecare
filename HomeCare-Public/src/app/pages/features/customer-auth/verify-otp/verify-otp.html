@@ -1,0 +1,49 @@
+<div class="d-flex align-items-center justify-content-center min-vh-100 px-3">
+  <div class="login-box w-100">
+    <div class="text-center mb-5">
+      <a class="text-decoration-none text-dark-custom" routerLink="customer/home"
+        ><span class="h4 fw-bold">H<span class="text-primary-300">o</span>meCare</span></a
+      >
+    </div>
+
+    <h3 class="text-center mb-4 fw-600 text-light-custom">Enter OTP</h3>
+
+    <h6 class="text-center text-light-custom mb-4 pb-2">
+      We have sent you code on <span class="fw-bolder">{{ email | lowercase }}</span>
+    </h6>
+
+    <form [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+      <app-input-component label="OTP" type="otp" [control]="otpControl"> </app-input-component>
+
+      <div class="d-flex flex-sm-row flex-column gap-3 mt-4">
+        <button
+          type="button"
+          class="text-primary-300 bg-light-custom border-1 w-100 fw-bold py-3 rounded-5"
+          (click)="resendOtp()"
+          [disabled]="isResending || resendCooldown > 0"
+        >
+          {{
+            resendCooldown > 0
+              ? 'Resend in ' + resendCooldown + 's'
+              : isResending
+              ? 'Sending...'
+              : 'Resend OTP'
+          }}
+        </button>
+
+        <button type="submit" class="btn-primary-custom w-100 fw-bold py-3 rounded-5">
+          @if(isSubmitting){
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          }
+          {{ isSubmitting ? 'Verifying...' : 'Sign In' }}
+        </button>
+      </div>
+    </form>
+
+    <div class="text-center text-light-custom fw-medium mt-4 pt-2">
+      By clicking on Sign In, I accept the
+      <span class="text-primary-300 fw-bolder">Terms & Condition</span>
+      & <span class="text-primary-300 fw-bolder">Privacy Policy</span>
+    </div>
+  </div>
+</div>

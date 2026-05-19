@@ -1,0 +1,105 @@
+<div class="p-3 p-md-4 bg-white">
+
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h6 class="fw-bold mb-0 text-truncate">{{ data.name }}</h6>
+
+    <button class="p-0 border-0 bg-transparent text-light-custom" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="border rounded-4 overflow-hidden">
+
+    <div class="table-responsive">
+
+      <table class="custom-table fontsize-14 w-100">
+        <colgroup>
+          <col style="width:45%">
+          <col style="width:55%">
+        </colgroup>
+
+        <thead>
+          <tr class="table-header">
+
+            <th class="p-3 categoryCard">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h6 class="fw-semibold mb-0">Category</h6>
+
+                <button class="btn-secondary-custom px-3 py-2 fs-14 d-inline-flex align-items-center"
+                  (click)="addCategoryDialog()">
+                  <mat-icon class="me-1 fs-4">add</mat-icon> Add
+                </button>
+              </div>
+            </th>
+
+            <th class="p-3 border-start">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h6 class="fw-semibold mb-0">Sub Category</h6>
+
+                <button class="btn-secondary-custom px-3 py-2 fs-14 d-inline-flex align-items-center"
+                  (click)="addSubCategoryDialog()">
+                  <mat-icon class="me-1 fs-4">add</mat-icon> Add
+                </button>
+              </div>
+            </th>
+
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+
+            <td class="border-end align-top p-2 categoryCard">
+              <div class="list-scroll">
+
+                @for (cat of categories; track cat.id) {
+                <div class="rounded-2 px-2 py-2 d-flex justify-content-between align-items-center category-row mb-2"
+                  [ngClass]="{ 'active-category': selectedCategoryId === cat.id }" (click)="selectCategory(cat.id!)">
+                  <span class="text-truncate">{{ cat.name }}</span>
+
+                  <button class="bg-transparent border-0 d-flex align-items-center p-0"
+                    (click)="deleteCategory(cat.id!, cat.name); $event.stopPropagation()">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                }
+
+              </div>
+            </td>
+
+            <td class="align-top p-2">
+              <div class="list-scroll">
+
+                @for (sub of subCategories; track sub.id) {
+                <div class="rounded-3 px-3 py-2 d-flex justify-content-between align-items-center category-row mb-2">
+                  <span class="text-truncate">{{ sub.name }}</span>
+
+                  <button class="bg-transparent border-0 d-flex align-items-center p-0"
+                    (click)="deleteSubCategory(sub.id! , sub.name)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                }
+
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <div class="d-flex justify-content-end mt-4 gap-3 flex-wrap fs-14">
+    <button class="px-4 btn-secondary-custom" (click)="onClose()">
+      Cancel
+    </button>
+    <button class="px-4 btn-primary-custom" (click)="onSave()">
+      Save
+    </button>
+  </div>
+
+</div>

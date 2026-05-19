@@ -1,0 +1,169 @@
+.keen-slider__slide {
+  height: auto !important;
+}
+
+i {
+  color: var(--primary-300);
+}
+
+.slider-btn {
+  position: absolute;
+  top: 70px;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-btn.start-0 {
+  transform: translate(-50%, -50%);
+}
+
+.slider-btn.end-0 {
+  transform: translate(50%, -50%);
+}
+
+.slider-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.service-card {
+  min-height: 140px;
+  cursor: pointer;
+}
+
+.service-img {
+  max-height: 56px;
+  object-fit: contain;
+}
+
+.overlay-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+  opacity: 1;
+  transition: 0.3s ease;
+}
+
+.disabled-card {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.service-label {
+  font-size: 14px;
+  line-height: 1.4;
+  word-break: break-word;
+  font-weight: 500;
+}
+
+.popular-slider-wrapper .slider-btn {
+  top: 90px;
+}
+
+.popular-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.popular-title {
+  min-height: 44px;
+  line-height: 1.4;
+}
+
+@media (max-width: 767.98px) {
+  .slider-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .service-card {
+    min-height: 120px;
+  }
+
+  .slider-btn {
+    top: 60px;
+  }
+
+  .popular-img {
+    height: 150px;
+  }
+
+  .popular-slider-wrapper .slider-btn {
+    top: 75px;
+  }
+}
+
+.block-icon {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .block-icon {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.see-more {
+  padding: 7px 12px;
+  border: 2px solid var(--border-light);
+  font-size: 14px;
+}
+
+.see-more mat-icon {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.join-img {
+  position: absolute;
+  right: 40px;
+  bottom: -30px;
+  max-height: 360px;
+}
+
+.add-btn {
+  border: 2px solid #d5e0f0;
+}
+
+@media (max-width: 768px) {
+  .add-text {
+    display: none;
+  }
+  .service-bottom-gap {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .see-text {
+    display: none;
+  }
+}
+
+.service-bottom-gap {
+  margin-bottom: 70px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.disabled-btn {
+  color: #aaa !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+  pointer-events: none;
+}

@@ -1,0 +1,138 @@
+<div class="container-fluid my-services-page p-0">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h5 class="h5 fw-bold my-1">My Services</h5>
+      <p class="text-muted mb-0">Manage your categories, subcategories and service</p>
+    </div>
+
+    <button
+      class="btn-primary-custom d-flex align-items-center gap-2 px-3 py-2"
+      (click)="addSubCategoryDialog()"
+    >
+      <mat-icon>dashboard_customize</mat-icon>
+      <span>Manage</span>
+    </button>
+  </div>
+
+  @if (loading) {
+  <div class="row g-4">
+    <div class="col-12 col-md-4 col-lg-3">
+      <div class="sidebar-card bg-white rounded-4 p-3 h-100">
+        @for (item of [1, 2, 3, 4]; track item) {
+        <div class="skeleton skeleton-category mb-3"></div>
+        }
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8 col-lg-9">
+      <div class="content-card bg-white rounded-4 p-4">
+        <div class="skeleton skeleton-title mb-3"></div>
+        <div class="skeleton skeleton-line mb-2"></div>
+        <div class="skeleton skeleton-line mb-2"></div>
+        <div class="skeleton skeleton-line w-75 mb-4"></div>
+
+        @for (item of [1, 2, 3]; track item) {
+        <div class="skeleton skeleton-box mb-3"></div>
+        }
+      </div>
+    </div>
+  </div>
+  } @else {
+  <div class="row g-3">
+    <div class="col-12 col-md-4 col-lg-4">
+      <div class="sidebar-card bg-white rounded-4 p-4">
+        <h5 class="fw-bold mb-3">Categories</h5>
+
+        @if (data.length > 0) {
+        <div class="d-flex flex-column gap-3">
+          @for (category of data[0]?.categories; track category.categoryId; let i = $index) {
+
+          <div class="category-card rounded-3 overflow-hidden">
+            <button
+              class="category-btn text-start border-0 px-3 py-2 w-100"
+              [class.active]="openedCategoryIndex === i"
+              (click)="toggleCategory(i)"
+            >
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="fw-semibold">{{ category.categoryName }}</div>
+                  <small class="text-muted">
+                    {{ category.subCategories.length || 0 }} subcategories
+                  </small>
+                </div>
+
+                <mat-icon class="category-arrow">
+                  {{ openedCategoryIndex === i ? 'expand_more' : 'chevron_right' }}
+                </mat-icon>
+              </div>
+            </button>
+
+            @if (openedCategoryIndex === i) {
+            <div class="subcategory-list px-3 pb-3">
+              @if ((category.subCategories.length || 0) > 0) { @for (sub of category.subCategories;
+              track sub.subCategoryId; let j = $index) {
+
+              <button
+                class="subcategory-btn border-0 rounded-3 w-100 text-start px-3 py-2 mt-2"
+                [class.active]="selectedCategoryIndex === i && selectedSubCategoryIndex === j"
+                (click)="selectSubCategory(i, j)"
+              >
+                <div class="fw-medium">{{ sub.subCategoryName }}</div>
+              </button>
+
+              } } @else {
+              <div class="text-muted small px-3 py-2">No subcategories found.</div>
+              }
+            </div>
+            }
+          </div>
+
+          }
+        </div>
+        } @else {
+        <div class="text-center text-muted py-5">No categories found.</div>
+        }
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8 col-lg-8">
+      <div class="content-card bg-white rounded-4 p-4">
+        @if (selectedSubCategory) {
+
+        <div class="mb-4">
+          <h4 class="fw-bold mb-1">{{ selectedSubCategory.subCategoryName }}</h4>
+          <p class="text-muted mb-0">{{ selectedServices.length }} services available</p>
+        </div>
+
+        @if (selectedServices.length > 0) {
+        <div class="d-flex flex-column gap-3">
+          @for (service of selectedServices; track service.serviceId) {
+
+          <div class="service-card bg-white border rounded-4 px-3 py-3">
+            <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+              <div>
+                <h6 class="fw-bold mb-1">{{ service.serviceName }}</h6>
+              </div>
+
+              <button
+                class="btn-primary-custom rounded-pill px-3 py-2 fs-14"
+                type="button"
+                (click)="goToServiceDetail(service.serviceId)"
+              >
+                View
+              </button>
+            </div>
+          </div>
+
+          }
+        </div>
+        } @else {
+        <div class="text-center py-5 text-muted">No services available for this subcategory.</div>
+        } } @else {
+        <div class="text-center py-5 text-muted">Select a subcategory to view services.</div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>

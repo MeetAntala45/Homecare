@@ -1,0 +1,22 @@
+<app-grid-layout
+  title="Service Partners"
+  [currentFilters]="filter"
+  [showFilter]="true"
+  [columns]="columns"
+  [data]="data"
+  [isLoading]="isLoading"
+  [skeletonRowCount]="filter.pageSize"
+  [showActions]="true"
+  [showPagination]="true"
+  [totalCount]="totalCount"
+  [pageNumber]="filter.pageNumber"
+  [pageSize]="filter.pageSize"
+  [sortBy]="filter.sortBy"
+  [sortOrder]="filter.sortOrder"
+  (pageChanged)="onPageChanged($event)"
+  (sortChanged)="onSortChanged($event)"
+  (filterClicked)="openFilter()"
+  (actionClicked)="handleAction($event)"
+  (rowClicked)="onRowClicked($event)"
+>
+</app-grid-layout>

@@ -1,0 +1,55 @@
+
+<div class="payment-backdrop" [class.open]="isOpen" (click)="onCancel()"></div>
+
+
+<div class="payment-modal" [class.open]="isOpen" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
+
+ 
+  <div class="payment-modal__header">
+    <h2 class="payment-modal__title" id="payment-modal-title">Select Payment Method</h2>
+    <button class="payment-modal__close" (click)="onCancel()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="payment-modal__body">
+    <div class="payment-options">
+
+      <button
+        class="payment-chip"
+        [class.selected]="selectedMethod === 2"
+        (click)="selectMethod(2)"
+        type="button"
+        aria-pressed="selectedMethod === 2">
+        Debit Card
+      </button>
+
+      <button
+        class="payment-chip"
+        [class.selected]="selectedMethod === 1"
+        (click)="selectMethod(1)"
+        type="button"
+        [attr.aria-pressed]="selectedMethod === 1">
+        Cash
+      </button>
+
+    </div>
+  </div>
+
+  <div class="payment-modal__footer">
+    <button class="btn-payment-cancel" (click)="onCancel()" type="button">
+      Cancel
+    </button>
+    <button
+      class="btn-payment-save"
+      [class.disabled]="!selectedMethod"
+      [disabled]="!selectedMethod"
+      (click)="onSave()"
+      type="button">
+      Save
+    </button>
+  </div>
+
+</div>

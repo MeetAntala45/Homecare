@@ -1,0 +1,66 @@
+<footer class="footer-bg pt-5 pb-3 fw-semibold">
+  <div class="container">
+    <div class="row gy-4 justify-content-between">
+      <div class="col-12 col-lg-3 text-center text-lg-start">
+        <a routerLink="/customer/home" class="text-decoration-none"><h3 class="fw-bold mb-0">H<span class="text-primary-300">o</span>meCare</h3></a>
+      </div>
+
+      <div class="col-6 col-md-3 col-lg-2 text-center text-md-start">
+        <h6 class="fw-bold mb-3">Company</h6>
+        <ul class="list-unstyled d-flex flex-column gap-2 footer-links mb-0">
+          <li><a class="text-decoration-none text-light-custom">About Us</a></li>
+          <li><a class="text-decoration-none text-light-custom">Terms & Conditions</a></li>
+          <li><a class="text-decoration-none text-light-custom">Privacy Policy</a></li>
+          <li><a class="text-decoration-none text-light-custom">Careers</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-md-3 col-lg-2 text-center text-md-start">
+        <h6 class="fw-bold mb-3">For Customers</h6>
+        <ul class="list-unstyled d-flex flex-column gap-2 footer-links mb-0">
+          <li><a class="text-decoration-none text-light-custom">Reviews</a></li>
+          <li><a class="text-decoration-none text-light-custom">Categories</a></li>
+          <li><a class="text-decoration-none text-light-custom">Blogs</a></li>
+          <li><a (click)="onContactUs()" class="text-decoration-none text-light-custom cursor-pointer">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-md-3 col-lg-2 text-center text-md-start">
+        <h6 class="fw-bold mb-3">For Professionals</h6>
+        <ul class="list-unstyled mb-0 footer-links">
+          <li>
+            <a (click)="onServicePartner()" class="text-decoration-none text-light-custom cursor-pointer">
+              Become a Service Partner
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-md-3 col-lg-2 text-center text-md-start">
+        <h6 class="fw-bold mb-3">Download</h6>
+        <div class="d-flex flex-column align-items-center align-items-lg-start gap-2 app-badges">
+          <img src="/assets/images/app-store.png" class="img-fluid store-badge" alt="App Store" />
+          <img
+            src="/assets/images/google-play.png"
+            class="img-fluid store-badge"
+            alt="Google Play"
+          />
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <div
+      class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 text-center text-md-start"
+    >
+      <p class="mb-0 text-muted small">© Copyright 2026 HomeCare</p>
+
+      <div class="d-flex justify-content-center gap-3 fs-5 social-icons">
+        <i class="bi bi-facebook text-light-custom"></i>
+        <i class="bi bi-instagram text-light-custom"></i>
+        <i class="bi bi-linkedin text-light-custom"></i>
+      </div>
+    </div>
+  </div>
+</footer>

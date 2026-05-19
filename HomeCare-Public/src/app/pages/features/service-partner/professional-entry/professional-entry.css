@@ -1,0 +1,81 @@
+.entry-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  position: relative;
+}
+ 
+.fields-wrap {
+  flex: 1;
+  min-width: 0;
+}
+ 
+.btn-delete {
+  position: absolute;
+  left: calc(100% + 16px);
+  top: 50%;
+  transform: translateY(-50%);
+ 
+  background: #ffffff;
+  border: 2px solid #dde4ee;
+  cursor: pointer;
+  padding: 7px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+ 
+.btn-delete mat-icon {
+  color: #4540e1;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+ 
+.btn-delete:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+ 
+.btn-delete:hover mat-icon {
+  color: #dc2626;
+}
+ 
+@media (max-width: 768px) {
+  .entry-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+ 
+  .btn-delete {
+    position: static;
+    transform: none;
+    margin-top: 8px;
+    align-self: flex-end;
+  }
+}
+ 
+ 
+.field-error {
+  display: block;
+  font-size: 11px;
+  color: #e53935;
+  margin-top: 4px;
+  padding-left: 2px;
+  font-family: var(--font-family-base);
+}
+ 
+::ng-deep .date-field-error .mdc-notched-outline__leading,
+::ng-deep .date-field-error .mdc-notched-outline__notch,
+::ng-deep .date-field-error .mdc-notched-outline__trailing {
+  border-color: #e53935 !important;
+}
+ 
+ 
+::ng-deep .date-field-error .mdc-floating-label,
+::ng-deep .date-field-error .mat-mdc-floating-label {
+  color: #e53935 !important;
+}

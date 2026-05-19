@@ -1,0 +1,206 @@
+@if (type === 'text') {
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+  <input matInput [formControl]="control" [attr.maxlength]="config.maxLength" (input)="limitLength($event)" [placeholder]="placeholder" />
+  @if (suffixText) {
+  <span matSuffix class="field-suffix-text">{{ suffixText }}</span>
+  }
+  @if (hint) {
+  <mat-hint>{{ hint }}</mat-hint>
+  }
+  @if (control.invalid && control.touched) {
+  <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
+</mat-form-field>
+}
+
+@if (type === 'number') {
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+  <input matInput type="number" [formControl]="control" [placeholder]="placeholder" [min]="min" [max]="max" />
+  @if (suffixText) {
+  <span matSuffix class="field-suffix-text">{{ suffixText }}</span>
+  }
+  @if (hint) {
+  <mat-hint>{{ hint }}</mat-hint>
+  }
+  @if (control.invalid && control.touched) {
+  <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
+</mat-form-field>
+}
+
+@if (type === 'select') {
+<mat-form-field appearance="outline" class="w-100 custom-select">
+
+  <mat-label>{{ label }}</mat-label>
+
+  <mat-select #selectRef="matSelect" [formControl]="control" [placeholder]="placeholder"
+    panelClass="custom-dropdown-panel" (selectionChange)="onSelectChange($event.value)">
+
+    @for (option of options; track option.value) {
+    <mat-option [value]="option.value">
+      {{ option.label }}
+    </mat-option>
+    }
+
+  </mat-select>
+
+  <mat-icon matSuffix class="custom-dropdown-icon" [class.rotate]="selectRef.panelOpen">
+    keyboard_arrow_down
+  </mat-icon>
+
+  @if (control.invalid && (control.touched || control.dirty)) {
+  <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
+
+</mat-form-field>
+}
+
+@if (type === 'multi-select') {
+<mat-form-field appearance="outline" class="w-100 custom-select">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select #multiRef="matSelect" multiple [value]="selectedDays" [placeholder]="placeholder"
+    (selectionChange)="onDaysChange($event.value)">
+    @for (day of dayOptions; track day.value) {
+    <mat-option [value]="day.value">
+      {{ day.label }}
+    </mat-option>
+    }
+  </mat-select>
+  <mat-icon matSuffix class="custom-dropdown-icon" [class.rotate]="multiRef.panelOpen">
+    keyboard_arrow_down
+  </mat-icon>
+  @if (hint) {
+  <mat-hint>{{ hint }}</mat-hint>
+  }
+  @if (control.invalid && (control.touched || control.dirty)) {
+  <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
+</mat-form-field>
+}
+
+@if (type === 'textarea') {
+<mat-form-field appearance="outline" class="w-100">
+
+  <mat-label>{{ label }}</mat-label>
+
+  <textarea matInput rows="2" [formControl]="control" [attr.maxlength]="config.maxLength" (input)="limitLength($event)" [placeholder]="placeholder">
+    </textarea>
+
+</mat-form-field>
+}
+
+@if (type === 'time') {
+
+<mat-form-field appearance="outline" class="w-100">
+
+  <mat-label>{{ label }}</mat-label>
+
+  <input matInput [value]="control.value?.split('|')[0]" placeholder="hh:mm" readonly (click)="hiddenPicker.click()" />
+
+  <input #hiddenPicker type="time" hidden (change)="onTimeInputChange($event.target.value)" />
+
+  <div class="time-controls">
+
+    <div class="arrow-controls">
+      <button type="button" (click)="increaseTime()">▲</button>
+      <button type="button" (click)="decreaseTime()">▼</button>
+    </div>
+
+    <div class="ampm-toggle">
+      <span [class.active]="timePeriod==='AM'" (click)="togglePeriod('AM')">
+        AM
+      </span>
+      <span [class.active]="timePeriod==='PM'" (click)="togglePeriod('PM')">
+        PM
+      </span>
+    </div>
+
+  </div>
+
+</mat-form-field>
+
+}
+
+@if (type === 'date') {
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+  <input matInput [matDatepicker]="picker" [formControl]="control" [placeholder]="placeholder" [min]="minDate"
+    readonly /> 
+  <mat-datepicker-toggle matSuffix [for]="picker">
+    <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+  @if (hint) {
+  <mat-hint>{{ hint }}</mat-hint>
+  }
+  @if (control.invalid && control.touched) {
+  <mat-error>{{ getErrorMessage() }}</mat-error>
+  }
+</mat-form-field>
+}
+
+@if (type === 'subcategory-select') {
+  <div class="subcategory-field">
+
+    <mat-form-field appearance="outline" class="w-100 custom-select mb-2">
+      <mat-label>Select Service Type</mat-label>
+      <mat-select
+        #stRef="matSelect"
+        [value]="selectedServiceTypeId"
+        panelClass="custom-dropdown-panel"
+        (selectionChange)="onServiceTypeSelect($event.value)">
+        @for (st of serviceTypeHierarchy; track st.serviceTypeId) {
+          <mat-option [value]="st.serviceTypeId">
+            {{ st.serviceTypeName }}
+          </mat-option>
+        }
+      </mat-select>
+      <mat-icon matSuffix class="custom-dropdown-icon" [class.rotate]="stRef.panelOpen">
+        keyboard_arrow_down
+      </mat-icon>
+    </mat-form-field>
+
+    @if (selectedServiceTypeId && filteredCategories.length) {
+      <div class="level-label">Select Categories</div>
+      <div class="chip-group mb-2">
+        @for (cat of filteredCategories; track cat.categoryId) {
+          <button
+            type="button"
+            class="chip"
+            [class.chip--selected]="isCategorySelected(cat.categoryId)"
+            (click)="onCategoryToggle(cat.categoryId)">
+            {{ cat.categoryName }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (selectedCategoryIds.length && filteredSubcategories.length) {
+      <div class="level-label">Select Subcategories</div>
+      <div class="chip-group">
+        @for (sub of filteredSubcategories; track sub.id) {
+          <button
+            type="button"
+            class="chip"
+            [class.chip--selected]="isSubcategorySelected(sub.id)"
+            (click)="onSubcategoryToggle(sub.id)">
+            {{ sub.name }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (control.invalid && control.touched) {
+      <mat-error class="mat-err">{{ getErrorMessage() }}</mat-error>
+    }
+
+    @if (selectedSubcategoryIds.length) {
+      <div class="selected-summary mt-2">
+        {{ selectedSubcategoryIds.length }} subcategor{{ selectedSubcategoryIds.length === 1 ? 'y' : 'ies' }} selected
+      </div>
+    }
+
+  </div>
+}

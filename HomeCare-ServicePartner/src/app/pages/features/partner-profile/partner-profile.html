@@ -1,0 +1,217 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSaveClick()">
+  <div class="mb-3">
+    <h4 class="fw-bold mb-0">My Profile</h4>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="profile-banner d-flex justify-content-center position-relative">
+      <div class="avatar-wrapper position-absolute" (click)="profileInput.click()">
+        @if(profileImagePreview) {
+        <img [src]="profileImagePreview" class="w-100 h-100 object-fit-cover rounded-circle" alt="Profile" />
+        } @else {
+        <div class="avatar-initials rounded-circle">
+          {{ personalDetailGroup.get('fullName')?.value?.charAt(0)?.toUpperCase() || 'U' }}
+        </div>
+        }
+
+        <div class="avatar-overlay rounded-circle">
+          <i class="bi bi-pencil-fill text-white"></i>
+        </div>
+      </div>
+
+      <input #profileInput type="file" hidden (change)="onProfileImageSelected($event)" />
+    </div>
+
+    <div class="text-center mt-5 pt-3 mb-4 px-3">
+      <h5 class="fw-bold mb-1">{{ personalDetailGroup.get('fullName')?.value || '—' }}</h5>
+      <span class="text-muted small fw-medium">Service Partner</span>
+    </div>
+
+    <div class="card-body px-3 px-md-4 pb-4">
+      <div class="row g-4">
+        <div class="col-12 col-lg-6">
+          <div class="d-flex flex-column gap-4 h-100">
+            <div class="card rounded-4 border h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-4 pb-1">
+                  <span class="section-icon">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <h6 class="fw-bold mb-0">Personal Information</h6>
+                </div>
+
+                <div formGroupName="personalDetail" class="row g-3">
+                  @for (field of personalFields; track field; let j = $index) {
+                  <div class="col-12 col-md-6">
+                    <app-input-fields [config]="field" [control]="getPersonalControl(controlNames[j])">
+                    </app-input-fields>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="card rounded-4 border">
+              <div class="card-body">
+
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="section-icon">
+                    <i class="bi bi-folder2-open"></i>
+                  </span>
+                  <h6 class="fw-bold mb-0">Documents</h6>
+                </div>
+
+                <div class="row g-3">
+
+                  <div class="col-12 col-md-6 ">
+                    <div class="h-100 mt-2">
+                      <app-file-upload (filesChanged)="onFilesChanged($event)">
+                      </app-file-upload>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6 ">
+                    <div class="entries-scroll file-list-box ">
+
+                      @if (existingDocuments.length > 0) {
+                      <div class="d-flex flex-column gap-2 mb-2">
+                        @for (doc of existingDocuments; track doc.id) {
+                        <div class="file-item">
+                          <i class="bi bi-file-earmark-text file-icon"></i>
+
+                          <span class="file-name">
+                            {{ doc.documentName }}.{{ doc.fileType }}
+                          </span>
+
+                          <button type="button" class="doc-remove-btn" (click)="removeExistingDoc(doc.id)">
+                            <mat-icon class="remove-icon">close</mat-icon>
+                          </button>
+                        </div>
+                        }
+                      </div>
+                      }
+
+                      @if (newAttachments.length > 0) {
+                      <div class="d-flex flex-column gap-2">
+                        @for (file of newAttachments; track $index) {
+                        <div class="file-item new-file">
+                          <i class="bi bi-file-earmark-plus text-success"></i>
+
+                          <span class="file-name">
+                            {{ file.fileName }}
+                          </span>
+
+                          <button type="button" class="doc-remove-btn" (click)="newAttachments.splice($index, 1)">
+                            <mat-icon class="remove-icon">close</mat-icon>
+                          </button>
+                        </div>
+                        }
+                      </div>
+                      }
+
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+          <div class="d-flex flex-column gap-4">
+
+            <div class="card rounded-4 border">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="section-icon">
+                      <i class="bi bi-mortarboard"></i>
+                    </span>
+                    <h6 class="fw-bold mb-0">Educational</h6>
+                  </div>
+                  <button class="btn-add rounded-pill px-3 d-flex align-items-center gap-1" type="button" (click)="addEducationEntry()">
+                    <i class="bi bi-plus"></i>
+                    Add
+                  </button>
+                </div>
+
+                <div class="entries-scroll">
+                  <app-education-entry [educationFormArray]="educationFormArray"></app-education-entry>
+                </div>
+              </div>
+            </div>
+
+            <div class="card rounded-4 border">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="section-icon">
+                      <i class="bi bi-briefcase"></i>
+                    </span>
+                    <h6 class="fw-bold mb-0">Professional</h6>
+                  </div>
+                  <button class="btn-add rounded-pill px-3 d-flex align-items-center gap-1" type="button" (click)="addProfessionalEntry()">
+                    <i class="bi bi-plus"></i>
+                    Add
+                  </button>
+                </div>
+
+                <div class="entries-scroll">
+                  <app-professional-entry [professionalFormArray]="professionalFormArray"></app-professional-entry>
+                </div>
+              </div>
+            </div>
+
+            <div class="card rounded-4 border">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="section-icon">
+                      <i class="bi bi-translate"></i>
+                    </span>
+                    <h6 class="fw-bold mb-0">Languages</h6>
+                  </div>
+                  <button class="btn-add rounded-pill px-3 d-flex align-items-center gap-1" type="button" (click)="addLanguageEntry()">
+                    <span class="plus"><i class="bi bi-plus"></i></span>
+                    Add
+                  </button>
+                </div>
+
+                <div class="entries-scroll">
+                  <app-language-entry [languageFormArray]="languageFormArray" [languageOptions]="languageOptions"
+                    [proficiencyOptions]="proficiencyOptions">
+                  </app-language-entry>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="d-flex justify-content-center gap-3 flex-column flex-sm-row mt-3">
+
+            <button type="button" class="btn-cancel px-4 py-2 rounded-3" (click)="onCancelClick()">
+              Cancel
+            </button>
+
+            <button type="submit"
+              class="btn-save px-4 py-2 rounded-3 d-flex align-items-center justify-content-center gap-2"
+              [disabled]="isSubmitting">
+
+              @if (isSubmitting) {
+              <span class="spinner-border spinner-border-sm"></span>
+              }
+
+              Save Changes
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</form>

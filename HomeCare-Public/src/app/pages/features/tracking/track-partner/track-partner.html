@@ -1,0 +1,61 @@
+<div class="tracker-wrapper">
+
+    <div class="tracker-status-bar">
+        <div class="d-flex align-items-center gap-2">
+            @if (isConnecting) {
+            <span class="status-dot connecting"></span>
+            <span class="status-text">Connecting...</span>
+            }@else if (isLocationStopped) {
+            <span class="status-dot offline"></span>
+            <span class="status-text text-danger fw-semibold">Partner stopped sharing location</span>
+            } @else if (isPartnerOnline) {
+            <span class="status-dot online"></span>
+            <span class="status-text">
+                <strong>{{ partnerName }}</strong> is on the way
+            </span>
+            } @else {
+            <span class="status-dot offline"></span>
+            <span class="status-text">Waiting for partner to share location...</span>
+            }
+        </div>
+
+        @if (lastUpdated && isLiveUpdate && !isLocationStopped) {
+        <span class="last-updated">
+            Updated {{ getTimeAgo(lastUpdated) }}
+        </span>
+        }
+    </div>
+    @if (isLocationStopped) {
+        <div class="location-stopped-banner">
+          <div>
+            <div class="fw-semibold">Location sharing paused</div>
+            <div class="small mt-1">
+              Please contact <strong>{{ partnerName }}</strong> to request location sharing
+            </div>
+          </div>
+          <button
+            matTooltip="{{ copiedIndex === 1 ? 'Copied!' : partnerMobileNumber }}"
+            matTooltipPosition="above"
+            #tooltip="matTooltip"
+            (click)="onCallClick(partnerMobileNumber, tooltip)"
+            class="border border-2 rounded-circle px-2 py-1 d-flex align-items-center justify-content-center bg-transparent flex-shrink-0"
+          >
+            <i class="bi bi-telephone telephone-icon"></i>
+          </button>
+        </div>
+      }
+
+    <div #mapContainer class="tracker-map"></div>
+
+    <div class="tracker-legend">
+        <div class="legend-item">
+            <span class="legend-dot purple"></span>
+            <span>{{ partnerName }}</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-dot blue"></span>
+            <span>Your location</span>
+        </div>
+    </div>
+
+</div>

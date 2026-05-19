@@ -1,0 +1,236 @@
+@if (isPageLoading) {
+<div
+  class="d-flex flex-column align-items-center justify-content-center bg-white rounded"
+  style="min-height: 400px; gap: 12px"
+>
+  <div class="spinner-border text-primary-custom" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="text-secondary mb-0 fs-14">Loading...</p>
+</div>
+
+} @else if (partner) {
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <button class="btn p-1 border-0 bg-transparent fs-5 text-secondary" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <h2 class="fw-bold mb-0 h5">{{ partner.fullName }}</h2>
+
+    @if (partner.statusId === 2 || partner.statusId === 3) {
+    <span class="divider"></span>
+
+    <span class="verified-badge"> <i class="bi bi-check-circle me-1"></i> Verified </span>
+    }
+  </div>
+
+  @if (partner.statusId === 1) {
+  <div class="d-flex gap-2">
+    <button class="btn btn-reject-custom" [disabled]="actionLoading" (click)="reject()">
+      <i class="bi bi-x"></i> Reject
+    </button>
+    <button class="btn btn-approve-custom" [disabled]="actionLoading" (click)="approve()">
+      <i class="bi bi-check"></i> Approve
+    </button>
+  </div>
+  }
+</div>
+
+<div class="bg-white rounded-3 p-3 p-md-4">
+  <div class="row g-3">
+    <div class="col-6 col-md-3">
+      <span class="info-label">ID</span>
+      <span class="info-value d-block">{{ partner.id }}</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <span class="info-label">Name</span>
+      <span class="info-value d-block">{{ partner.fullName }}</span>
+    </div>
+    <div class="col-12 col-md-3">
+      <span class="info-label">Mobile Number</span>
+      <span class="info-value d-block">{{ partner.mobileNumber }}</span>
+    </div>
+    <div class="col-12 col-md-3">
+      <span class="info-label">Email</span>
+      <span class="info-value d-block text-truncate" [matTooltip]="partner.email">{{ partner.email }}</span>
+    </div>
+  </div>
+
+  <hr class="my-3 text-light" />
+
+  <div class="row g-3">
+    <div class="col-12 col-md-3">
+      <span class="info-label">Address</span>
+      <span class="info-value d-block address-clamp" [matTooltip]="partner.residentialAddress">
+        {{ partner.residentialAddress.trim() || '—' }}
+      </span>
+    </div>
+    <div class="col-12 col-md-3">
+      <span class="info-label">Job</span>
+      <span class="info-value d-block" [matTooltip]="partner.serviceType">{{ partner.serviceType || '—' }}</span>
+    </div>
+    <div class="col-12 col-md-3">
+      <span class="info-label">Work Experience</span>
+      <span class="info-value d-block">{{ partner.totalExperienceYears }} yrs</span>
+    </div>
+  </div>
+
+  <hr class="my-3 text-light" />
+
+  <div class="row g-3">
+    <div class="col-12 col-md-6">
+      <span class="info-label">Skills</span>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        @for (skill of partner.skills; track skill) {
+        <span
+          class="partner-tag"
+          [class.selected]="selectedTags.has(skill)"
+          (click)="toggleTag(skill)"
+          >• {{ skill }}</span
+        >
+        } @if (!partner.skills.length) {
+        <span class="text-muted fs-14">—</span>
+        }
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <span class="info-label">Services Offered</span>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        @for (service of partner.servicesOffered; track service) {
+        <span
+          class="partner-tag"
+          [class.selected]="selectedTags.has(service)"
+          (click)="toggleTag(service)"
+          >• {{ service }}</span
+        >
+        } @if (!partner.servicesOffered.length) {
+        <span class="text-muted fs-14">—</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-3 text-light" />
+
+  <div class="row g-3">
+    <div class="col-12 col-md-6">
+      <span class="info-label">Languages Spoken</span>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        @for (lang of partner.languages; track lang.language) {
+        <span
+          class="partner-tag"
+          [class.selected]="selectedTags.has(lang.language)"
+          (click)="toggleTag(lang.language)"
+          >• {{ lang.language }}</span
+        >
+        } @if (!partner.languages.length) {
+        <span class="text-muted fs-14">—</span>
+        }
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <span class="info-label">Status</span>
+      <span
+        class="partner-status-badge d-inline-block mt-1"
+        [ngClass]="getStatusClass(partner.statusId)"
+      >
+        • {{ getStatusLabel(partner.statusId) }}
+      </span>
+    </div>
+  </div>
+
+  <hr class="my-3 text-light" />
+
+  <h6 class="fw-bold mb-3">Previous Job Experience</h6>
+  @if (partner.experiences.length) {
+  <div class="row g-3">
+    @for (exp of partner.experiences; track exp.companyName) {
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="experience-card d-flex justify-content-between align-items-center">
+        <div class="experience-info overflow-hidden">
+          <div class="experience-company text-truncate">
+            {{ exp.companyName }}
+          </div>
+          <div class="experience-role">
+            {{ exp.role }}
+          </div>
+        </div>
+
+        <div class="experience-years text-end flex-shrink-0">
+          <div class="experience-value">
+            {{ exp.yearsOfExperience }}
+          </div>
+          <div class="experience-label">yrs</div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <p class="text-muted fs-14">No experience added.</p>
+  }
+
+  <hr class="my-3 text-light" />
+
+  <h6 class="fw-bold mb-3">Documents</h6>
+  @if (partner.documents.length) {
+  <div class="row g-3">
+    @for (doc of partner.documents; track doc.documentName) {
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="doc-card d-flex align-items-center gap-3">
+        <div class="doc-icon-wrap flex-shrink-0">
+          <i class="bi bi-file-earmark-text doc-icon"></i>
+          <span class="doc-type-label">DOC</span>
+        </div>
+
+        <div class="doc-info overflow-hidden flex-grow-1">
+          <div class="doc-name text-truncate">
+            {{ doc.documentName }}
+          </div>
+          <div class="doc-size">
+            {{ formatFileSize(doc.fileSizeKb) }}
+          </div>
+        </div>
+
+        <button
+          class="btn p-0 border-0 bg-transparent doc-download-link flex-shrink-0"
+          (click)="downloadFile(doc.filePath, doc.documentName, doc.fileType)"
+        >
+          <i class="bi bi-download doc-download-icon"></i>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <p class="text-muted fs-14">No documents uploaded.</p>
+  }
+</div>
+
+
+  @if (partner.statusId !== 1 && partner.statusId !== 4) {
+    <hr class="my-3 text-light" />
+  
+    <app-grid-layout
+      title="Assigned Services"
+      [columns]="assignedServiceColumns"
+      [data]="assignedServicesData"
+      [isLoading]="isLoading"
+      [skeletonRowCount]="assignedServiceFilter.pageSize"
+      [showActions]="false"
+      [showPagination]="true"
+      [totalCount]="assignedServiceTotalCount"
+      [pageNumber]="assignedServiceFilter.pageNumber"
+      [pageSize]="assignedServiceFilter.pageSize"
+      [sortBy]="assignedServiceFilter.sortBy"
+      [sortOrder]="assignedServiceFilter.sortOrder"
+      [showFilter]="true"
+      (pageChanged)="onAssignedServicePageChanged($event)"
+      (sortChanged)="onAssignedServiceSortChanged($event)"
+      (filterClicked)="openAssignedServiceFilter()"
+      (rowClicked)="onRowClicked($event)"
+    ></app-grid-layout>
+  
+  }
+}

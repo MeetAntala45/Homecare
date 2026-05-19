@@ -1,0 +1,29 @@
+@for (lang of languageFormArray.controls; track lang; let i = $index) {
+
+  <div class="entry-row">
+
+    <div class="field-item">
+      <app-input-fields
+        [config]="languageFields[0]"
+        [control]="getLanguageGroup(i).get(controlNames[0]) | asFormControlpipe">
+      </app-input-fields>
+    </div>
+
+    <div class="field-item">
+      <app-input-fields
+        [config]="languageFields[1]"
+        [control]="getLanguageGroup(i).get(controlNames[1]) | asFormControlpipe">
+      </app-input-fields>
+    </div>
+
+    @if (languageFormArray.length > 1) {
+      <button class="btn-delete" type="button"
+              (click)="languageFormArray.removeAt(i)"
+              matTooltip="Remove entry">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    }
+
+  </div>
+
+}

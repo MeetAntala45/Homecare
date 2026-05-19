@@ -1,0 +1,43 @@
+<div class="container d-flex flex-column gap-5">
+  <div class="position-relative rounded-4 overflow-hidden services-banner">
+    <img src="/assets/images/servicepage_image.png" class="w-100 h-100 object-fit-cover" alt="Services Banner" />
+    <app-gradient-overlay></app-gradient-overlay>
+    <h2 class="position-absolute top-50 start-50 translate-middle text-white fw-bold display-5 z-1">
+      Services
+    </h2>
+  </div>
+
+  @if (loading) {
+  <div class="text-center py-5">
+    <h5>Loading...</h5>
+  </div>
+  } @else { @if (serviceTypes.length > 0) {
+  <div class="row g-4 g-lg-5 justify-content-start">
+    @for (service of serviceTypes; track service.id) {
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+      <div class="bg-light-custom p-3 p-lg-4 rounded-4 shadow-sm service-card d-flex flex-column cursor-pointer"
+        (click)="onServiceTypeClick(service)">
+        <h5 class="fw-semibold mb-3 mb-lg-4 fs-5 fs-lg-4">
+          {{ service.name | titlecase }}
+        </h5>
+
+        <div class="mt-auto d-flex justify-content-between align-items-end">
+          <div 
+            [matTooltip]="bookingCounts[service.id].toLocaleString()"
+            matTooltipPosition="below">
+            <h6 class="fw-bold mb-0 fs-5 fs-lg-4">{{bookingCounts[service.id] | countFormat}}</h6>
+            <small class="text-light-custom fs-7">Bookings</small>
+          </div>
+
+          <img [src]="service.imagePath" class="service-icon" [alt]="service.name  | titlecase " />
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="text-center py-5">
+    <h5>No services found</h5>
+  </div>
+  } }
+</div>

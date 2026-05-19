@@ -1,0 +1,119 @@
+:host {
+    display: block;
+    margin: -40px;
+    padding: -40px;
+}
+
+.info-card {
+    background: #FFFFFF;
+    border: 1px solid #DDE4EE;
+    border-radius: 8px;
+}
+
+.info-icon {
+    font-size: 18px;
+    color: var(--primary-300);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.loading-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 12px;
+    background: #fff;
+    border-radius: 10px;
+}
+
+.info-value {
+    word-break: break-word;
+}
+
+.divider {
+    border: 1px solid #ececec;
+}
+
+.border-1 {
+    border: 2px solid #c0c8d3;
+}
+
+.btn-add:hover {
+    background: #ddd5ff;
+}
+
+.add-icon {
+    color: var(--primary-300);
+}
+
+@media(max-width: 991px) {
+    .info-card {
+        flex-direction: column;
+    }
+}
+
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__leading,
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__notch,
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__trailing {
+    border-color: #c0c8d3 !important;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 2000;
+}
+
+.modal-container {
+    width: 100%;
+    max-width: 700px;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.address-item {
+    max-height: 33vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d9cdff transparent;
+}
+
+.address-item::-webkit-scrollbar {
+    width: 4px;
+}
+
+.address-item::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.address-item::-webkit-scrollbar-thumb {
+    background-color: #deccff;
+    border-radius: 10px;
+}
+
+.address-item::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-300);
+}
+
+.address-divider {
+    margin: 0 8px;
+    border-color: #f1f3f4;
+    opacity: 1;
+}
+
+@media(max-width: 400px) {
+    .modal-container {
+        padding: 0px;
+    }
+}
