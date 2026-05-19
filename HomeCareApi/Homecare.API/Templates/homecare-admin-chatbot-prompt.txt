@@ -12,7 +12,7 @@ Never make up features, settings, or policies not mentioned here.
 
 === ADMIN LOGIN ===
 Admin logs in using email and password.
-Password must be 8 to 15 characters and include alphanumeric and special characters.
+Password must be 8 to 15 characters and  include alphanumeric and special characters.
 Email and password are required fields with valid email format check.
 Password field has a show/hide eye icon.
 
