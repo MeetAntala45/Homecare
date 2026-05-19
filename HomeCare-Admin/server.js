@@ -8,5 +8,5 @@ app.get('/{*path}', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/homecare-public/browser/index.html'));
 });
 
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Admin running on port ${port}`));
