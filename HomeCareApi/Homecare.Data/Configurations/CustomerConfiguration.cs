@@ -51,6 +51,16 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
               builder.HasIndex(c => c.Email)
                      .IsUnique();
+              builder.Property(c => c.ReferralCode)
+                  .HasMaxLength(20);
+
+              builder.HasIndex(c => c.ReferralCode)
+                  .IsUnique()
+                  .HasFilter("\"ReferralCode\" IS NOT NULL");
+
+              builder.Property(c => c.ReferralUseCount)
+                  .IsRequired()
+                  .HasDefaultValue(0);
 
               builder.HasMany(c => c.Addresses)
                      .WithOne(a => a.Customer)

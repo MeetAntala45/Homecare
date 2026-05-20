@@ -5,6 +5,7 @@ using Homecare.Application.Constants.CustomerAuth;
 using Homecare.Application.DTOs.CustomerAuth;
 using Homecare.Application.Interfaces.Auth;
 using Homecare.Application.Interfaces.CustomerAuth;
+using Homecare.Application.Interfaces.Referral;
 using Homecare.Data;
 using Homecare.Domain.Entities;
 using Homecare.Domain.Enums;
@@ -20,6 +21,8 @@ public class CustomerAuthService : ICustomerAuthService
     private readonly ITokensService _tokenService;
     private readonly IWebHostEnvironment _env;
     private readonly EmailTemplateService _templateService;
+    private readonly IReferralService _referralService;
+
 
 
     public CustomerAuthService(
@@ -27,13 +30,18 @@ public class CustomerAuthService : ICustomerAuthService
     IEmailService emailService,
     ITokensService tokenService,
     IWebHostEnvironment env,
-    EmailTemplateService templateService)
+    EmailTemplateService templateService,
+    IReferralService referralService)
+
+
     {
         _context = context;
         _emailService = emailService;
         _tokenService = tokenService;
         _env = env;
         _templateService = templateService;
+        _referralService = referralService;
+
     }
 
     public async Task<ApiResponse<SendOtpResponse>> SendOtpAsync(SendOtpRequest request)
@@ -174,6 +182,8 @@ public class CustomerAuthService : ICustomerAuthService
 
         bool isNewUser;
 
+        string? referralMessage = null;
+
         if (customer == null)
         {
             customer = new Customer
@@ -188,6 +198,16 @@ public class CustomerAuthService : ICustomerAuthService
             await _context.SaveChangesAsync();
 
             isNewUser = true;
+
+            await _referralService.EnsureReferralCodeAsync(customer.Id, customer.Name);
+            await _referralService.EnsureWalletAsync(customer.Id);
+
+            if (!string.IsNullOrWhiteSpace(request.ReferralCode))
+            {
+                var (success, msg) = await _referralService.ApplyReferralAtSignupAsync(
+                    request.ReferralCode, customer.Id);
+                referralMessage = success ? msg : null;
+            }
         }
         else
         {
@@ -199,12 +219,13 @@ public class CustomerAuthService : ICustomerAuthService
                 customer.ModifiedAt = DateTime.UtcNow;
                 customer.ModifiedBy = null;
             }
+
         }
 
         otp.CustomerId = customer.Id;
 
         var previousTokens = await _context.RefreshTokens
-            .Where(r => r.CustomerId == customer.Id && r.AdminId == null  && !r.IsRevoked)
+            .Where(r => r.CustomerId == customer.Id && r.AdminId == null && !r.IsRevoked)
             .ToListAsync();
 
         foreach (var token in previousTokens)
@@ -225,6 +246,10 @@ public class CustomerAuthService : ICustomerAuthService
         _context.RefreshTokens.Add(refreshToken);
         await _context.SaveChangesAsync();
 
+        var updatedCustomer = await _context.Customers
+            .AsNoTracking()
+            .FirstAsync(c => c.Id == customer.Id);
+
         return ApiResponse<VerifyOtpResponse>.SuccessResponse(
             isNewUser ? CustomerAuthMessages.SignUpSuccess : CustomerAuthMessages.LoginSuccess,
             new VerifyOtpResponse
@@ -232,7 +257,8 @@ public class CustomerAuthService : ICustomerAuthService
                 AccessToken = accessToken,
                 RefreshToken = refreshTokenValue,
                 RefreshTokenExpiry = refreshToken.ExpiresAt,
-                IsNewUser = isNewUser
+                IsNewUser = isNewUser,
+                ReferralCode = updatedCustomer.ReferralCode
             }
         );
     }
@@ -268,7 +294,7 @@ public class CustomerAuthService : ICustomerAuthService
         foreach (var token in otherTokens)
             token.IsRevoked = true;
 
-         await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return ApiResponse<VerifyOtpResponse>.SuccessResponse(
             CustomerAuthMessages.TokenRefreshed,

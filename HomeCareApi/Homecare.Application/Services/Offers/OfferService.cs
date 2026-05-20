@@ -46,7 +46,6 @@ public class OfferService : IOfferService
             Description = dto.Description?.Trim(),
             DiscountPct = dto.DiscountPct,
             Status = CouponStatus.Active,
-            UsageCount = 0,
             CreatedBy = adminId,
             CreatedAt = DateTime.UtcNow,
             Conditions = (dto.Conditions ?? new()).Select(c => new CouponCondition

@@ -1,5 +1,6 @@
-export interface IVerifyOtpRequest{
-    name: string;
-    email: string;
-    otpCode: string
+export interface IVerifyOtpRequest {
+  name: string;
+  email: string;
+  otpCode: string;
+  referralCode?: string;
 }

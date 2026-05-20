@@ -42,10 +42,6 @@ namespace Homecare.Data.Configurations
             builder.Property(a => a.IsDeleted)
                    .IsRequired()
                    .HasDefaultValue(false);
-
-            builder.Property(c => c.UsageCount)
-                .IsRequired()
-                .HasDefaultValue(0);
                 
             builder.Property(c => c.ModifiedBy);
 

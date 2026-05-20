@@ -79,6 +79,8 @@ export class Checkout implements OnInit {
   pendingLat = 20.5937;
   pendingLng = 78.9629;
   pendingAddress = '';
+  walletBalance = 0;
+useWallet     = false;
 
   addressModal: AddressModalState = 'none';
 
@@ -176,6 +178,8 @@ export class Checkout implements OnInit {
       next: (res) => {
         if (res.success && res.data) {
           this.email = res.data.email.toLowerCase();
+          this.walletBalance = res.data.walletBalance ?? 0;
+
           const defaultAddress = res.data?.addresses;
           if (defaultAddress) {
             this.selectedAddress = res.data.addresses?.at(-1) ?? null;
@@ -190,6 +194,10 @@ export class Checkout implements OnInit {
     document.body.style.overflow = 'hidden';
   }
 
+  onWalletToggled(value: boolean): void {
+    this.useWallet = value;
+    this.loadSummary();   // reload to show updated total
+  }
   closeAllModals() {
     this.activeModal = 'none';
     this.editMode = false;
@@ -422,6 +430,8 @@ export class Checkout implements OnInit {
       slotStartTime: this.selectedSlot.startTime,
       slotEndTime: this.selectedSlot.endTime,
       paymentMethod: this.selectedPayment.method,
+      useWallet: this.useWallet   // ← ADD
+
     };
 
     this.bookingService.createBooking(dto).subscribe({

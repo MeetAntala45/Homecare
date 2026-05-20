@@ -1,4 +1,14 @@
-import { Component, ElementRef, EventEmitter, inject, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { IAvailableCouponResponse } from '../../../../core/models/checkout/available-coupon.response';
 import { CommonModule } from '@angular/common';
 import { TruncateTooltipDirective } from '../../../../shared/directives/truncate-tooltip';
@@ -21,12 +31,18 @@ interface SliderState {
   styleUrl: './payment-summary.css',
 })
 export class PaymentSummary implements AfterViewInit, OnChanges {
-
   @ViewChild('sliderRef') sliderRef!: ElementRef<HTMLElement>;
   @ViewChild('couponSlider') couponSlider!: ElementRef<HTMLDivElement>;
 
   @Input() coupons: IAvailableCouponResponse[] = [];
   @Input() selectedCouponCode: string | null = null;
+  @Input() walletBalance: number = 0;
+  @Input() useWallet: boolean = false;
+  @Output() walletToggled = new EventEmitter<boolean>();
+
+  toggleWallet(): void {
+    this.walletToggled.emit(!this.useWallet);
+  }
   @Output() couponApplied = new EventEmitter<IAvailableCouponResponse>();
   @Output() couponRemoved = new EventEmitter<void>();
 
@@ -36,7 +52,7 @@ export class PaymentSummary implements AfterViewInit, OnChanges {
     taxAmount: 0,
     discountAmount: 0,
     totalAmount: 0,
-    taxPct: 0
+    taxPct: 0,
   };
 
   ngAfterViewInit(): void {

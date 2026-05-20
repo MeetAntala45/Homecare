@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy } from '@angular/core';
-import { InputComponent } from "../../../../shared/components/input-component/input-component";
+import { InputComponent } from '../../../../shared/components/input-component/input-component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
@@ -19,9 +19,7 @@ import { CUSTOMER_ACCESS_TOKEN_KEY } from '../../../../core/constants/environmen
   templateUrl: './verify-otp.html',
   styleUrl: './verify-otp.css',
 })
-
 export class VerifyOtp implements OnDestroy {
-
   email: string = '';
   name: string = '';
   isSubmitting = false;
@@ -34,6 +32,7 @@ export class VerifyOtp implements OnDestroy {
   private cooldownInterval: ReturnType<typeof setInterval> | undefined;
   private readonly OTP_SENT_KEY = 'otp_sent_at';
   private readonly ACCESS_TOKEN_KEY = CUSTOMER_ACCESS_TOKEN_KEY;
+  referralCode = '';
 
   constructor(
     private router: Router,
@@ -41,11 +40,15 @@ export class VerifyOtp implements OnDestroy {
     private toaster: Toaster,
     private otpStateService: OtpStateService,
     private otpTimer: OtpTimerService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.email = history.state.email || localStorage.getItem(LOGIN_MESSAGES.STORAGE_KEYS.OTP_EMAIL) || '';
-    this.name = history.state.name || localStorage.getItem(LOGIN_MESSAGES.STORAGE_KEYS.OTP_NAME) || '';
+    this.referralCode =
+      history.state.referralCode || localStorage.getItem('pending_referral_code') || '';
+    this.email =
+      history.state.email || localStorage.getItem(LOGIN_MESSAGES.STORAGE_KEYS.OTP_EMAIL) || '';
+    this.name =
+      history.state.name || localStorage.getItem(LOGIN_MESSAGES.STORAGE_KEYS.OTP_NAME) || '';
     const remaining = this.otpTimer.getRemainingSeconds();
     if (remaining > 0) {
       this.resendCooldown = remaining;
@@ -56,8 +59,8 @@ export class VerifyOtp implements OnDestroy {
   otpForm = new FormGroup({
     otp: new FormControl<string>('', {
       nonNullable: true,
-      validators: [Validators.required]
-    })
+      validators: [Validators.required],
+    }),
   });
 
   get otpControl(): FormControl<string> {
@@ -81,8 +84,8 @@ export class VerifyOtp implements OnDestroy {
     this.otpControl.markAsUntouched();
     const req: ISendOtpRequest = {
       name: this.name,
-      email: this.email
-    }
+      email: this.email,
+    };
     this.auth.sendOtp(req).subscribe({
       next: (res) => {
         this.isSubmitting = false;
@@ -94,8 +97,8 @@ export class VerifyOtp implements OnDestroy {
           this.startCountdown();
           this.otpStateService.setOtpRequested(true);
           this.router.navigate(['/login/verify-otp'], {
-            state: { email: this.email, name: this.name }
-          })
+            state: { email: this.email, name: this.name },
+          });
         } else if (res.data?.isRateLimited) {
           this.isRateLimited = true;
           this.resendCooldown = 0;
@@ -106,13 +109,14 @@ export class VerifyOtp implements OnDestroy {
           this.startCountdown();
           this.toaster.error(res.message);
         }
-      }, error: (err) => {
+      },
+      error: (err) => {
         this.isResending = false;
         const message = err.error?.errors
-              ? Object.values(err.error.errors).flat().join('\n')
-              : err.error?.message ?? 'error';
-            this.toaster.error(message);
-      }
+          ? Object.values(err.error.errors).flat().join('\n')
+          : err.error?.message ?? 'error';
+        this.toaster.error(message);
+      },
     });
   }
 
@@ -121,13 +125,13 @@ export class VerifyOtp implements OnDestroy {
       this.otpForm.markAllAsTouched();
       return;
     }
-    this.isSubmitting = true
+    this.isSubmitting = true;
     const req: IVerifyOtpRequest = {
       name: this.name,
       email: this.email,
-      otpCode: this.otpForm.value.otp!
-    }
-
+      otpCode: this.otpForm.value.otp!,
+      referralCode: this.referralCode || undefined,
+    };
     this.auth.verifyOtp(req).subscribe({
       next: (res) => {
         this.isSubmitting = false;
@@ -137,9 +141,14 @@ export class VerifyOtp implements OnDestroy {
           localStorage.removeItem(LOGIN_MESSAGES.STORAGE_KEYS.OTP_EMAIL);
           localStorage.removeItem(LOGIN_MESSAGES.STORAGE_KEYS.OTP_NAME);
           localStorage.setItem(this.ACCESS_TOKEN_KEY, res.data.accessToken);
+          localStorage.removeItem('pending_referral_code');
+
           this.auth.setLoggedIn(true);
+          if (res.data.isNewUser && this.referralCode) {
+            this.referralCode = '';
+          }
           history.replaceState({}, '', '/verify-otp');
-          localStorage.removeItem(this.OTP_SENT_KEY)
+          localStorage.removeItem(this.OTP_SENT_KEY);
           this.router.navigate(['customer/home']);
           this.toaster.success(res.message);
         } else {
@@ -149,11 +158,11 @@ export class VerifyOtp implements OnDestroy {
       error: (err) => {
         this.isSubmitting = false;
         const message = err.error?.errors
-              ? Object.values(err.error.errors).flat().join('\n')
-              : err.error?.message ?? 'error';
-            this.toaster.error(message);
-      }
-    })
+          ? Object.values(err.error.errors).flat().join('\n')
+          : err.error?.message ?? 'error';
+        this.toaster.error(message);
+      },
+    });
   }
 
   ngOnDestroy() {

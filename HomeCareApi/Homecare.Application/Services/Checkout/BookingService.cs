@@ -13,6 +13,7 @@ using Homecare.Application.Hubs;
 using Homecare.Application.DTOs.Notifications;
 using Microsoft.Extensions.Logging;
 using Homecare.Application.Interfaces.Bookings;
+using Homecare.Application.Interfaces.Referral;
 
 namespace Homecare.Application.Services.Checkout;
 
@@ -25,10 +26,17 @@ public class BookingService : IBookingService
     private readonly IPartnerNotificationService _partnerNotificationService;
 
     private readonly ILogger<BookingService> _logger;
-    public BookingService(AppDbContext context, RuleEngine ruleEngine,
-    IHubContext<BookingHub> hubContext, ILogger<BookingService> logger,
-    INotificationService notificationService,
-    IPartnerNotificationService partnerNotificationService)
+    // Add to constructor parameters:
+    private readonly IReferralService _referralService;
+
+    public BookingService(
+        AppDbContext context,
+        RuleEngine ruleEngine,
+        IHubContext<BookingHub> hubContext,
+        ILogger<BookingService> logger,
+        INotificationService notificationService,
+        IPartnerNotificationService partnerNotificationService,
+        IReferralService referralService)   // ← ADD
     {
         _context = context;
         _ruleEngine = ruleEngine;
@@ -36,6 +44,7 @@ public class BookingService : IBookingService
         _logger = logger;
         _notificationService = notificationService;
         _partnerNotificationService = partnerNotificationService;
+        _referralService = referralService;          // ← ADD
     }
 
 
@@ -159,6 +168,17 @@ public class BookingService : IBookingService
 
         decimal totalAmount = servicePrice + taxAmount - discountAmount;
 
+        decimal refereeDiscount = await _referralService.GetRefereeFirstBookingDiscountAsync(customerId);
+        if (refereeDiscount > 0 && totalAmount - refereeDiscount > 0)
+        {
+            totalAmount -= refereeDiscount;
+            discountAmount += refereeDiscount;
+        }
+        else
+        {
+            refereeDiscount = 0;
+        }
+
 
         var booking = new Booking
         {
@@ -187,11 +207,25 @@ public class BookingService : IBookingService
         try
         {
             await _context.SaveChangesAsync();
+
         }
         catch (DbUpdateException)
         {
 
             throw new Exception(CheckoutBookingMessages.SlotUnavailable);
+        }
+        decimal walletAmountUsed = 0;
+        if (dto.UseWallet)
+        {
+            walletAmountUsed = await _referralService.UseWalletAsync(
+                customerId, booking.TotalAmount, booking.Id);
+
+            if (walletAmountUsed > 0)
+            {
+                booking.TotalAmount -= walletAmountUsed;
+                booking.ModifiedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
         }
 
         if (dto.PaymentMethod == PaymentMethod.Cash)
@@ -210,7 +244,6 @@ public class BookingService : IBookingService
             await _context.SaveChangesAsync();
             await NotifyAdminsAsync(booking, customerId);
         }
-
         var data = new CreateBookingResponseDto
         {
             BookingId = booking.Id,
@@ -221,7 +254,8 @@ public class BookingService : IBookingService
             PaymentMethod = dto.PaymentMethod,
             BookingStatus = booking.BookingStatus,
             PaymentStatus = booking.PaymentStatus,
-            CouponCode = couponCode
+            CouponCode = couponCode,
+            WalletAmountUsed = walletAmountUsed   // ← ADD
         };
 
         string message = dto.PaymentMethod == Homecare.Domain.Enums.PaymentMethod.DebitCard

@@ -1,3 +1,5 @@
+// Homecare.Application/DTOs/Checkout/CreateBookingResponseDto.cs — ADD WalletAmountUsed
+// (modify existing file)
 using Homecare.Domain.Enums;
 
 namespace Homecare.Application.DTOs.Checkout;
@@ -12,5 +14,6 @@ public class CreateBookingResponseDto
     public PaymentMethod PaymentMethod { get; set; }
     public BookingStatus BookingStatus { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
-    public string? CouponCode {get; set;}
+    public string? CouponCode { get; set; }
+    public decimal WalletAmountUsed { get; set; }
 }

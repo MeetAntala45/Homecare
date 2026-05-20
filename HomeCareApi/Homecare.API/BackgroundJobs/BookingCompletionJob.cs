@@ -1,4 +1,5 @@
 using Homecare.Application.Interfaces.Payments;
+using Homecare.Application.Interfaces.Referral;
 using Homecare.Data;
 using Homecare.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,11 @@ public class BookingCompletionJob : BackgroundService
 
                 var context = scope.ServiceProvider
                     .GetRequiredService<AppDbContext>();
+                var referralService = scope.ServiceProvider
+                    .GetRequiredService<IReferralService>();
+
+
+                await ProcessReferrerRewardsAsync(context, referralService);
 
                 var now = DateTime.Now;
                 var today = DateOnly.FromDateTime(now);
@@ -90,7 +96,7 @@ public class BookingCompletionJob : BackgroundService
                 if (nextEventAt.HasValue)
                 {
                     var timeUntilEvent = nextEventAt.Value - now
-                        + TimeSpan.FromSeconds(5); 
+                        + TimeSpan.FromSeconds(5);
 
                     delay = timeUntilEvent < MaxDelay ? timeUntilEvent : MaxDelay;
 
@@ -120,6 +126,32 @@ public class BookingCompletionJob : BackgroundService
                 await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
 
+        }
+    }
+    private async Task ProcessReferrerRewardsAsync(
+    AppDbContext context, IReferralService referralService)
+    {
+        // Find bookings that just became Completed in the last 10 minutes
+        // and have a pending referral on the referee
+        var recentlyCompleted = await context.Bookings
+            .AsNoTracking()
+            .Where(b =>
+                b.BookingStatus == BookingStatus.Completed &&
+                b.ModifiedAt >= DateTime.UtcNow.AddMinutes(-10))
+            .Select(b => b.Id)
+            .ToListAsync();
+
+        foreach (var bookingId in recentlyCompleted)
+        {
+            try
+            {
+                await referralService.ProcessReferrerRewardAsync(bookingId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Failed to process referrer reward for booking {BookingId}", bookingId);
+            }
         }
     }
 }

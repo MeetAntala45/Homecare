@@ -1,27 +1,63 @@
 .login-box {
-    width: 400px;
+  width: 400px;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .right-img {
-    width: 100%;
-    height: 100vh;
-    object-fit: cover;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
 }
 
 .or-divider::after,
 .or-divider::before {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background-color: var(--border-light);
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-light);
 }
 
-::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__leading,
-::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__notch,
-::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid) .mdc-notched-outline__trailing {
-    border-color: #c0c8d3 !important;
+::ng-deep
+  .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid)
+  .mdc-notched-outline__leading,
+::ng-deep
+  .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid)
+  .mdc-notched-outline__notch,
+::ng-deep
+  .mdc-text-field--outlined:not(.mdc-text-field--focused):not(.mdc-text-field--invalid)
+  .mdc-notched-outline__trailing {
+  border-color: #c0c8d3 !important;
+}
+
+.referral-toggle-row {
+  padding: 6px 2px;
+}
+
+.referral-switch {
+  cursor: pointer;
+  width: 2.4em;
+  height: 1.3em;
+}
+
+.referral-switch:checked {
+  background-color: var(--primary-300);
+  border-color: var(--primary-300);
+}
+
+.referral-code-field {
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

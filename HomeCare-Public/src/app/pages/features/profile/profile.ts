@@ -15,6 +15,8 @@ import { IAddressRequest } from '../../../core/models/profile/IAddressRequest';
 import { ProfileService } from '../../../core/services/profile/profile-service';
 import { DeleteConfirmation } from '../../../shared/components/delete-confirmation/delete-confirmation';
 import { PROFILE_MESSAGES } from '../../../core/constants/profile-messages';
+import { IReferralInfo, IWallet } from '../../../core/models/referral/IReferral';
+import { ReferralService } from '../../../core/services/referral/referral-service';
 
 @Component({
   selector: 'app-profile',
@@ -31,9 +33,14 @@ export class Profile implements OnInit {
 
   showSearchModal = false;
   showMapModal = false;
+  referralInfo: IReferralInfo | null = null;
+  wallet: IWallet | null = null;
+  referralCopied = false;
 
   ngOnInit(): void {
     this.loadProfile();
+    this.loadReferral();
+    this.loadWallet();
   }
 
   pendingLat: number = 20.5937;
@@ -43,7 +50,7 @@ export class Profile implements OnInit {
   actions: IActionItem[] = [
     { label: 'Edit', icon: 'bi-pencil', action: 'edit' },
     { label: 'Delete', icon: 'bi-trash', action: 'delete' },
-  ]
+  ];
 
   addresses: ISavedAddress[] = [];
   isLoading = false;
@@ -53,7 +60,8 @@ export class Profile implements OnInit {
     private otpStateService: OtpStateService,
     private dialog: MatDialog,
     private toaster: Toaster,
-  ) { }
+    private referralSvc: ReferralService
+  ) {}
 
   loadProfile() {
     this.isLoading = true;
@@ -62,7 +70,7 @@ export class Profile implements OnInit {
         if (res.success && res.data) {
           this.email = res.data.email.toLowerCase();
           this.mobileNumber = res.data.mobileNumber ?? '';
-          this.addresses = res.data.addresses
+          this.addresses = res.data.addresses;
         } else {
           this.toaster.error(res.message);
         }
@@ -70,20 +78,64 @@ export class Profile implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.toaster.error(err.message)
-      }
-    })
+        this.toaster.error(err.message);
+      },
+    });
   }
-  
+  loadReferral(): void {
+    this.referralSvc.getReferralInfo().subscribe({
+      next: (res) => {
+        if (res.success) this.referralInfo = res.data;
+      },
+    });
+  }
+
+  loadWallet(): void {
+    this.referralSvc.getWallet().subscribe({
+      next: (res) => {
+        if (res.success) this.wallet = res.data;
+      },
+    });
+  }
+
+  copyReferralCode(): void {
+    if (!this.referralInfo?.referralCode) return;
+    navigator.clipboard.writeText(this.referralInfo.referralCode).then(() => {
+      this.referralCopied = true;
+      setTimeout(() => (this.referralCopied = false), 2000);
+    });
+  }
+
+  shareReferralCode(): void {
+    if (!this.referralInfo?.referralCode) return;
+    const url = `${window.location.origin}/login?ref=${this.referralInfo.referralCode}`;
+    if (navigator.share) {
+      navigator.share({ title: 'HomeCare', text: 'Use my code to get $2 off!', url });
+    } else {
+      navigator.clipboard.writeText(url);
+      this.toaster.success('Referral link copied!');
+    }
+  }
+  getRefereeStatusClass(status: string): string {
+    switch (status) {
+      case 'Rewarded':
+        return 'badge-rewarded';
+      case 'Cancelled':
+        return 'badge-cancelled';
+      default:
+        return 'badge-pending-ref';
+    }
+  }
+
   onChangeEmailClick() {
     if (this.otpStateService.isEmailChangeOtpActive()) {
       const pendingEmail = this.otpStateService.getPendingEmail()!;
-      this.openVerifyEmailOtpModal(pendingEmail?.toLowerCase() || "your new email"); 
+      this.openVerifyEmailOtpModal(pendingEmail?.toLowerCase() || 'your new email');
     } else {
       this.openChangeEmailModal();
     }
   }
-  
+
   openPhoneModal() {
     const modalData: IFormModalData = {
       title: this.mobileNumber ? 'Change Mobile Number' : 'Add Mobile Number',
@@ -91,11 +143,10 @@ export class Profile implements OnInit {
       submitLabel: 'Save',
       initialData: { newMobileNumber: this.mobileNumber },
       onSubmit: ({ newMobileNumber }) => {
-
-        if (newMobileNumber == this.mobileNumber){
-            this.toaster.error(PROFILE_MESSAGES.MOBILE_NUMBER.NEW_MOBILE_VALIDATION);
-            dialogRef.close();
-            return of(null);
+        if (newMobileNumber == this.mobileNumber) {
+          this.toaster.error(PROFILE_MESSAGES.MOBILE_NUMBER.NEW_MOBILE_VALIDATION);
+          dialogRef.close();
+          return of(null);
         }
 
         return this.profileService.updateMobile(newMobileNumber).pipe(
@@ -108,45 +159,47 @@ export class Profile implements OnInit {
               this.toaster.error(res.message);
             }
           })
-        )
-      }
+        );
+      },
     };
     const dialogRef = this.dialog.open(FormModal, { data: modalData, width: '450px' });
   }
-  
+
   openChangeEmailModal() {
     const modalData: IFormModalData = {
       title: 'Change Email',
       fields: [{ name: 'newEmail', label: 'New Email', type: 'email', required: true }],
       submitLabel: 'Get OTP',
-      initialData: { newEmail: this.email }, 
+      initialData: { newEmail: this.email },
       onSubmit: ({ newEmail }) => {
-        const normalizedEmail = newEmail?.toLowerCase(); 
-        
-        if (normalizedEmail === this.email) { 
+        const normalizedEmail = newEmail?.toLowerCase();
+
+        if (normalizedEmail === this.email) {
           this.toaster.error(PROFILE_MESSAGES.EMAIL.NEW_EMAIL_VALIDATION);
           dialogRef.close();
           return of(null);
         }
-        
+
         return this.profileService.requestEmailChange({ newEmail: normalizedEmail }).pipe(
           tap((res) => {
             if (res.success) {
               this.toaster.success(res.message);
               this.otpStateService.setEmailChangeOtpRequested(normalizedEmail);
-              this.otpStateService.setEmailChangeExpiresAt(res.data?.expiresAt ?? res.data?.ExpiresAt);
+              this.otpStateService.setEmailChangeExpiresAt(
+                res.data?.expiresAt ?? res.data?.ExpiresAt
+              );
               dialogRef.close();
-              this.openVerifyEmailOtpModal(normalizedEmail); 
+              this.openVerifyEmailOtpModal(normalizedEmail);
             } else {
               this.toaster.error(res.message);
             }
           })
         );
-      }
+      },
     };
     const dialogRef = this.dialog.open(FormModal, { data: modalData, width: '450px' });
   }
-  
+
   openVerifyEmailOtpModal(pendingEmail: string) {
     const modalData: IFormModalData = {
       title: 'Verify OTP',
@@ -157,7 +210,7 @@ export class Profile implements OnInit {
         this.profileService.verifyEmailChange({ newEmail: pendingEmail, otp }).pipe(
           tap((res) => {
             if (res.success) {
-              this.email = pendingEmail; 
+              this.email = pendingEmail;
               this.otpStateService.clearEmailChangeOtp();
               this.toaster.success(res.message);
               dialogRef.close();
@@ -165,7 +218,7 @@ export class Profile implements OnInit {
               this.toaster.error(res.message);
             }
           })
-        )
+        ),
     };
     const dialogRef = this.dialog.open(FormModal, { data: modalData, width: '450px' });
   }
@@ -191,14 +244,16 @@ export class Profile implements OnInit {
       width: '400px',
       disableClose: true,
       data: {
-        message: PROFILE_MESSAGES.ADDRESS.DELETE_ADDRESS_CONFIRMATION + ` <strong>${address.houseFlatNo},${address.landmark}</strong>?`,
-        apiCall: () => this.profileService.deleteAddress(address.id!)
-      }
+        message:
+          PROFILE_MESSAGES.ADDRESS.DELETE_ADDRESS_CONFIRMATION +
+          ` <strong>${address.houseFlatNo},${address.landmark}</strong>?`,
+        apiCall: () => this.profileService.deleteAddress(address.id!),
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.loadProfile()
+        this.loadProfile();
       }
     });
   }
@@ -230,7 +285,7 @@ export class Profile implements OnInit {
         label: address.label,
         latitude: address.latitude,
         longitude: address.longitude,
-        displayName: address.displayName
+        displayName: address.displayName,
       };
       this.profileService.editAddress(address.id, dto).subscribe({
         next: (res) => {
@@ -245,7 +300,7 @@ export class Profile implements OnInit {
             this.editData = null;
           }
         },
-        error: () => this.toaster.error(PROFILE_MESSAGES.ADDRESS.UPDATE_ADDRESS_FAIL)
+        error: () => this.toaster.error(PROFILE_MESSAGES.ADDRESS.UPDATE_ADDRESS_FAIL),
       });
     } else {
       const dto: IAddressRequest = {
@@ -254,7 +309,7 @@ export class Profile implements OnInit {
         label: address.label,
         latitude: address.latitude,
         longitude: address.longitude,
-        displayName: address.displayName
+        displayName: address.displayName,
       };
       this.profileService.addAddress(dto).subscribe({
         next: (res) => {
@@ -267,10 +322,9 @@ export class Profile implements OnInit {
             this.showMapModal = false;
           }
         },
-        error: () => this.toaster.error(PROFILE_MESSAGES.ADDRESS.SAVE_ADDRESS_FAIL)
+        error: () => this.toaster.error(PROFILE_MESSAGES.ADDRESS.SAVE_ADDRESS_FAIL),
       });
     }
-
   }
 
   closeAllModals() {
@@ -280,5 +334,4 @@ export class Profile implements OnInit {
     this.editData = null;
     document.body.style.overflow = '';
   }
-
 }

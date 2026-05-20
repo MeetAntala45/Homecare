@@ -227,9 +227,16 @@
     </div>
 
     <div class="col-12 col-lg-5">
-      <app-payment-summary [summary]="summary" [coupons]="coupons" [selectedCouponCode]="selectedCouponCode"
-      (couponApplied)="onCouponApplied($event)" (couponRemoved)="onCouponRemoved()">
-    </app-payment-summary>
+      <app-payment-summary
+  [summary]="summary"
+  [coupons]="coupons"
+  [selectedCouponCode]="selectedCouponCode"
+  [walletBalance]="walletBalance"
+  [useWallet]="useWallet"
+  (couponApplied)="onCouponApplied($event)"
+  (couponRemoved)="onCouponRemoved()"
+  (walletToggled)="onWalletToggled($event)">
+</app-payment-summary>
     </div>
   </div>
   <app-ai-chatbot></app-ai-chatbot>

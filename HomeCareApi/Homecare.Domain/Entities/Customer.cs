@@ -18,4 +18,6 @@ public class Customer
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public ICollection<Address> Addresses { get; set; } = new List<Address>();
     public ICollection<OtpVerification> OtpVerifications { get; set; } = new List<OtpVerification>();
+    public string? ReferralCode { get; set; }
+public int ReferralUseCount { get; set; } = 0;   
 }

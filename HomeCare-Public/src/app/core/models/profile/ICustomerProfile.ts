@@ -4,4 +4,6 @@ export interface ICustomerProfile {
   email: string;
   mobileNumber: string | null;
   addresses: ISavedAddress[];
+  referralCode?: string;
+  walletBalance?: number;
 }

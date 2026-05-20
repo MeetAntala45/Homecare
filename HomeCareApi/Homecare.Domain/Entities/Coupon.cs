@@ -9,7 +9,6 @@ public class Coupon
     public string? Description { get; set; }
     public decimal DiscountPct { get; set; }
     public CouponStatus Status { get; set; } = CouponStatus.Active;
-    public int UsageCount { get; set; } = 0;
     public int CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public int? ModifiedBy { get; set; }

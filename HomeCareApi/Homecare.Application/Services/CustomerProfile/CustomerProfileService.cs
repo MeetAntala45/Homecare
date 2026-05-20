@@ -5,6 +5,7 @@ using Homecare.Application.Constants.CustomerProfile;
 using Homecare.Application.DTOs.CustomerProfile;
 using Homecare.Application.Interfaces.Auth;
 using Homecare.Application.Interfaces.CustomerProfile;
+using Homecare.Application.Interfaces.Referral;
 using Homecare.Data;
 using Homecare.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +20,10 @@ public class CustomerProfileService : ICustomerProfileService
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _config;
     private readonly EmailTemplateService _templateService;
+    private readonly IReferralService _referralService;
 
-    public CustomerProfileService(AppDbContext context, IEmailService emailService, HttpClient httpClient, IConfiguration config, EmailTemplateService templateService)
+
+    public CustomerProfileService(AppDbContext context, IEmailService emailService, HttpClient httpClient, IConfiguration config, EmailTemplateService templateService, IReferralService referralService)
 
     {
         _context = context;
@@ -28,6 +31,8 @@ public class CustomerProfileService : ICustomerProfileService
         _httpClient = httpClient;
         _config = config;
         _templateService = templateService;
+        _referralService = referralService;
+
     }
 
     public async Task<ApiResponse<CustomerProfileDto>> GetProfileAsync(int customerId)
@@ -36,6 +41,14 @@ public class CustomerProfileService : ICustomerProfileService
             .AsNoTracking()
             .Include(c => c.Addresses)
             .FirstOrDefaultAsync(c => c.Id == customerId);
+
+        var walletBalance = 0m;
+        var wallet = await _context.CustomerWallets
+            .AsNoTracking()
+            .FirstOrDefaultAsync(w => w.CustomerId == customerId);
+
+        if (wallet != null)
+            walletBalance = wallet.Balance;
 
         if (customer == null)
             return ApiResponse<CustomerProfileDto>.Fail(CustomerProfileMessages.CustomerNotFound);
@@ -53,7 +66,9 @@ public class CustomerProfileService : ICustomerProfileService
                 DisplayName = a.DisplayName,
                 Latitude = a.Latitude,
                 Longitude = a.Longitude
-            }).ToList()
+            }).ToList(),
+            ReferralCode = customer.ReferralCode,
+            WalletBalance = walletBalance
         };
 
         return ApiResponse<CustomerProfileDto>.SuccessResponse(CustomerProfileMessages.ProfileFetched, dto);
@@ -192,8 +207,8 @@ public class CustomerProfileService : ICustomerProfileService
                 a.Latitude == dto.Latitude &&
                 a.Longitude == dto.Longitude &&
                 a.HouseFlatNo.Trim().ToLower() == dto.HouseFlatNo.Trim().ToLower() &&
-                a.Landmark.Trim().ToLower() == dto.Landmark.Trim().ToLower());    
-                            
+                a.Landmark.Trim().ToLower() == dto.Landmark.Trim().ToLower());
+
             if (isDuplicateAddress)
             {
                 return ApiResponse<string>.Fail(CustomerProfileMessages.AddressAlreadyExists);

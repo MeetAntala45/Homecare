@@ -3,6 +3,7 @@ using System;
 using Homecare.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Homecare.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520081934_RemoveCouponUsageCount")]
+    partial class RemoveCouponUsageCount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -626,15 +629,6 @@ namespace Homecare.Data.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
-                    b.Property<string>("ReferralCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<int>("ReferralUseCount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -651,41 +645,7 @@ namespace Homecare.Data.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("ReferralCode")
-                        .IsUnique()
-                        .HasFilter("\"ReferralCode\" IS NOT NULL");
-
                     b.ToTable("customers", (string)null);
-                });
-
-            modelBuilder.Entity("Homecare.Domain.Entities.CustomerWallet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Balance")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId")
-                        .IsUnique();
-
-                    b.ToTable("customer_wallets", (string)null);
                 });
 
             modelBuilder.Entity("Homecare.Domain.Entities.OtpVerification", b =>
@@ -1392,51 +1352,6 @@ namespace Homecare.Data.Migrations
                     b.ToTable("recent_searches", (string)null);
                 });
 
-            modelBuilder.Entity("Homecare.Domain.Entities.ReferralUse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("RefereeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ReferralCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<int>("ReferrerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("RewardBookingId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("RewardedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RefereeId")
-                        .IsUnique();
-
-                    b.HasIndex("ReferralCode");
-
-                    b.HasIndex("ReferrerId");
-
-                    b.ToTable("referral_uses", (string)null);
-                });
-
             modelBuilder.Entity("Homecare.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -1929,41 +1844,6 @@ namespace Homecare.Data.Migrations
                     b.ToTable("supports", (string)null);
                 });
 
-            modelBuilder.Entity("Homecare.Domain.Entities.WalletTransaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
-
-                    b.Property<int?>("ReferenceId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("WalletId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WalletId");
-
-                    b.ToTable("wallet_transactions", (string)null);
-                });
-
             modelBuilder.Entity("Homecare.Domain.Entities.Address", b =>
                 {
                     b.HasOne("Homecare.Domain.Entities.Customer", "Customer")
@@ -2072,17 +1952,6 @@ namespace Homecare.Data.Migrations
                     b.Navigation("ConditionType");
 
                     b.Navigation("Coupon");
-                });
-
-            modelBuilder.Entity("Homecare.Domain.Entities.CustomerWallet", b =>
-                {
-                    b.HasOne("Homecare.Domain.Entities.Customer", "Customer")
-                        .WithOne()
-                        .HasForeignKey("Homecare.Domain.Entities.CustomerWallet", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Homecare.Domain.Entities.OtpVerification", b =>
@@ -2276,25 +2145,6 @@ namespace Homecare.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Homecare.Domain.Entities.ReferralUse", b =>
-                {
-                    b.HasOne("Homecare.Domain.Entities.Customer", "Referee")
-                        .WithMany()
-                        .HasForeignKey("RefereeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Homecare.Domain.Entities.Customer", "Referrer")
-                        .WithMany()
-                        .HasForeignKey("ReferrerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Referee");
-
-                    b.Navigation("Referrer");
-                });
-
             modelBuilder.Entity("Homecare.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("Homecare.Domain.Entities.Admin", "Admin")
@@ -2388,17 +2238,6 @@ namespace Homecare.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Homecare.Domain.Entities.WalletTransaction", b =>
-                {
-                    b.HasOne("Homecare.Domain.Entities.CustomerWallet", "Wallet")
-                        .WithMany("Transactions")
-                        .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Wallet");
-                });
-
             modelBuilder.Entity("Homecare.Domain.Entities.Admin", b =>
                 {
                     b.Navigation("RefreshTokens");
@@ -2428,11 +2267,6 @@ namespace Homecare.Data.Migrations
                     b.Navigation("OtpVerifications");
 
                     b.Navigation("RefreshTokens");
-                });
-
-            modelBuilder.Entity("Homecare.Domain.Entities.CustomerWallet", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Homecare.Domain.Entities.PartnerNotification", b =>

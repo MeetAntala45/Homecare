@@ -46,6 +46,9 @@ namespace Homecare.Data
         public DbSet<PartnerLeave> PartnerLeaves { get; set; }
         public DbSet<PartnerSystemNotification> PartnerSystemNotifications { get; set; }
         public DbSet<AdminSystemNotification> AdminSystemNotifications { get; set; }
+        public DbSet<CustomerWallet> CustomerWallets { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
+        public DbSet<ReferralUse> ReferralUses { get; set; }
         // public DbSet<PartnerLocation> PartnerLocations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
