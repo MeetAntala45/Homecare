@@ -46,7 +46,7 @@
     </div>
 
     @if (partner.safeImage) {
-    <img [src]="baseUrl + partner.profileImage" class="partner-avatar" [alt]="">
+    <img [src]="partner.profileImage" class="partner-avatar" [alt]="">
     } @else {
     <div class="partner-avatar partner-initials" [style.background-color]="getAvatarColor(partner.name)">
         {{ getInitials(partner.name) }}

@@ -53,7 +53,9 @@
     </div>
     <div class="col-12 col-md-3">
       <span class="info-label">Email</span>
-      <span class="info-value d-block text-truncate" [matTooltip]="partner.email">{{ partner.email }}</span>
+      <span class="info-value d-block text-truncate" [matTooltip]="partner.email">{{
+        partner.email
+      }}</span>
     </div>
   </div>
 
@@ -68,14 +70,37 @@
     </div>
     <div class="col-12 col-md-3">
       <span class="info-label">Job</span>
-      <span class="info-value d-block" [matTooltip]="partner.serviceType">{{ partner.serviceType || '—' }}</span>
+      <span class="info-value d-block" [matTooltip]="partner.serviceType">{{
+        partner.serviceType || '—'
+      }}</span>
     </div>
     <div class="col-12 col-md-3">
       <span class="info-label">Work Experience</span>
       <span class="info-value d-block">{{ partner.totalExperienceYears }} yrs</span>
     </div>
-  </div>
+    <div class="col-12 col-md-3">
+      <span class="info-label">Ratings</span>
+      @if (partner.totalReviews > 0) {
+      <span
+        class="rating-summary-pill d-flex align-items-center gap-2 pe-3 py-2"
+        [ngClass]="getRatingColorClass(partner.averageRating)"
+      >
+        <i class="bi bi-star-fill rating-star-sm"></i>
+        <span class="fw-bold">{{ partner.averageRating }}</span>
+        <span class="rating-divider">|</span>
+        <span class="fw-semibold">{{ getRatingLabel(partner.averageRating) }}</span>
+        <span class="fw-semibold"
+          >({{ partner.totalReviews }}
+          {{ partner.totalReviews === 1 ? 'review' : 'reviews' }})</span
+        >
+      </span>
+      } @else {
+      <p class="text-muted fs-14">No ratings yet.</p>
+      }
+    </div>
 
+    <hr class="my-3 text-light" />
+  </div>
   <hr class="my-3 text-light" />
 
   <div class="row g-3">
@@ -208,29 +233,27 @@
   }
 </div>
 
+@if (partner.statusId !== 1 && partner.statusId !== 4) {
+<hr class="my-3 text-light" />
 
-  @if (partner.statusId !== 1 && partner.statusId !== 4) {
-    <hr class="my-3 text-light" />
-  
-    <app-grid-layout
-      title="Assigned Services"
-      [columns]="assignedServiceColumns"
-      [data]="assignedServicesData"
-      [isLoading]="isLoading"
-      [skeletonRowCount]="assignedServiceFilter.pageSize"
-      [showActions]="false"
-      [showPagination]="true"
-      [totalCount]="assignedServiceTotalCount"
-      [pageNumber]="assignedServiceFilter.pageNumber"
-      [pageSize]="assignedServiceFilter.pageSize"
-      [sortBy]="assignedServiceFilter.sortBy"
-      [sortOrder]="assignedServiceFilter.sortOrder"
-      [showFilter]="true"
-      (pageChanged)="onAssignedServicePageChanged($event)"
-      (sortChanged)="onAssignedServiceSortChanged($event)"
-      (filterClicked)="openAssignedServiceFilter()"
-      (rowClicked)="onRowClicked($event)"
-    ></app-grid-layout>
-  
-  }
-}
+<app-grid-layout
+  title="Assigned Services"
+  [columns]="assignedServiceColumns"
+  [data]="assignedServicesData"
+  [isLoading]="isLoading"
+  [skeletonRowCount]="assignedServiceFilter.pageSize"
+  [showActions]="false"
+  [showPagination]="true"
+  [totalCount]="assignedServiceTotalCount"
+  [pageNumber]="assignedServiceFilter.pageNumber"
+  [pageSize]="assignedServiceFilter.pageSize"
+  [sortBy]="assignedServiceFilter.sortBy"
+  [sortOrder]="assignedServiceFilter.sortOrder"
+  [showFilter]="true"
+  (pageChanged)="onAssignedServicePageChanged($event)"
+  (sortChanged)="onAssignedServiceSortChanged($event)"
+  (filterClicked)="openAssignedServiceFilter()"
+  (rowClicked)="onRowClicked($event)"
+></app-grid-layout>
+
+} }

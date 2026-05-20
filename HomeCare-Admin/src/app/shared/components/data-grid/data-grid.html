@@ -83,6 +83,18 @@
                       </span>
                     </ng-container>
                   }
+                  @if(col.type === 'rating'){
+                    <div class="d-flex align-items-center gap-1">
+                      @for(star of [1,2,3,4,5]; track star){
+                        <i class="bi bi-star-fill"
+                           [style.color]="row[col.field] >= star
+                                          ? getRatingStarColor(row[col.field])
+                                          : '#e5e7eb'"
+                           style="font-size: 13px;">
+                        </i>
+                      }
+                    </div>
+                  }
                   @if(col.type === 'partner-status'){
                     <ng-container>
                       <span class="badge-status" [ngClass]="row[col.field + 'Class']">

@@ -21,23 +21,23 @@ import { API_BASE_URL } from '../../../../core/constants/environment-config';
   styleUrl: './service-detail.css',
 })
 export class ServiceDetail implements OnInit {
-  private route                  = inject(ActivatedRoute);
-  private router                 = inject(Router);
-  private location               = inject(Location);
-  private dialog                 = inject(MatDialog);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private location = inject(Location);
+  private dialog = inject(MatDialog);
   private serviceManagementService = inject(ServiceManagementService);
-  private toaster                = inject(Toaster);
+  private toaster = inject(Toaster);
 
-  service:       IService | null = null;
-  subCategories: ISubCategory[]  = [];
-  isLoading      = false;
+  service: IService | null = null;
+  subCategories: ISubCategory[] = [];
+  isLoading = false;
 
-  private categoryId:    number = 0;
+  private categoryId: number = 0;
   private serviceTypeId: number = 0;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.categoryId    = Number(this.route.snapshot.queryParamMap.get('categoryId')    ?? 0);
+    this.categoryId = Number(this.route.snapshot.queryParamMap.get('categoryId') ?? 0);
     this.serviceTypeId = Number(this.route.snapshot.queryParamMap.get('serviceTypeId') ?? 0);
     if (id) this.loadService(id);
   }
@@ -77,18 +77,18 @@ export class ServiceDetail implements OnInit {
     if (!this.service) return;
 
     const data: ServiceDialogData = {
-      categoryName:    this.service.categoryName    ?? '',
-      categoryId:      this.categoryId,
-      subCategories:   this.subCategories,
+      categoryName: this.service.categoryName ?? '',
+      categoryId: this.categoryId,
+      subCategories: this.subCategories,
       serviceTypeName: this.service.serviceTypeName ?? '',
-      service:         this.service as any,
+      service: this.service as any,
     };
 
     this.dialog
       .open(ServiceAddEditDialog, {
-        width:        '720px',
-        maxWidth:     '100vw',
-        maxHeight:    '90vh',
+        width: '720px',
+        maxWidth: '100vw',
+        maxHeight: '90vh',
         data,
         disableClose: true,
       })
@@ -110,14 +110,11 @@ export class ServiceDetail implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(
-      ['/admin/service-management'],
-      {
-        queryParams: {
-          expandedServiceTypeId: this.serviceTypeId,
-          activeCategoryId:      this.categoryId,
-        },
-      }
-    );
+    this.router.navigate(['/admin/service-management'], {
+      queryParams: {
+        expandedServiceTypeId: this.serviceTypeId,
+        activeCategoryId: this.categoryId,
+      },
+    });
   }
 }

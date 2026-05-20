@@ -145,4 +145,93 @@ public class ReviewService : IReviewService
 
         return ApiResponse<PartnerReviewSummaryDto>.SuccessResponse("Reviews fetched", summary);
     }
+
+    public async Task<ApiResponse<AdminReviewPagedResult>> GetAdminReviewsAsync(
+    AdminReviewFilterDto filter)
+    {
+        try
+        {
+            var query = _context.Reviews
+                .AsNoTracking()
+                .Include(r => r.Customer)
+                .Include(r => r.Partner)
+                .Include(r => r.Booking)
+                    .ThenInclude(b => b.Service)
+                .AsQueryable();
+
+
+            if (!string.IsNullOrWhiteSpace(filter.CustomerName))
+                query = query.Where(r =>
+                    r.Customer.Name.ToLower()
+                        .Contains(filter.CustomerName.ToLower().Trim()));
+
+            if (!string.IsNullOrWhiteSpace(filter.PartnerName))
+                query = query.Where(r =>
+                    r.Partner.FullName.ToLower()
+                        .Contains(filter.PartnerName.ToLower().Trim()));
+
+            if (!string.IsNullOrWhiteSpace(filter.ServiceName))
+                query = query.Where(r =>
+                    r.Booking.Service.Name.ToLower()
+                        .Contains(filter.ServiceName.ToLower().Trim()));
+
+            if (filter.MinRating.HasValue)
+                query = query.Where(r => r.Rating >= filter.MinRating.Value);
+
+            if (filter.MaxRating.HasValue)
+                query = query.Where(r => r.Rating <= filter.MaxRating.Value);
+
+
+            bool isDesc = string.IsNullOrWhiteSpace(filter.SortOrder) ||
+                          filter.SortOrder.ToLower() == "desc";
+
+            query = filter.SortBy?.ToLower() switch
+            {
+                "bookingid" => isDesc ? query.OrderByDescending(r => r.BookingId)
+                                         : query.OrderBy(r => r.BookingId),
+                "customername" => isDesc ? query.OrderByDescending(r => r.Customer.Name)
+                                         : query.OrderBy(r => r.Customer.Name),
+                "partnername" => isDesc ? query.OrderByDescending(r => r.Partner.FullName)
+                                         : query.OrderBy(r => r.Partner.FullName),
+                "servicename" => isDesc ? query.OrderByDescending(r => r.Booking.Service.Name)
+                                         : query.OrderBy(r => r.Booking.Service.Name),
+                "rating" => isDesc ? query.OrderByDescending(r => r.Rating)
+                                         : query.OrderBy(r => r.Rating),
+                "createdat" => isDesc ? query.OrderByDescending(r => r.CreatedAt)
+                                         : query.OrderBy(r => r.CreatedAt),
+                _ => query.OrderByDescending(r => r.BookingId)
+            };
+
+            int totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .Select(r => new AdminReviewListDto
+                {
+                    Id = r.Id,
+                    BookingId = r.BookingId,
+                    CustomerName = r.Customer.Name,
+                    PartnerName = r.Partner.FullName,
+                    ServiceName = r.Booking.Service.Name,
+                    Rating = r.Rating,
+                    ReviewText = r.ReviewText,
+                    CreatedAt = r.CreatedAt
+                })
+                .ToListAsync();
+
+            return ApiResponse<AdminReviewPagedResult>.SuccessResponse(
+                "Reviews fetched successfully.",
+                new AdminReviewPagedResult
+                {
+                    Data = items,
+                    TotalCount = totalCount
+                });
+        }
+        catch (Exception ex)
+        {
+            return ApiResponse<AdminReviewPagedResult>.Fail(
+                ex.InnerException?.Message ?? ex.Message);
+        }
+    }
 }

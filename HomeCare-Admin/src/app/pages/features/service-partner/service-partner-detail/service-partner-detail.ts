@@ -1,4 +1,3 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { Location, NgClass } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,7 +12,10 @@ import { GridLayout } from '../../../../shared/components/grid-layout/grid-layou
 import { FilterPanel } from '../../../../shared/components/filter-panel/filter-panel';
 import { IGridColumn } from '../../../../core/models/shared-components/IDataGridModel';
 import { IFilterPanelData } from '../../../../core/models/shared-components/IFilterPanel';
-import { IPartnerAssignedService, IPartnerAssignedServiceFilter } from '../../../../core/models/service-partner/partner-assigned-service';
+import {
+  IPartnerAssignedService,
+  IPartnerAssignedServiceFilter,
+} from '../../../../core/models/service-partner/partner-assigned-service';
 import { API_BASE_URL } from '../../../../core/constants/environment-config';
 
 @Component({
@@ -24,7 +26,6 @@ import { API_BASE_URL } from '../../../../core/constants/environment-config';
   styleUrl: './service-partner-detail.css',
 })
 export class ServicePartnerDetail implements OnInit {
-
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private servicePartnerService = inject(ServicePartnerService);
@@ -32,14 +33,11 @@ export class ServicePartnerDetail implements OnInit {
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
-
-
   partner: IServicePartnerDetail | null = null;
   isPageLoading = false;
   isLoading = true;
   actionLoading = false;
   selectedTags = new Set<string>();
-
 
   assignedServiceColumns: IGridColumn[] = [
     { header: 'Name', field: 'serviceName', type: 'text', width: '14%', sortable: true },
@@ -63,7 +61,6 @@ export class ServicePartnerDetail implements OnInit {
     status: '',
   };
 
-
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
@@ -71,7 +68,6 @@ export class ServicePartnerDetail implements OnInit {
       this.loadAssignedServices(id);
     }
   }
-
 
   loadPartner(id: number): void {
     this.isPageLoading = true;
@@ -87,10 +83,11 @@ export class ServicePartnerDetail implements OnInit {
         this.isPageLoading = false;
         this.toaster.error(err?.error?.message ?? SERVICE_PARTNER_MESSAGES.LOAD_DETAIL_FAILED);
       },
-      complete: () => { this.isPageLoading = false; },
+      complete: () => {
+        this.isPageLoading = false;
+      },
     });
   }
-
 
   loadAssignedServices(partnerId: number): void {
     this.isLoading = true;
@@ -117,7 +114,7 @@ export class ServicePartnerDetail implements OnInit {
       },
       complete: () => {
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -140,13 +137,15 @@ export class ServicePartnerDetail implements OnInit {
         { key: 'date', label: 'Date', type: 'date', allowFuture: true },
         { key: 'time', label: 'Time', type: 'time' },
         {
-          key: 'status', label: 'Status', type: 'select',
+          key: 'status',
+          label: 'Status',
+          type: 'select',
           options: [
             { label: 'Pending', value: 'Pending' },
             { label: 'Completed', value: 'Completed' },
             { label: 'Cancelled', value: 'Cancelled' },
             { label: 'InProgress', value: 'InProgress' },
-            { label: 'Onleave', value:'Onleave' }
+            { label: 'Onleave', value: 'Onleave' },
           ],
         },
       ],
@@ -193,7 +192,6 @@ export class ServicePartnerDetail implements OnInit {
     });
   }
 
-
   approve(): void {
     if (!this.partner) return;
     this.actionLoading = true;
@@ -209,7 +207,9 @@ export class ServicePartnerDetail implements OnInit {
       error: (err: any) => {
         this.toaster.error(err?.error?.message ?? SERVICE_PARTNER_MESSAGES.GENERIC_ERROR);
       },
-      complete: () => { this.actionLoading = false; },
+      complete: () => {
+        this.actionLoading = false;
+      },
     });
   }
 
@@ -228,11 +228,32 @@ export class ServicePartnerDetail implements OnInit {
       error: (err: any) => {
         this.toaster.error(err?.error?.message ?? SERVICE_PARTNER_MESSAGES.GENERIC_ERROR);
       },
-      complete: () => { this.actionLoading = false; },
+      complete: () => {
+        this.actionLoading = false;
+      },
     });
   }
 
+  getRatingLabel(avg: number): string {
+    if (avg >= 4.5) return 'Excellent';
+    if (avg >= 4) return 'Very Good';
+    if (avg >= 3) return 'Good';
+    if (avg >= 2) return 'Fair';
+    return avg > 0 ? 'Poor' : 'No ratings yet';
+  }
 
+  getStarArray(rating: number): { filled: boolean; half: boolean }[] {
+    return Array.from({ length: 5 }, (_, i) => ({
+      filled: i < Math.floor(rating),
+      half: i === Math.floor(rating) && rating % 1 >= 0.5,
+    }));
+  }
+
+  getRatingColorClass(avg: number): string {
+    if (avg >= 4) return 'rating-green';
+    if (avg >= 3) return 'rating-yellow';
+    return avg > 0 ? 'rating-red' : 'rating-none';
+  }
   toggleTag(tag: string): void {
     if (this.selectedTags.has(tag)) this.selectedTags.delete(tag);
     else this.selectedTags.add(tag);
@@ -240,13 +261,13 @@ export class ServicePartnerDetail implements OnInit {
 
   goBack(): void {
     const returnTo = this.route.snapshot.queryParams['returnTo'];
-  
+
     if (returnTo) {
       this.router.navigateByUrl(returnTo);
     } else {
       const currentQueryParams = this.route.snapshot.queryParams;
       this.router.navigate(['/admin/service-partners'], {
-        queryParams: currentQueryParams
+        queryParams: currentQueryParams,
       });
     }
   }
@@ -261,7 +282,7 @@ export class ServicePartnerDetail implements OnInit {
       [ServicePartnerStatus.Active]: 'status--active',
       [ServicePartnerStatus.Inactive]: 'status--inactive',
       [ServicePartnerStatus.Rejected]: 'status--rejected',
-      [ServicePartnerStatus.Onleave]: 'status--onleave'
+      [ServicePartnerStatus.Onleave]: 'status--onleave',
     };
     return map[statusId] ?? '';
   }
@@ -272,7 +293,7 @@ export class ServicePartnerDetail implements OnInit {
       [ServicePartnerStatus.Active]: 'Active',
       [ServicePartnerStatus.Inactive]: 'Inactive',
       [ServicePartnerStatus.Rejected]: 'Rejected',
-      [ServicePartnerStatus.Onleave]: 'Onleave'
+      [ServicePartnerStatus.Onleave]: 'Onleave',
     };
     return map[statusId] ?? '';
   }
@@ -299,7 +320,7 @@ export class ServicePartnerDetail implements OnInit {
   onRowClicked(row: IPartnerAssignedService): void {
     if (!row.customerId) return;
     this.router.navigate(['/admin/customer-users', row.customerId], {
-      queryParams: { returnTo: `/admin/service-partners/${this.partner!.id}` }
+      queryParams: { returnTo: `/admin/service-partners/${this.partner!.id}` },
     });
   }
 }

@@ -80,4 +80,10 @@ export class DataGrid {
       default:            return 'badge-booking-default';
     }
   }
+
+  getRatingStarColor(rating: number): string {
+    if (rating >= 4) return '#1a8a4a';
+    if (rating >= 3) return '#b07d00';
+    return '#c0392b';
+  }
 }

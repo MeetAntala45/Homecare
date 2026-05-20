@@ -29,4 +29,6 @@ export interface IServicePartnerDetail {
   servicesOffered: string[];
   languages: IPartnerLanguage[];
   documents: IPartnerDocument[];
+  averageRating: number;
+  totalReviews: number;
 }

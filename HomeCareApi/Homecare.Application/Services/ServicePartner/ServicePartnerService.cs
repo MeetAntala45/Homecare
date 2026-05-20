@@ -468,6 +468,17 @@ public class ServicePartnerService : IServicePartnerService
             .Select(st => st.Name)
             .FirstOrDefaultAsync() ?? string.Empty;
 
+        var reviewStats = await _context.Reviews
+            .AsNoTracking()
+            .Where(r => r.PartnerId == id && !r.IsDeleted)
+            .GroupBy(r => r.PartnerId)
+            .Select(g => new
+            {
+                AverageRating = Math.Round((decimal)g.Average(r => r.Rating), 1),
+                TotalReviews = g.Count()
+            })
+            .FirstOrDefaultAsync();
+
         var dto = new ServicePartnerDetailResponseDto
         {
             Id = partner.Id,
@@ -507,6 +518,9 @@ public class ServicePartnerService : IServicePartnerService
                 FileSizeKb = d.FileSizeKb,
                 FileType = d.FileType,
             }).ToList(),
+
+            AverageRating = reviewStats?.AverageRating ?? 0,
+            TotalReviews = reviewStats?.TotalReviews ?? 0,
         };
 
         return ApiResponse<ServicePartnerDetailResponseDto>.SuccessResponse(

@@ -386,3 +386,8 @@
     transform: translateX(100%);
   }
 }
+
+.rating-num {
+  font-size: 12px;
+  font-weight: 700;
+}

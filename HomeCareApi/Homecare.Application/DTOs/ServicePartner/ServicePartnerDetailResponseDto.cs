@@ -16,6 +16,8 @@ public class ServicePartnerDetailResponseDto
     public List<string> ServicesOffered { get; set; } = new();
     public List<PartnerLanguagesResponseDto> Languages { get; set; } = new();
     public List<PartnerDocumentsResponseDto> Documents { get; set; } = new();
+    public decimal AverageRating { get; set; } = 0;
+    public int TotalReviews { get; set; } = 0;
 }
 public class PartnerExperiencesResponseDto
 {

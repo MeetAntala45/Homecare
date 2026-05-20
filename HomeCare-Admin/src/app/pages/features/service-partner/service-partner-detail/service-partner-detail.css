@@ -113,7 +113,6 @@
   border-color: #d1d5db;
 }
 
-
 .partner-status-badge {
   display: inline-block;
   padding: 2px 12px;
@@ -138,7 +137,7 @@
   color: #dc2626;
 }
 
-.status--onleave{
+.status--onleave {
   background-color: rgba(59, 130, 246, 0.12);
   color: #2563eb;
 }
@@ -239,4 +238,42 @@
 
 .doc-download-icon {
   font-size: 18px;
+}
+
+.rating-summary-pill {
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+}
+
+.rating-green {
+  color: #1a8a4a;
+}
+.rating-yellow {
+  color: #b07d00;
+}
+.rating-red {
+  color: #c0392b;
+}
+.rating-none {
+  color: #6b7280;
+}
+
+.rating-divider {
+  opacity: 0.35;
+  margin: 0 2px;
+}
+.rating-count-text {
+  opacity: 0.65;
+  font-weight: 400;
+}
+
+.rating-star-sm {
+  font-size: 0.75rem;
+  color: inherit;
+}
+
+.rating-star-md {
+  font-size: 0.9rem;
+  color: #f5a623;
 }

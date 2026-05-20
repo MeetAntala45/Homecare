@@ -1,0 +1,20 @@
+<app-grid-layout
+  title="Reviews & Ratings"
+  [showFilter]="true"
+  [currentFilters]="filter"
+  [columns]="columns"
+  [data]="data"
+  [isLoading]="isLoading"
+  [skeletonRowCount]="filter.pageSize"
+  [showActions]="false"
+  [showPagination]="true"
+  [totalCount]="totalCount"
+  [pageNumber]="filter.pageNumber"
+  [pageSize]="filter.pageSize"
+  [sortBy]="filter.sortBy"
+  [sortOrder]="filter.sortOrder"
+  (pageChanged)="onPageChanged($event)"
+  (sortChanged)="onSortChanged($event)"
+  (filterClicked)="openFilter()"
+>
+</app-grid-layout>

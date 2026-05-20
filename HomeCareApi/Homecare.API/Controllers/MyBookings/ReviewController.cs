@@ -49,5 +49,13 @@ namespace Homecare.API.Controllers.MyBookings
         {
             return await _reviewService.GetPartnerReviewsAsync(_currentUser.UserId);
         }
+
+        [HttpGet("all-reviews")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        public async Task<ApiResponse<AdminReviewPagedResult>> GetAdminReviews(
+            [FromQuery] AdminReviewFilterDto filter)
+        {
+            return await _reviewService.GetAdminReviewsAsync(filter);
+        }
     }
 }

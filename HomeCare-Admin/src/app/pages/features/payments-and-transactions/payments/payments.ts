@@ -19,7 +19,6 @@ import { IExportConfig } from '../../../../core/models/shared-components/IExport
   styleUrl: './payments.css',
 })
 export class Payments implements OnInit {
-
   totalCount = 0;
   minAmount = 0;
   maxAmount = 0;
@@ -29,16 +28,36 @@ export class Payments implements OnInit {
   MESSAGES = PAYMENT_TRANSACTION_MESSAGES;
 
   columns: IGridColumn[] = [
-    { header: 'Payment ID', field: 'id', type: 'text', width: '11%', sortable: true},
+    { header: 'Payment ID', field: 'id', type: 'id', width: '11%', sortable: true },
     { header: 'User', field: 'user', type: 'text', width: '12%', sortable: true },
-    { header: 'Transaction ID', field: 'transactionId', type: 'text', width: '23%', sortable: false },
-    { header: 'Booking ID', field: 'bookingId', type: 'text', width: '10%', sortable: true },
+    {
+      header: 'Transaction ID',
+      field: 'transactionId',
+      type: 'text',
+      width: '23%',
+      sortable: false,
+    },
+    { header: 'Booking ID', field: 'bookingId', type: 'id', width: '10%', sortable: true },
     { header: 'Mobile Number', field: 'mobileNumber', type: 'text', width: '13%', sortable: false },
     { header: 'Service', field: 'service', type: 'text', width: '20%', sortable: true },
-    { header: 'Amount', field: 'amount', type: 'currency', width: '9%', sortable: true, isPositiveAmount: true },
-    { header: 'Payment Method', field: 'paymentMethod', type: 'text', width: '12%', height: '59px', sortable: false },
+    {
+      header: 'Amount',
+      field: 'amount',
+      type: 'currency',
+      width: '9%',
+      sortable: true,
+      isPositiveAmount: true,
+    },
+    {
+      header: 'Payment Method',
+      field: 'paymentMethod',
+      type: 'text',
+      width: '12%',
+      height: '59px',
+      sortable: false,
+    },
   ];
-  
+
   filter: IPaymentFilterRequest = {
     pageNumber: 1,
     pageSize: 10,
@@ -47,7 +66,7 @@ export class Payments implements OnInit {
     userName: '',
     minAmount: null as number | null,
     maxAmount: null as number | null,
-    paymentMethod: ''
+    paymentMethod: '',
   };
 
   exportConfig: IExportConfig = {
@@ -61,9 +80,9 @@ export class Payments implements OnInit {
       paymentMethod: this.filter.paymentMethod,
       sortBy: this.filter.sortBy,
       sortOrder: this.filter.sortOrder,
-      pageNumber: this.filter.pageNumber,  
-      pageSize: this.filter.pageSize
-    })
+      pageNumber: this.filter.pageNumber,
+      pageSize: this.filter.pageSize,
+    }),
   };
 
   constructor(
@@ -74,8 +93,7 @@ export class Payments implements OnInit {
   ) {}
 
   ngOnInit(): void {
-        
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (Object.keys(params).length > 0) {
         this.filter.pageNumber = Number(params['pageNumber']) || 1;
         this.filter.pageSize = Number(params['pageSize']) || 10;
@@ -90,7 +108,7 @@ export class Payments implements OnInit {
         if (this.activeFilters['minAmount'] || this.activeFilters['maxAmount']) {
           this.activeFilters['amount'] = {
             min: this.filter.minAmount,
-            max: this.filter.maxAmount
+            max: this.filter.maxAmount,
           };
         }
       }
@@ -104,7 +122,7 @@ export class Payments implements OnInit {
 
     const params: any = {};
 
-    Object.keys(this.filter).forEach(key => {
+    Object.keys(this.filter).forEach((key) => {
       const value = (this.filter as any)[key];
       if (value !== null && value !== '') {
         params[key] = value;
@@ -125,7 +143,7 @@ export class Payments implements OnInit {
           mobileNumber: p.mobileNumber ?? '-',
           service: p.serviceName,
           amount: p.amount,
-          paymentMethod: p.paymentMethod
+          paymentMethod: p.paymentMethod,
         }));
       },
       error: (err) => {
@@ -134,7 +152,7 @@ export class Payments implements OnInit {
       },
       complete: () => {
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -165,7 +183,7 @@ export class Payments implements OnInit {
           type: 'range',
           min: this.minAmount,
           max: this.maxAmount,
-          prefix: '$'
+          prefix: '$',
         },
         {
           key: 'paymentMethod',
@@ -173,11 +191,11 @@ export class Payments implements OnInit {
           type: 'select',
           options: [
             { label: 'Cash', value: 'Cash' },
-            { label: 'Debit Card', value: 'DebitCard' }
-          ]
-        }
+            { label: 'Debit Card', value: 'DebitCard' },
+          ],
+        },
       ],
-      initialValues: this.activeFilters
+      initialValues: this.activeFilters,
     };
 
     const dialogRef = this.dialog.open(FilterPanel, {
@@ -185,7 +203,7 @@ export class Payments implements OnInit {
       position: { right: '0', top: '0' },
       height: '100vh',
       maxWidth: '360px',
-      panelClass: 'filter-panel-dialog'
+      panelClass: 'filter-panel-dialog',
     });
 
     dialogRef.afterClosed().subscribe((filters: Record<string, any> | null | 'reset') => {
@@ -213,5 +231,4 @@ export class Payments implements OnInit {
       this.loadPayments();
     });
   }
-
 }

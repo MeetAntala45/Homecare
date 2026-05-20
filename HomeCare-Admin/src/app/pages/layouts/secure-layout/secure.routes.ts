@@ -98,6 +98,12 @@ export const SECURE_ROUTES: Routes = [
                         .then(m => m.BookingManagement)
             },
             {
+                path: 'reviews',
+                loadComponent: () =>
+                  import('../../features/reviews/reviews')
+                    .then(m => m.Reviews)
+              },
+            {
                 path:'leave-requests',
                 loadComponent :()=>
                     import('../../features//admin-leave-request/admin-leave-request')
