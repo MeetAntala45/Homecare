@@ -3,6 +3,7 @@ using Homecare.Application.Constants;
 using Homecare.Application.Constants.Checkout;
 using Homecare.Application.DTOs.Checkout;
 using Homecare.Application.Interfaces.Checkout;
+using Homecare.Application.Interfaces.Referral;
 using Homecare.Application.Services.Offers;
 using Homecare.Data;
 using Homecare.Domain.Entities;
@@ -16,12 +17,15 @@ public class CheckoutService : ICheckoutService
     private readonly AppDbContext _context;
     private readonly RuleEngine _ruleEngine;
 
-    public CheckoutService(AppDbContext context, RuleEngine ruleEngine)
+    private readonly IReferralService _referralService;
+
+    public CheckoutService(AppDbContext context, RuleEngine ruleEngine,
+        IReferralService referralService)
     {
         _context = context;
         _ruleEngine = ruleEngine;
+        _referralService = referralService;
     }
-
     public async Task<ApiResponse<List<AvailableCouponDto>>> GetAvailableCouponsAsync(
         AvailableCouponRequestDto dto, int customerId)
     {
@@ -166,6 +170,32 @@ public class CheckoutService : ICheckoutService
 
         var total = servicePrice + taxAmount - discountAmount;
 
+        decimal refereeDiscount = 0;
+        bool isRefereeFirstOrder = false;
+
+        if (customerId > 0)
+        {
+            refereeDiscount = await _referralService.GetRefereeFirstOrderDiscountAsync(
+                customerId, servicePrice, discountAmount);
+            isRefereeFirstOrder = refereeDiscount > 0;
+        }
+
+        decimal walletBalance = 0;
+        decimal walletCap = Math.Round(servicePrice * ReferralConstants.WalletUsageCapPct / 100, 2);
+
+        if (customerId > 0)
+        {
+            var wallet = await _context.CustomerWallets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.CustomerId == customerId);
+
+            walletBalance = wallet?.Balance ?? 0;
+        }
+
+        decimal previewTotal = total;
+        if (refereeDiscount > 0 && previewTotal - refereeDiscount > 0.01m)
+            previewTotal -= refereeDiscount;
+
         return ApiResponse<CheckoutSummaryResponseDto>.SuccessResponse(
             CheckoutSummaryMessages.Summary.Loaded,
             new CheckoutSummaryResponseDto
@@ -176,7 +206,11 @@ public class CheckoutService : ICheckoutService
                 TaxAmount = taxAmount,
                 DiscountAmount = discountAmount,
                 AppliedCouponCode = appliedCode,
-                TotalAmount = total,
+                TotalAmount = previewTotal,
+                RefereeDiscount = refereeDiscount,
+                IsRefereeFirstOrder = isRefereeFirstOrder,
+                WalletBalance = walletBalance,
+                WalletCap = walletCap,
             });
     }
 

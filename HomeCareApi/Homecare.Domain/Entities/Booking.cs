@@ -17,6 +17,7 @@ public class Booking
     public decimal TaxPct { get; set; }
     public decimal TaxAmount { get; set; }
     public decimal DiscountAmount { get; set; } = 0;
+    public decimal WalletDiscountAmount { get; set; } = 0;
     public decimal TotalAmount { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public BookingStatus BookingStatus { get; set; } = BookingStatus.Pending;
@@ -34,6 +35,6 @@ public class Booking
     public Coupon? Coupon { get; set; }
     public ServicePartner? Partner { get; set; }
     public Payment? Payment { get; set; }
-    public Service Service { get; set; } = null!; 
+    public Service Service { get; set; } = null!;
     public Review? Review { get; set; }
 }

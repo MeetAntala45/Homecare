@@ -36,7 +36,7 @@ public class BookingService : IBookingService
         ILogger<BookingService> logger,
         INotificationService notificationService,
         IPartnerNotificationService partnerNotificationService,
-        IReferralService referralService)   // ← ADD
+        IReferralService referralService)
     {
         _context = context;
         _ruleEngine = ruleEngine;
@@ -44,7 +44,7 @@ public class BookingService : IBookingService
         _logger = logger;
         _notificationService = notificationService;
         _partnerNotificationService = partnerNotificationService;
-        _referralService = referralService;          // ← ADD
+        _referralService = referralService; 
     }
 
 
@@ -168,8 +168,10 @@ public class BookingService : IBookingService
 
         decimal totalAmount = servicePrice + taxAmount - discountAmount;
 
-        decimal refereeDiscount = await _referralService.GetRefereeFirstBookingDiscountAsync(customerId);
-        if (refereeDiscount > 0 && totalAmount - refereeDiscount > 0)
+        decimal refereeDiscount = await _referralService.GetRefereeFirstOrderDiscountAsync(
+            customerId, servicePrice, discountAmount);
+
+        if (refereeDiscount > 0 && totalAmount - refereeDiscount > 0.01m)
         {
             totalAmount -= refereeDiscount;
             discountAmount += refereeDiscount;
@@ -178,7 +180,6 @@ public class BookingService : IBookingService
         {
             refereeDiscount = 0;
         }
-
 
         var booking = new Booking
         {
@@ -194,6 +195,8 @@ public class BookingService : IBookingService
             TaxPct = taxPct,
             TaxAmount = taxAmount,
             DiscountAmount = discountAmount,
+            WalletDiscountAmount = 0,
+
             TotalAmount = totalAmount,
             PaymentMethod = dto.PaymentMethod,
             BookingStatus = BookingStatus.Pending,
@@ -218,11 +221,15 @@ public class BookingService : IBookingService
         if (dto.UseWallet)
         {
             walletAmountUsed = await _referralService.UseWalletAsync(
-                customerId, booking.TotalAmount, booking.Id);
+                customerId,
+                servicePrice,
+                booking.TotalAmount,
+                booking.Id);
 
             if (walletAmountUsed > 0)
             {
                 booking.TotalAmount -= walletAmountUsed;
+                booking.WalletDiscountAmount = walletAmountUsed;
                 booking.ModifiedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
@@ -255,7 +262,8 @@ public class BookingService : IBookingService
             BookingStatus = booking.BookingStatus,
             PaymentStatus = booking.PaymentStatus,
             CouponCode = couponCode,
-            WalletAmountUsed = walletAmountUsed   // ← ADD
+            WalletAmountUsed = walletAmountUsed,
+            RefereeDiscount = refereeDiscount,
         };
 
         string message = dto.PaymentMethod == Homecare.Domain.Enums.PaymentMethod.DebitCard

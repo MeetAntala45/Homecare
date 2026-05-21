@@ -1,24 +1,29 @@
-<app-customer-header [showMenu]="false" [showLogin]="false" [showProfile]="false" [headerTitle]="false"
-  [isMobileMenu]="false" [isCheckoutHeader]="true">
+<app-customer-header
+  [showMenu]="false"
+  [showLogin]="false"
+  [showProfile]="false"
+  [headerTitle]="false"
+  [isMobileMenu]="false"
+  [isCheckoutHeader]="true"
+>
 </app-customer-header>
 
 <div class="container py-sm-5 py-4">
   <div class="row g-4">
     <div class="col-12 col-lg-7">
       <div class="d-flex flex-column gap-0">
-
         <div class="step-row">
           <div class="step-icons">
             <div class="line-top" [class.line--solid]="true"></div>
-            
+
             <div class="step-icon" [ngClass]="isLoggedIn ? 'step-icon--done' : 'step-icon--active'">
               @if(isLoggedIn) {
-                <i class="bi bi-check-circle"></i>
+              <i class="bi bi-check-circle"></i>
               } @else {
-                <i class="bi bi-person"></i>
+              <i class="bi bi-person"></i>
               }
             </div>
-      
+
             <div class="line-bottom" [class.line--solid]="isLoggedIn"></div>
           </div>
 
@@ -26,10 +31,15 @@
             <div class="d-flex flex-column justify-content-between align-items-start p-2 gap-1">
               <div class="text-dark-custom fw-bolder mb-2">Booking For</div>
               @if(isLoggedIn) {
-              <span class="text-dark-custom fw-medium wrap-text" [title]="email">{{ email | lowercase }}</span>
+              <span class="text-dark-custom fw-medium wrap-text" [title]="email">{{
+                email | lowercase
+              }}</span>
               } @else {
-              <button class="border-0 bg-primary-300 text-white rounded-pill px-4 py-2 fw-medium mt-1"
-                (click)="onSignInClick()" type="button">
+              <button
+                class="border-0 bg-primary-300 text-white rounded-pill px-4 py-2 fw-medium mt-1"
+                (click)="onSignInClick()"
+                type="button"
+              >
                 Sign In
               </button>
               }
@@ -40,50 +50,67 @@
         <div class="step-row">
           <div class="step-icons">
             <div class="line-top" [class.line--solid]="isLoggedIn"></div>
-            
-            <div class="step-icon" 
-                 [class.step-icon--done]="selectedAddress" 
-                 [class.step-icon--active]="isLoggedIn && !selectedAddress"
-                 [class.step-icon--disabled]="!isLoggedIn">
+
+            <div
+              class="step-icon"
+              [class.step-icon--done]="selectedAddress"
+              [class.step-icon--active]="isLoggedIn && !selectedAddress"
+              [class.step-icon--disabled]="!isLoggedIn"
+            >
               @if(selectedAddress) {
-                <i class="bi bi-check-circle"></i>
+              <i class="bi bi-check-circle"></i>
               } @else {
-                <i class="bi bi-geo-alt"></i>
+              <i class="bi bi-geo-alt"></i>
               }
             </div>
-      
+
             <div class="line-bottom" [class.line--solid]="selectedAddress"></div>
           </div>
 
           <div class="info-card p-3 flex-grow-1 min-width-0">
-            <div class="d-flex flex-column align-items-start justify-content-between p-2 gap-2 w-100">
+            <div
+              class="d-flex flex-column align-items-start justify-content-between p-2 gap-2 w-100"
+            >
               @if(!isLoggedIn) {
               <div class="text-light-custom fw-bolder">Address</div>
               } @else {
               <div class="text-dark-custom fw-bolder mb-2">Address</div>
               @if(!selectedAddress) {
-              <button class="border-0 bg-primary-300 text-white rounded-pill px-4 py-2 fw-medium"
-                (click)="onSelectAddressClick()" type="button">
+              <button
+                class="border-0 bg-primary-300 text-white rounded-pill px-4 py-2 fw-medium"
+                (click)="onSelectAddressClick()"
+                type="button"
+              >
                 Select Address
               </button>
               } @else {
-              <div class="d-flex align-items-start align-items-sm-center justify-content-between flex-column flex-sm-row gap-2 gap-sm-3 w-100">
+              <div
+                class="d-flex align-items-start align-items-sm-center justify-content-between flex-column flex-sm-row gap-2 gap-sm-3 w-100"
+              >
                 <div class="flex-grow-1 min-width-0">
-                  <div class="text-dark-custom fw-medium fs-14 address-oneliner my-1"
-                    [title]="getAddressOneLiner()">
+                  <div
+                    class="text-dark-custom fw-medium fs-14 address-oneliner my-1"
+                    [title]="getAddressOneLiner()"
+                  >
                     {{ getAddressOneLiner() }}
                   </div>
                   <div class="badge text-bg-light text-dark fw-normal m-0 ps-0 p-1 my-1">
                     {{ selectedAddress.label }}
                   </div>
                 </div>
-                <button class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5 flex-shrink-0"
-                  (click)="onEditAddress()" type="button">
+                <button
+                  class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5 flex-shrink-0"
+                  (click)="onEditAddress()"
+                  type="button"
+                >
                   Edit
                 </button>
               </div>
-              <button class="btn btn-secondary-custom mt-2 text-primary-300 fs-14 fw-semibold mx-0 p-0"
-                (click)="onSelectAddressClick()" type="button">
+              <button
+                class="btn btn-secondary-custom mt-2 text-primary-300 fs-14 fw-semibold mx-0 p-0"
+                (click)="onSelectAddressClick()"
+                type="button"
+              >
                 <i class="bi bi-arrow-left-right primary-icon pe-2"></i>Change Address
               </button>
               } }
@@ -94,18 +121,20 @@
         <div class="step-row">
           <div class="step-icons">
             <div class="line-top" [class.line--solid]="selectedAddress"></div>
-            
-            <div class="step-icon" 
-                 [class.step-icon--done]="selectedSlot" 
-                 [class.step-icon--active]="selectedAddress && !selectedSlot"
-                 [class.step-icon--disabled]="!selectedAddress">
+
+            <div
+              class="step-icon"
+              [class.step-icon--done]="selectedSlot"
+              [class.step-icon--active]="selectedAddress && !selectedSlot"
+              [class.step-icon--disabled]="!selectedAddress"
+            >
               @if(selectedSlot) {
-                <i class="bi bi-check-circle"></i>
+              <i class="bi bi-check-circle"></i>
               } @else {
-                <i class="bi bi-clock"></i>
+              <i class="bi bi-clock"></i>
               }
             </div>
-      
+
             <div class="line-bottom" [class.line--solid]="selectedSlot"></div>
           </div>
           <div class="info-card p-3 w-100">
@@ -115,8 +144,11 @@
               } @else {
               <div class="text-dark-custom fw-bolder mb-2">Slot</div>
               @if(!selectedSlot) {
-              <button class="border-0 bg-primary-300 text-white rounded-pill px-4 py-2 fw-medium mt-1"
-                (click)="onSlotClick()" type="button">
+              <button
+                class="border-0 bg-primary-300 text-white rounded-pill px-4 py-2 fw-medium mt-1"
+                (click)="onSlotClick()"
+                type="button"
+              >
                 Book Slot
               </button>
               } @else {
@@ -125,36 +157,47 @@
                   <div class="text-dark-custom fw-medium">{{ selectedSlot.displayDate }}</div>
                   <div class="text-dark-custom fw-medium">{{ selectedSlot.displayTime }}</div>
                 </div>
-                <button class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5"
-                  (click)="onSlotClick()" type="button">
+                <button
+                  class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5"
+                  (click)="onSlotClick()"
+                  type="button"
+                >
                   Edit
                 </button>
               </div>
-              }
-              }
+              } }
             </div>
-            <app-slot [serviceId]="serviceId" [isOpen]="isSlotOpen" [preSelectedSlot]="selectedSlot"
-              (slotConfirmed)="onSlotConfirmed($event)" (modalClosed)="onModalClosed()" [addressId]="selectedAddress?.id ?? 0" >
+            <app-slot
+              [serviceId]="serviceId"
+              [isOpen]="isSlotOpen"
+              [preSelectedSlot]="selectedSlot"
+              (slotConfirmed)="onSlotConfirmed($event)"
+              (modalClosed)="onModalClosed()"
+              [addressId]="selectedAddress?.id ?? 0"
+            >
             </app-slot>
           </div>
         </div>
 
-        <div class="step-row mb-4"> <div class="step-icons">
-          <div class="line-top" [class.line--solid]="selectedSlot"></div>
-          
-          <div class="step-icon" 
-               [class.step-icon--done]="selectedPayment" 
-               [class.step-icon--active]="selectedSlot && !selectedPayment"
-               [class.step-icon--disabled]="!selectedSlot">
-            @if(selectedPayment) {
+        <div class="step-row mb-4">
+          <div class="step-icons">
+            <div class="line-top" [class.line--solid]="selectedSlot"></div>
+
+            <div
+              class="step-icon"
+              [class.step-icon--done]="selectedPayment"
+              [class.step-icon--active]="selectedSlot && !selectedPayment"
+              [class.step-icon--disabled]="!selectedSlot"
+            >
+              @if(selectedPayment) {
               <i class="bi bi-check-circle"></i>
-            } @else {
+              } @else {
               <i class="bi bi-cash"></i>
-            }
+              }
+            </div>
+
+            <div class="line-bottom" [class.line--solid]="selectedPayment"></div>
           </div>
-    
-          <div class="line-bottom" [class.line--solid]="selectedPayment"></div>
-        </div>
           <div class="info-card p-3 w-100">
             <div class="d-flex flex-column justify-content-between align-items-start p-2 gap-1">
               @if(!selectedSlot) {
@@ -162,58 +205,85 @@
               } @else {
               <div class="text-dark-custom fw-bolder mb-1">Payment Method</div>
               @if(!selectedPayment) {
-              <button class="border-0 bg-primary-300 text-white rounded-pill px-sm-4 py-sm-2 px-3 py-1 fw-medium mt-1"
-                (click)="onPaymentMethodClick()" type="button">
+              <button
+                class="border-0 bg-primary-300 text-white rounded-pill px-sm-4 py-sm-2 px-3 py-1 fw-medium mt-1"
+                (click)="onPaymentMethodClick()"
+                type="button"
+              >
                 Select Payment Method
               </button>
               } @else {
               <div class="d-flex justify-content-between w-100 align-items-center">
                 <span class="text-dark-custom fw-medium">{{ selectedPayment.label }}</span>
-                <button class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5"
-                  (click)="onPaymentMethodClick()" type="button">
+                <button
+                  class="text-primary-300 bg-transparent border-1 fw-bold py-2 px-3 rounded-5"
+                  (click)="onPaymentMethodClick()"
+                  type="button"
+                >
                   Edit
                 </button>
               </div>
-              }
-              }
+              } }
             </div>
-            <app-payment-method [isOpen]="isPaymentModalOpen" [initialMethod]="selectedPayment?.method ?? null"
-              (paymentConfirmed)="onPaymentConfirmed($event)" (modalClosed)="onPaymentModalClosed()">
+            <app-payment-method
+              [isOpen]="isPaymentModalOpen"
+              [initialMethod]="selectedPayment?.method ?? null"
+              (paymentConfirmed)="onPaymentConfirmed($event)"
+              (modalClosed)="onPaymentModalClosed()"
+            >
             </app-payment-method>
           </div>
         </div>
-
       </div>
 
       @if(slotConflictError) {
       <div class="slot-conflict-error d-flex align-items-center gap-2 mb-3 px-3 py-2 rounded-3">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
         <span class="flex-grow-1">{{ slotConflictError }}</span>
-        <button class="border-0 bg-transparent text-primary-300 fw-bold p-0" (click)="onSlotClick()" type="button">
+        <button
+          class="border-0 bg-transparent text-primary-300 fw-bold p-0"
+          (click)="onSlotClick()"
+          type="button"
+        >
           Pick Another Slot
         </button>
       </div>
-      }
-
-      @if(selectedPayment) {
+      } @if(selectedPayment) {
       <div class="text-center mb-4">
-        <button class="border-0 bg-primary-300 text-white rounded-pill px-5 py-3 fw-bold mt-1 fs-6"
-          [class.opacity-50]="isBookingLoading" [disabled]="isBookingLoading" (click)="onPaymentClick()" type="button">
+        <button
+          class="border-0 bg-primary-300 text-white rounded-pill px-5 py-3 fw-bold mt-1 fs-6"
+          [class.opacity-50]="isBookingLoading"
+          [disabled]="isBookingLoading"
+          (click)="onPaymentClick()"
+          type="button"
+        >
           @if(isBookingLoading) {
           <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-          Processing... } @else if(selectedPayment.method === 2) { Pay {{summary.totalAmount | currency}} }
-          @else { Confirm }
+          Processing... } @else if(selectedPayment.method === 2) { Pay
+          {{ displayPayAmount | currency }}
+          } @else { Confirm }
         </button>
       </div>
-      
+
       @if (selectedPayment.method === 2) {
-        <div class="text-center text-warning-emphasis bg-warning-subtle rounded-3 p-2 mb-4 w-100 mx-auto border-dashed"><i class="bi bi-exclamation-octagon-fill text-warning-emphasis pe-2"></i> {{stripeMessage}}</div>
-      }
-    }
+      <div
+        class="text-center text-warning-emphasis bg-warning-subtle rounded-3 p-2 mb-4 w-100 mx-auto border-dashed"
+      >
+        <i class="bi bi-exclamation-octagon-fill text-warning-emphasis pe-2"></i>
+        {{ stripeMessage }}
+      </div>
+      } }
       <div class="mt-2">
         <div class="cancellation-card rounded-3 p-4">
           <div class="fw-bold mb-2">Cancellation policy</div>
@@ -228,15 +298,19 @@
 
     <div class="col-12 col-lg-5">
       <app-payment-summary
-  [summary]="summary"
-  [coupons]="coupons"
-  [selectedCouponCode]="selectedCouponCode"
-  [walletBalance]="walletBalance"
-  [useWallet]="useWallet"
-  (couponApplied)="onCouponApplied($event)"
-  (couponRemoved)="onCouponRemoved()"
-  (walletToggled)="onWalletToggled($event)">
-</app-payment-summary>
+        [summary]="summary"
+        [coupons]="coupons"
+        [selectedCouponCode]="selectedCouponCode"
+        [refereeDiscount]="refereeDiscount"
+        [isRefereeFirstOrder]="isRefereeFirstOrder"
+        [walletBalance]="walletBalance"
+        [walletCap]="walletCap"
+        [useWallet]="useWallet"
+        (couponApplied)="onCouponApplied($event)"
+        (couponRemoved)="onCouponRemoved()"
+        (walletToggled)="onWalletToggled($event)"
+      >
+      </app-payment-summary>
     </div>
   </div>
   <app-ai-chatbot></app-ai-chatbot>
@@ -246,28 +320,44 @@
 <div class="modal-overlay">
   @if(activeModal === 'otp') {
   <div class="modal-container">
-    <app-verify-otp-modal [pendingEmail]="pendingEmail" [pendingName]="pendingName" (verified)="onOtpVerified($event)"
-      (close)="closeAllModals()">
+    <app-verify-otp-modal
+      [pendingEmail]="pendingEmail"
+      [pendingName]="pendingName"
+      (verified)="onOtpVerified($event)"
+      (close)="closeAllModals()"
+    >
     </app-verify-otp-modal>
   </div>
   } @if(addressModal === 'selectAddress') {
   <div class="modal-container">
-    <app-select-address-modal (openInMap)="onOpenAddressInMap($event)" (addNewAddress)="onAddNewAddress()"
-      (closeModal)="closeAddressModals()">
+    <app-select-address-modal
+      (openInMap)="onOpenAddressInMap($event)"
+      (addNewAddress)="onAddNewAddress()"
+      (closeModal)="closeAddressModals()"
+    >
     </app-select-address-modal>
   </div>
   } @if(addressModal === 'locationSearch') {
   <div class="modal-container">
-    <app-location-search-modal (locationSelected)="onLocationSelectedFromSearch($event)"
-      (closeModal)="closeAddressModals()">
+    <app-location-search-modal
+      (locationSelected)="onLocationSelectedFromSearch($event)"
+      (closeModal)="closeAddressModals()"
+    >
     </app-location-search-modal>
   </div>
   } @if(addressModal === 'mapPicker') {
   <div class="modal-container">
-    <app-map-picker [mode]="mapPickerMode" [initialLat]="pendingLat" [initialLng]="pendingLng"
-      [initialAddress]="pendingAddress" [editMode]="editMode" [editData]="editData"
-      (addressSelected)="onAddressConfirmed($event)" (changeLocation)="onChangeLocation()"
-      (closeModal)="closeAddressModals()">
+    <app-map-picker
+      [mode]="mapPickerMode"
+      [initialLat]="pendingLat"
+      [initialLng]="pendingLng"
+      [initialAddress]="pendingAddress"
+      [editMode]="editMode"
+      [editData]="editData"
+      (addressSelected)="onAddressConfirmed($event)"
+      (changeLocation)="onChangeLocation()"
+      (closeModal)="closeAddressModals()"
+    >
     </app-map-picker>
   </div>
   }

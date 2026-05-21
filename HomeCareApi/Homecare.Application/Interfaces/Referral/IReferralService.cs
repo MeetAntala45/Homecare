@@ -1,4 +1,3 @@
-using Homecare.Application.Constants;
 using Homecare.Application.DTOs.Referral;
 
 namespace Homecare.Application.Interfaces.Referral;
@@ -10,12 +9,13 @@ public interface IReferralService
 
     Task ProcessReferrerRewardAsync(int completedBookingId);
 
-    Task<decimal> GetRefereeFirstBookingDiscountAsync(int customerId);
+    Task<decimal> GetRefereeFirstOrderDiscountAsync(
+        int customerId, decimal servicePrice, decimal couponDiscount);
 
-    Task<decimal> UseWalletAsync(int customerId, decimal bookingTotal, int bookingId);
+    Task<decimal> UseWalletAsync(int customerId, decimal servicePrice,
+        decimal currentTotal, int bookingId);
 
     Task EnsureWalletAsync(int customerId);
-
     Task EnsureReferralCodeAsync(int customerId, string customerName);
 
     Task<WalletDto> GetWalletAsync(int customerId);

@@ -57,6 +57,11 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .HasColumnType("decimal(10,2)")
             .HasDefaultValue(0);
 
+        builder.Property(b => b.WalletDiscountAmount)
+            .IsRequired()
+            .HasColumnType("decimal(10,2)")
+            .HasDefaultValue(0);
+
         builder.Property(b => b.TotalAmount)
             .IsRequired()
             .HasColumnType("decimal(10,2)");

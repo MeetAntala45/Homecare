@@ -228,3 +228,26 @@ i {
   background-color: var(--primary-300);
   border-color: var(--primary-300);
 }
+.referee-row {
+  background: #f0fbf4;
+  border: 1px solid #a7f3c0;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.wallet-row {
+  background: #f0f4ff;
+  border: 1px solid #dde4ee;
+  border-radius: 8px;
+}
+
+.wallet-switch {
+  cursor: pointer;
+  width: 2.4em;
+  height: 1.3em;
+}
+
+.wallet-switch:checked {
+  background-color: var(--primary-300);
+  border-color: var(--primary-300);
+}

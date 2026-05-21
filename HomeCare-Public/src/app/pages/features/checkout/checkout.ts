@@ -54,9 +54,9 @@ type ModalState = 'none' | 'signin' | 'otp' | 'selectAddress' | 'locationSearch'
     VerifyOtpModal,
     Slot,
     PaymentMethod,
-    PaymentSummary, 
+    PaymentSummary,
     CurrencyPipe,
-    AiChatbot
+    AiChatbot,
   ],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
@@ -79,8 +79,6 @@ export class Checkout implements OnInit {
   pendingLat = 20.5937;
   pendingLng = 78.9629;
   pendingAddress = '';
-  walletBalance = 0;
-useWallet     = false;
 
   addressModal: AddressModalState = 'none';
 
@@ -91,6 +89,12 @@ useWallet     = false;
   coupons: IAvailableCouponResponse[] = [];
 
   selectedCouponCode: string | null = null;
+  refereeDiscount: number = 0;
+  isRefereeFirstOrder: boolean = false;
+  walletBalance: number = 0;
+  walletCap: number = 0;
+  useWallet: boolean = false;
+
   @Input() selectedSlotInput: ISelectedSlot | null = null;
   summary = {
     serviceName: '',
@@ -98,7 +102,7 @@ useWallet     = false;
     taxAmount: 0,
     discountAmount: 0,
     totalAmount: 0,
-    taxPct: 0
+    taxPct: 0,
   };
 
   isPaymentModalOpen = false;
@@ -126,8 +130,8 @@ useWallet     = false;
     private route: ActivatedRoute,
     private bookingService: Booking,
     private checkoutService: CheckoutService,
-    private cdr: ChangeDetectorRef,
-  ) { }
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -145,7 +149,6 @@ useWallet     = false;
 
     this.loadInitialSummary();
     this.handleStripeReturn();
-
   }
 
   private handleStripeReturn(): void {
@@ -196,7 +199,6 @@ useWallet     = false;
 
   onWalletToggled(value: boolean): void {
     this.useWallet = value;
-    this.loadSummary();   // reload to show updated total
   }
   closeAllModals() {
     this.activeModal = 'none';
@@ -228,7 +230,7 @@ useWallet     = false;
     const modalData: IFormModalData = {
       title: 'Sign In',
       fields: [
-        { name: 'name', label: 'Name', type: 'text', required: true , maxLength: 100},
+        { name: 'name', label: 'Name', type: 'text', required: true, maxLength: 100 },
         { name: 'email', label: 'Email', type: 'email', required: true },
       ],
       submitLabel: 'Get OTP',
@@ -387,7 +389,7 @@ useWallet     = false;
     this.loadCoupons();
     if (this.selectedCouponCode) {
       this.applyCoupon({
-        couponCode: this.selectedCouponCode
+        couponCode: this.selectedCouponCode,
       } as IAvailableCouponResponse);
     } else {
       this.loadSummary();
@@ -430,8 +432,7 @@ useWallet     = false;
       slotStartTime: this.selectedSlot.startTime,
       slotEndTime: this.selectedSlot.endTime,
       paymentMethod: this.selectedPayment.method,
-      useWallet: this.useWallet   // ← ADD
-
+      useWallet: this.useWallet,
     };
 
     this.bookingService.createBooking(dto).subscribe({
@@ -481,17 +482,16 @@ useWallet     = false;
       serviceId: this.serviceId,
       addressId: this.selectedAddress?.id!,
       slotDate: this.selectedSlot.date,
-      slotStartTime: this.selectedSlot.startTime
-    }
-    this.checkoutService.getAvailableCoupons(req)
-      .subscribe(res => {
-        if (res.success && res.data) {
-          this.coupons = res.data;
-          this.cdr.detectChanges();
-        } else {
-          this.toaster.error(res.message);
-        }
-      });
+      slotStartTime: this.selectedSlot.startTime,
+    };
+    this.checkoutService.getAvailableCoupons(req).subscribe((res) => {
+      if (res.success && res.data) {
+        this.coupons = res.data;
+        this.cdr.detectChanges();
+      } else {
+        this.toaster.error(res.message);
+      }
+    });
   }
 
   applyCoupon(coupon: IAvailableCouponResponse) {
@@ -500,39 +500,39 @@ useWallet     = false;
       couponCode: coupon.couponCode,
       serviceId: this.serviceId,
       slotDate: this.selectedSlot.date,
-      slotStartTime: this.selectedSlot.startTime
+      slotStartTime: this.selectedSlot.startTime,
     };
 
-    this.checkoutService.applyCoupon(req)
-      .subscribe({
-        next: (res) => {
-          if (res.success && res.data) {
-            this.selectedCouponCode = res.data.couponCode;
-            this.summary.discountAmount = res.data.discountAmount;
-            this.loadSummary();
-            this.dialog.open(CouponSuccessModal, {
-              width: '360px',
-              disableClose: false,
-              data: {
-                couponCode: res.data.couponCode,
-                discountAmount: res.data.discountAmount
-              }
-            });
-          } else {
-            this.toaster.error(`Coupon is ${res.message}` || SUMMARY_MESSAGES.COUPON.APPLY_FAILED);
-            this.selectedCouponCode = null;
-            this.summary.discountAmount = 0;
-
-            this.loadSummary();
-          }
-        }, error: (err) => {
-          this.toaster.error(err?.error?.message || SUMMARY_MESSAGES.COUPON.APPLY_FAILED);
+    this.checkoutService.applyCoupon(req).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.selectedCouponCode = res.data.couponCode;
+          this.summary.discountAmount = res.data.discountAmount;
+          this.loadSummary();
+          this.dialog.open(CouponSuccessModal, {
+            width: '360px',
+            disableClose: false,
+            data: {
+              couponCode: res.data.couponCode,
+              discountAmount: res.data.discountAmount,
+            },
+          });
+        } else {
+          this.toaster.error(`Coupon is ${res.message}` || SUMMARY_MESSAGES.COUPON.APPLY_FAILED);
           this.selectedCouponCode = null;
           this.summary.discountAmount = 0;
 
           this.loadSummary();
         }
-      })
+      },
+      error: (err) => {
+        this.toaster.error(err?.error?.message || SUMMARY_MESSAGES.COUPON.APPLY_FAILED);
+        this.selectedCouponCode = null;
+        this.summary.discountAmount = 0;
+
+        this.loadSummary();
+      },
+    });
   }
 
   onCouponApplied(coupon: IAvailableCouponResponse): void {
@@ -554,60 +554,69 @@ useWallet     = false;
       serviceId: this.serviceId,
       slotDate: this.selectedSlot.date,
       slotStartTime: this.selectedSlot.startTime,
-      couponCode: this.selectedCouponCode
+      couponCode: this.selectedCouponCode,
     };
 
-    this.checkoutService.getSummary(req)
-      .subscribe(res => {
-        if (res.success && res.data) {
-          this.summary = {
-            serviceName: res.data.serviceName,
-            servicePrice: res.data.servicePrice,
-            taxAmount: res.data.taxAmount,
-            discountAmount: res.data.discountAmount,
-            totalAmount: res.data.totalAmount,
-            taxPct: res.data.taxPct
-          };
-        }
-      });
+    this.checkoutService.getSummary(req).subscribe((res) => {
+      if (res.success && res.data) {
+        this.summary = {
+          serviceName: res.data.serviceName,
+          servicePrice: res.data.servicePrice,
+          taxAmount: res.data.taxAmount,
+          discountAmount: res.data.discountAmount,
+          totalAmount: res.data.totalAmount,
+          taxPct: res.data.taxPct,
+        };
+        this.refereeDiscount = res.data.refereeDiscount ?? 0;
+        this.isRefereeFirstOrder = res.data.isRefereeFirstOrder ?? false;
+        this.walletBalance = res.data.walletBalance ?? this.walletBalance;
+        this.walletCap = res.data.walletCap ?? 0;
+      }
+    });
   }
 
-
   loadInitialSummary() {
-
     const req: ICheckoutSummaryRequest = {
       serviceId: this.serviceId,
       slotDate: null,
       slotStartTime: null,
-      couponCode: null
-    };    
+      couponCode: null,
+    };
 
-    this.checkoutService.getSummary(req)
-      .subscribe(res => {
-        if (res.success && res.data) {
-
-          this.summary = {
-            serviceName: res.data.serviceName,
-            servicePrice: res.data.servicePrice,
-            taxAmount: res.data.taxAmount,
-            discountAmount: 0,
-            totalAmount: res.data.totalAmount,
-            taxPct: res.data.taxPct
-          };
-
-        }
-        else {
-          this.toaster.error(res.message);
-        }
-
-      });
+    this.checkoutService.getSummary(req).subscribe((res) => {
+      if (res.success && res.data) {
+        this.summary = {
+          serviceName: res.data.serviceName,
+          servicePrice: res.data.servicePrice,
+          taxAmount: res.data.taxAmount,
+          discountAmount: res.data.discountAmount,
+          totalAmount: res.data.totalAmount,
+          taxPct: res.data.taxPct,
+        };
+        this.refereeDiscount = res.data.refereeDiscount ?? 0;
+        this.isRefereeFirstOrder = res.data.isRefereeFirstOrder ?? false;
+        this.walletBalance = res.data.walletBalance ?? this.walletBalance;
+        this.walletCap = res.data.walletCap ?? 0;
+      } else {
+        this.toaster.error(res.message);
+      }
+    });
   }
 
+  get displayPayAmount(): number {
+    let total = this.summary.totalAmount;
+
+    if (this.useWallet && this.walletBalance > 0 && this.walletCap > 0) {
+      const available = Math.min(this.walletBalance, this.walletCap);
+      const deductible = Math.min(available, total - 0.01);
+      if (deductible > 0) total -= deductible;
+    }
+    return Math.max(total, 0.01);
+  }
   removeCoupon(): void {
     this.selectedCouponCode = null;
     this.summary.discountAmount = 0;
     this.loadSummary();
-    this.toaster.success(SUMMARY_MESSAGES.COUPON.REMOVED)
+    this.toaster.success(SUMMARY_MESSAGES.COUPON.REMOVED);
   }
-
 }

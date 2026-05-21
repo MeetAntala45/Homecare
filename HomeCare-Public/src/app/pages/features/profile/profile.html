@@ -139,8 +139,8 @@
           </button>
         </div>
         <div class="text-secondary fs-14 mt-1">
-          Share your code — your friend gets $2 off, you get $2 when they complete their first
-          booking.
+          Share your code — your friend gets 50% off on first order, you get $2 when they complete
+          their first booking.
         </div>
         <div class="text-secondary fs-14 mt-1">
           Used
@@ -182,9 +182,7 @@
         >
           {{ wallet?.balance ?? 0 | currency : '$' : 'symbol' : '1.2-2' }}
         </div>
-        <div class="text-secondary fs-14">
-          Applied automatically at checkout (max $5 per booking).
-        </div>
+        <div class="text-secondary fs-14">Can be used at checkout (max 10% of service).</div>
 
         @if (wallet && wallet.transactions.length > 0) {
         <div class="mt-3">

@@ -40,9 +40,6 @@ export class PaymentSummary implements AfterViewInit, OnChanges {
   @Input() useWallet: boolean = false;
   @Output() walletToggled = new EventEmitter<boolean>();
 
-  toggleWallet(): void {
-    this.walletToggled.emit(!this.useWallet);
-  }
   @Output() couponApplied = new EventEmitter<IAvailableCouponResponse>();
   @Output() couponRemoved = new EventEmitter<void>();
 
@@ -54,6 +51,9 @@ export class PaymentSummary implements AfterViewInit, OnChanges {
     totalAmount: 0,
     taxPct: 0,
   };
+  @Input() refereeDiscount: number = 0;
+  @Input() isRefereeFirstOrder: boolean = false;
+  @Input() walletCap: number = 0;
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -138,5 +138,24 @@ export class PaymentSummary implements AfterViewInit, OnChanges {
 
   ngOnDestroy(): void {
     this.slider?.destroy();
+  }
+
+  toggleWallet(): void {
+    this.walletToggled.emit(!this.useWallet);
+  }
+
+  get walletPreviewDeduction(): number {
+    if (!this.useWallet || this.walletBalance <= 0 || this.walletCap <= 0) return 0;
+    const available = Math.min(this.walletBalance, this.walletCap);
+    const afterDiscounts = this.summary.totalAmount - (this.refereeDiscount || 0);
+    return Math.min(available, afterDiscounts - 0.01);
+  }
+
+  get grandTotal(): number {
+    let total = this.summary.totalAmount;
+    if (this.useWallet && this.walletPreviewDeduction > 0) {
+      total -= this.walletPreviewDeduction;
+    }
+    return Math.max(total, 0.01);
   }
 }

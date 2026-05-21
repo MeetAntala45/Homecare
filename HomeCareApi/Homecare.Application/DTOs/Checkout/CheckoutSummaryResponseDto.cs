@@ -1,4 +1,3 @@
-
 namespace Homecare.Application.DTOs.Checkout;
 
 public class CheckoutSummaryResponseDto
@@ -10,4 +9,8 @@ public class CheckoutSummaryResponseDto
     public decimal DiscountAmount { get; set; }
     public string? AppliedCouponCode { get; set; }
     public decimal TotalAmount { get; set; }
+    public decimal RefereeDiscount { get; set; }
+    public bool IsRefereeFirstOrder { get; set; }
+    public decimal WalletBalance { get; set; }
+    public decimal WalletCap { get; set; }
 }

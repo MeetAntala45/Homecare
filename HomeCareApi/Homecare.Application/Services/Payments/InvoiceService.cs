@@ -1,6 +1,7 @@
 using Homecare.Application.Constants.Payments;
 using Homecare.Application.Interfaces.Payments;
 using Homecare.Data;
+using Homecare.Domain.Entities;
 using Homecare.Domain.Enums;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,6 @@ public class InvoiceService : IInvoiceService
             ?? throw new KeyNotFoundException(PaymentMessages.PaymentNotFoundForBooking);
 
         await GenerateAsync(bookingId);
-
         await _context.Entry(payment).ReloadAsync();
 
         var fullPath = Path.Combine(_env.WebRootPath, payment.InvoicePath!);
@@ -57,7 +57,7 @@ public class InvoiceService : IInvoiceService
         string? partnerName = null;
         string? partnerRole = null;
         string? partnerMobileNumber = null;
-        
+
         if (booking.PartnerId.HasValue)
         {
             var partner = await _context.ServicePartners
@@ -86,6 +86,28 @@ public class InvoiceService : IInvoiceService
             payment.PaymentStatus != PaymentStatus.Paid)
             throw new Exception(PaymentMessages.PaymentNotCompleted);
 
+        decimal walletDiscount = booking.WalletDiscountAmount;
+
+        decimal refereeDiscount = 0;
+        bool hasReferral = await _context.ReferralUses
+            .AnyAsync(r => r.RefereeId == booking.CustomerId);
+
+        if (hasReferral && booking.CouponId == null)
+        {
+            refereeDiscount = booking.DiscountAmount;
+        }
+
+        decimal couponDiscount = booking.DiscountAmount - refereeDiscount;
+
+        string? couponCode = null;
+        if (booking.CouponId.HasValue)
+        {
+            couponCode = await _context.coupons
+                .Where(c => c.Id == booking.CouponId.Value)
+                .Select(c => c.CouponCode)
+                .FirstOrDefaultAsync();
+        }
+
         var folder = Path.Combine(_env.WebRootPath, "invoices");
         Directory.CreateDirectory(folder);
 
@@ -95,7 +117,13 @@ public class InvoiceService : IInvoiceService
 
         var doc = new InvoiceDocument(
             booking, service, payment,
-            booking.Address, _context, partnerName, partnerRole, partnerMobileNumber, subCategoryName);
+            booking.Address, _context,
+            partnerName, partnerRole, partnerMobileNumber,
+            subCategoryName,
+            couponCode,
+            couponDiscount,
+            refereeDiscount,
+            walletDiscount);
 
         doc.GeneratePdf(filePath);
 
