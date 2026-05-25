@@ -31,7 +31,6 @@ a {
   .mdc-notched-outline__trailing {
   border-color: #c0c8d3 !important;
 }
-
 .referral-toggle-row {
   padding: 6px 2px;
 }
@@ -60,4 +59,25 @@ a {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.referral-state-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.referral-error-text {
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.referral-success-text {
+  font-size: 12px;
+  color: #16a34a;
+  font-weight: 500;
 }

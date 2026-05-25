@@ -9,4 +9,6 @@ public interface ICustomerAuthService
     Task<ApiResponse<VerifyOtpResponse>> VerifyOtpAsync(VerifyOtpRequest request);
     Task<ApiResponse<VerifyOtpResponse>> RefreshTokenAsync(string refreshToken);
     Task<ApiResponse<string>> LogoutAsync(string refreshTokenValue);
+    Task<ApiResponse<ValidateReferralCodeResponse>> ValidateReferralCodeAsync(
+    ValidateReferralCodeRequest request);
 }

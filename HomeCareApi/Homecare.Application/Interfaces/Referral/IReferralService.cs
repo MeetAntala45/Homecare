@@ -20,4 +20,6 @@ public interface IReferralService
 
     Task<WalletDto> GetWalletAsync(int customerId);
     Task<ReferralInfoDto> GetReferralInfoAsync(int customerId);
+
+    Task<(bool isValid, string? errorMessage)> ValidateReferralCodeAsync(string referralCode);
 }

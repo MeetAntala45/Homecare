@@ -4,4 +4,5 @@ export interface IVerifyOtpResponse {
   refreshTokenExpiry: string;
   isNewUser: boolean;
   referralCode?: string;
+  referralMessage?: string;
 }

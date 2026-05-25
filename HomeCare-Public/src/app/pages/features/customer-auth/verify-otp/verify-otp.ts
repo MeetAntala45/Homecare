@@ -144,13 +144,29 @@ export class VerifyOtp implements OnDestroy {
           localStorage.removeItem('pending_referral_code');
 
           this.auth.setLoggedIn(true);
-          if (res.data.isNewUser && this.referralCode) {
-            this.referralCode = '';
-          }
           history.replaceState({}, '', '/verify-otp');
           localStorage.removeItem(this.OTP_SENT_KEY);
           this.router.navigate(['customer/home']);
           this.toaster.success(res.message);
+
+          if (res.data.referralMessage === 'EXISTING_USER_REFERRAL_REJECTED') {
+            setTimeout(() => {
+              this.toaster.error(
+                'Referral codes are only for new users. You have been logged in successfully.'
+              );
+            }, 800);
+          }
+
+          if (
+            res.data.isNewUser &&
+            this.referralCode &&
+            res.data.referralMessage &&
+            res.data.referralMessage !== 'EXISTING_USER_REFERRAL_REJECTED'
+          ) {
+            setTimeout(() => {
+              this.toaster.success(res.data.referralMessage!);
+            }, 800);
+          }
         } else {
           this.toaster.error(res.message);
         }

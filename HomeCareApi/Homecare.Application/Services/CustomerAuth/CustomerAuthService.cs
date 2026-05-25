@@ -220,6 +220,12 @@ public class CustomerAuthService : ICustomerAuthService
                 customer.ModifiedBy = null;
             }
 
+            // If existing user submitted a referral code, set a flag so the
+            // frontend can show a clear message.
+            if (!string.IsNullOrWhiteSpace(request.ReferralCode))
+            {
+                referralMessage = "EXISTING_USER_REFERRAL_REJECTED";
+            }
         }
 
         otp.CustomerId = customer.Id;
@@ -258,7 +264,8 @@ public class CustomerAuthService : ICustomerAuthService
                 RefreshToken = refreshTokenValue,
                 RefreshTokenExpiry = refreshToken.ExpiresAt,
                 IsNewUser = isNewUser,
-                ReferralCode = updatedCustomer.ReferralCode
+                ReferralCode = updatedCustomer.ReferralCode,
+                ReferralMessage = referralMessage
             }
         );
     }
@@ -320,5 +327,20 @@ public class CustomerAuthService : ICustomerAuthService
         }
 
         return ApiResponse<string>.SuccessResponse(CustomerAuthMessages.LogoutSuccess);
+    }
+
+    public async Task<ApiResponse<ValidateReferralCodeResponse>> ValidateReferralCodeAsync(
+    ValidateReferralCodeRequest request)
+    {
+        var (isValid, errorMessage) = await _referralService.ValidateReferralCodeAsync(
+            request.ReferralCode);
+
+        return ApiResponse<ValidateReferralCodeResponse>.SuccessResponse(
+            isValid ? "Referral code is valid." : errorMessage!,
+            new ValidateReferralCodeResponse
+            {
+                IsValid = isValid,
+                ErrorMessage = errorMessage
+            });
     }
 }

@@ -1,6 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InputComponent } from '../../../../shared/components/input-component/input-component';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -18,11 +25,15 @@ import { LOGIN_MESSAGES } from '../../../../core/constants/login-messages';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class Login implements OnInit {
   errorMessage = '';
   isSubmitting = false;
   showReferral = false;
   prefillCode = '';
+
+  isValidatingReferral = false;
+  referralValidationError: string | null = null;
+  referralValidated = false;
 
   readonly MESSAGES = LOGIN_MESSAGES;
 
@@ -63,6 +74,7 @@ export class Login {
       this.prefillCode = ref.toUpperCase();
       this.showReferral = true;
       this.referralControl.setValue(this.prefillCode);
+      this.validateReferralCode(this.prefillCode);
     }
   }
 
@@ -70,7 +82,45 @@ export class Login {
     this.showReferral = !this.showReferral;
     if (!this.showReferral) {
       this.referralControl.setValue('');
+      this.referralValidationError = null;
+      this.referralValidated = false;
+      this.isValidatingReferral = false;
     }
+  }
+
+  onReferralBlur(): void {
+    const code = this.referralControl.value.trim();
+    if (!code) {
+      this.referralValidationError = null;
+      this.referralValidated = false;
+      return;
+    }
+    this.validateReferralCode(code);
+  }
+
+  private validateReferralCode(code: string): void {
+    this.isValidatingReferral = true;
+    this.referralValidationError = null;
+    this.referralValidated = false;
+
+    this.auth.validateReferralCode(code).subscribe({
+      next: (res) => {
+        this.isValidatingReferral = false;
+        if (res.data?.isValid) {
+          this.referralValidated = true;
+          this.referralValidationError = null;
+        } else {
+          this.referralValidated = false;
+          this.referralValidationError =
+            res.data?.errorMessage ?? res.message ?? 'Invalid referral code.';
+        }
+      },
+      error: () => {
+        this.isValidatingReferral = false;
+        this.referralValidated = false;
+        this.referralValidationError = 'Could not validate referral code. Please try again.';
+      },
+    });
   }
 
   onSubmit(): void {
@@ -79,6 +129,51 @@ export class Login {
       return;
     }
 
+    if (this.showReferral && !this.referralControl.value.trim()) {
+      this.toaster.error('Please enter a referral code or turn off the referral toggle.');
+      return;
+    }
+
+    if (this.showReferral && this.referralControl.value.trim() && this.referralValidationError) {
+      this.toaster.error(this.referralValidationError);
+      return;
+    }
+
+    if (
+      this.showReferral &&
+      this.referralControl.value.trim() &&
+      !this.referralValidated &&
+      !this.referralValidationError
+    ) {
+      const code = this.referralControl.value.trim().toUpperCase();
+      this.isValidatingReferral = true;
+
+      this.auth.validateReferralCode(code).subscribe({
+        next: (res) => {
+          this.isValidatingReferral = false;
+          if (res.data?.isValid) {
+            this.referralValidated = true;
+            this.referralValidationError = null;
+            this.proceedToOtp();
+          } else {
+            this.referralValidationError =
+              res.data?.errorMessage ?? res.message ?? 'Invalid referral code.';
+            this.toaster.error(this.referralValidationError!);
+          }
+        },
+        error: () => {
+          this.isValidatingReferral = false;
+          this.referralValidationError = 'Could not validate referral code. Please try again.';
+          this.toaster.error(this.referralValidationError!);
+        },
+      });
+      return;
+    }
+
+    this.proceedToOtp();
+  }
+
+  private proceedToOtp(): void {
     this.isSubmitting = true;
 
     const req: ISendOtpRequest = {
@@ -95,21 +190,20 @@ export class Login {
           this.otpStateService.setOtpRequested(true);
           localStorage.setItem(this.MESSAGES.STORAGE_KEYS.OTP_EMAIL, this.loginForm.value.email!);
           localStorage.setItem(this.MESSAGES.STORAGE_KEYS.OTP_NAME, this.loginForm.value.name!);
-          if (this.showReferral && this.referralControl.value.trim()) {
-            localStorage.setItem(
-              'pending_referral_code',
-              this.referralControl.value.trim().toUpperCase()
-            );
+
+          const code = this.showReferral ? this.referralControl.value.trim().toUpperCase() : '';
+
+          if (code) {
+            localStorage.setItem('pending_referral_code', code);
           } else {
             localStorage.removeItem('pending_referral_code');
           }
+
           this.router.navigate(['login/verify-otp'], {
             state: {
               email: this.loginForm.value.email!.toLowerCase(),
               name: this.loginForm.value.name,
-              referralCode: this.showReferral
-                ? this.referralControl.value.trim().toUpperCase()
-                : '',
+              referralCode: code,
             },
           });
         } else {

@@ -7,4 +7,5 @@ public class VerifyOtpResponse
     public DateTime RefreshTokenExpiry { get; set; }
     public bool IsNewUser { get; set; }
     public string? ReferralCode { get; set; }
+    public string? ReferralMessage { get; set; }
 }

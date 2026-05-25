@@ -16,7 +16,7 @@
         <app-input-component label="Email" type="email" icon="mail" [control]="emailControl">
         </app-input-component>
 
-        <!-- Referral toggle -->
+        <!-- Referral toggle row -->
         <div class="referral-toggle-row d-flex align-items-center justify-content-between mt-1">
           <span class="text-light-custom fw-medium fs-14">Have a referral code?</span>
           <div class="form-check form-switch mb-0">
@@ -32,11 +32,46 @@
           </div>
         </div>
 
+        <!-- Referral code input — shown only when toggle is ON -->
         @if (showReferral) {
         <div class="referral-code-field">
-          <app-input-component label="Referral Code" type="text" [control]="referralControl">
-          </app-input-component>
-          <div class="text-muted small mt-1 ps-1">You'll get 50% off on your first booking.</div>
+          <div class="position-relative">
+            <app-input-component
+              label="Referral Code"
+              type="text"
+              [control]="referralControl"
+              (blur)="onReferralBlur()"
+            >
+            </app-input-component>
+
+            <!-- Validation state icon -->
+            @if (isValidatingReferral) {
+            <div class="referral-state-icon">
+              <span class="spinner-border spinner-border-sm text-secondary"></span>
+            </div>
+            } @else if (referralValidated) {
+            <div class="referral-state-icon text-success">
+              <i class="bi bi-check-circle-fill"></i>
+            </div>
+            } @else if (referralValidationError) {
+            <div class="referral-state-icon text-danger">
+              <i class="bi bi-x-circle-fill"></i>
+            </div>
+            }
+          </div>
+
+          <!-- Inline error message -->
+          @if (referralValidationError) {
+          <div class="referral-error-text mt-1 ps-1">
+            <i class="bi bi-exclamation-circle me-1"></i>{{ referralValidationError }}
+          </div>
+          } @if (!referralValidationError && !referralValidated) {
+          <div class="text-muted small mt-1 ps-1">You'll get 50% off your first booking.</div>
+          } @if (referralValidated) {
+          <div class="referral-success-text mt-1 ps-1">
+            <i class="bi bi-check-circle me-1"></i>Valid code! 50% off your first booking.
+          </div>
+          }
         </div>
         }
       </div>
@@ -45,12 +80,14 @@
         <button
           type="submit"
           class="btn-primary-custom w-100 py-3 rounded-5"
-          [disabled]="isSubmitting"
+          [disabled]="isSubmitting || isValidatingReferral"
         >
           @if (isSubmitting) {
           <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          } @else if (isValidatingReferral) {
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
           }
-          {{ isSubmitting ? 'Sending OTP...' : 'Get OTP' }}
+          {{ isSubmitting ? 'Sending OTP...' : isValidatingReferral ? 'Validating...' : 'Get OTP' }}
         </button>
       </div>
     </form>
@@ -62,7 +99,7 @@
         & <span class="text-primary-300 fw-bolder">Privacy Policy</span>
       </div>
       <div class="or-divider my-4 d-flex align-items-center">
-        <span class="fw-medium px-2 text-light-custom fs-14 fw-medium">OR</span>
+        <span class="fw-medium px-2 text-light-custom fs-14">OR</span>
       </div>
       <div class="text-center">
         <div class="text-light-custom mb-2 fw-bold">Are You a Service Partner?</div>

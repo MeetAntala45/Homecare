@@ -139,7 +139,7 @@ public class ReferralService : IReferralService
 
         decimal cap = Math.Round(servicePrice * ReferralConstants.WalletUsageCapPct / 100, 2);
 
-        decimal amountToUse = Math.Min(wallet.Balance, cap);  
+        decimal amountToUse = Math.Min(wallet.Balance, cap);
 
         if (amountToUse <= 0) return 0;
 
@@ -269,5 +269,26 @@ public class ReferralService : IReferralService
         while (exists);
 
         return code;
+    }
+
+    public async Task<(bool isValid, string? errorMessage)> ValidateReferralCodeAsync(
+    string referralCode)
+    {
+        if (string.IsNullOrWhiteSpace(referralCode))
+            return (false, "Referral code is required.");
+
+        var code = referralCode.Trim().ToUpper();
+
+        var referrer = await _context.Customers
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.ReferralCode == code);
+
+        if (referrer == null)
+            return (false, "Invalid referral code. Please check and try again.");
+
+        if (referrer.ReferralUseCount >= ReferralConstants.MaxReferrals)
+            return (false, "This referral code has reached its maximum usage limit.");
+
+        return (true, null);
     }
 }

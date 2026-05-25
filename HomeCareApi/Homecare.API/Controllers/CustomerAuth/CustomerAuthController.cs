@@ -83,5 +83,14 @@ namespace Homecare.API.Controllers.CustomerAuth
 
             return result;
         }
+
+        [HttpPost("validate-referral-code")]
+        public async Task<ApiResponse<ValidateReferralCodeResponse>> ValidateReferralCode(
+        [FromBody] ValidateReferralCodeRequest req)
+        {
+            return await _customerAuthService.ValidateReferralCodeAsync(req);
+        }
     }
+
+
 }
