@@ -6,13 +6,13 @@ import {
   IErrorLogFilter,
   IErrorLogList,
 } from '../../../core/models/error-logs/IErrorLog';
-import { Toaster } from '../../../../../../HomeCare-Public/src/app/core/services/toaster/toaster';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterPanel } from '../../../shared/components/filter-panel/filter-panel';
 import { IFilterPanelData } from '../../../core/models/shared-components/IFilterPanel';
 import { ErrorLogDetailModal } from './error-log-detail-modal/error-log-detail-modal';
 import { ActivatedRoute } from '@angular/router';
 import { ErrorLogService } from '../../../core/services/error-logs/error-log-service';
+import { Toaster } from '../../../core/services/toaster/toaster';
 
 @Component({
   selector: 'app-error-logs',

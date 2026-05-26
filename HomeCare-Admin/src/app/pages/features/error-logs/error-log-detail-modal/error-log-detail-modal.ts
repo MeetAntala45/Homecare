@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { IErrorLogDetail } from '../../../../core/models/error-logs/IErrorLog';
-import { Toaster } from '../../../../../../../HomeCare-Public/src/app/core/services/toaster/toaster';
+import { Toaster } from '../../../../core/services/toaster/toaster';
 
 @Component({
   selector: 'app-error-log-detail-modal',

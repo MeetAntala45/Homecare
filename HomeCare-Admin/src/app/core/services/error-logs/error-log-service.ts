@@ -6,8 +6,8 @@ import {
   IErrorLogFilter,
   IErrorLogPagedResult,
 } from '../../models/error-logs/IErrorLog';
-import { API_BASE_URL } from '../../../../../../HomeCare-Public/src/app/core/constants/environment-config';
-import { ApiResponse } from '../../../../../../HomeCare-Public/src/app/core/models/service-partner/service-partner';
+import { API_BASE_URL } from '../../constants/environment-config';
+import { ApiResponse } from '../../models/profile/profile.model';
 
 @Injectable({ providedIn: 'root' })
 export class ErrorLogService {
