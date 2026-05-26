@@ -40,7 +40,7 @@
               label="Referral Code"
               type="text"
               [control]="referralControl"
-              (blur)="onReferralBlur()"
+              (inputBlur)="onReferralBlur()"
             >
             </app-input-component>
 
@@ -60,18 +60,7 @@
             }
           </div>
 
-          <!-- Inline error message -->
-          @if (referralValidationError) {
-          <div class="referral-error-text mt-1 ps-1">
-            <i class="bi bi-exclamation-circle me-1"></i>{{ referralValidationError }}
-          </div>
-          } @if (!referralValidationError && !referralValidated) {
-          <div class="text-muted small mt-1 ps-1">You'll get 50% off your first booking.</div>
-          } @if (referralValidated) {
-          <div class="referral-success-text mt-1 ps-1">
-            <i class="bi bi-check-circle me-1"></i>Valid code! 50% off your first booking.
-          </div>
-          }
+          <div class="text-muted small mt-1 ps-1">Get 50% off on your first booking.</div>
         </div>
         }
       </div>

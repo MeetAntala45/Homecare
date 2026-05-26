@@ -55,7 +55,7 @@ namespace Homecare.API.Controllers
             if (request.Image != null)
                 imageUrl = await _cloudinary.UploadImageAsync(request.Image, "service-types");
 
-            var dto = new ServiceTypeDto { Name = request.Name, ImagePath = imageUrl };
+            var dto = new ServiceTypeDto { Name = request.Name, ImagePath = imageUrl! };
             await _serviceTypeService.UpdateServiceType(id, dto);
             return ApiResponse<string>.SuccessResponse(ServiceTypeConstant.UpdateServiceResponse);
         }

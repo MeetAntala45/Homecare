@@ -42,7 +42,7 @@ public class AuthController : ControllerBase
     {
         var refreshToken = Request.Cookies[RefreshTokenCookie];
 
-        var result = await _authService.RefreshTokenAsync(refreshToken);
+        var result = await _authService.RefreshTokenAsync(refreshToken!);
 
         if (result.Success && result.Data != null)
         {
@@ -65,7 +65,7 @@ public class AuthController : ControllerBase
     {
         var refreshToken = Request.Cookies[RefreshTokenCookie];
 
-        var result = await _authService.LogoutAsync(refreshToken);
+        var result = await _authService.LogoutAsync(refreshToken!);
 
         Response.Cookies.Delete(RefreshTokenCookie, new CookieOptions
         {

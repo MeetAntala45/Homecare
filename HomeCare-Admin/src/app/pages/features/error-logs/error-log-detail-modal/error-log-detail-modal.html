@@ -1,0 +1,60 @@
+<div class="modal-header d-flex align-items-center justify-content-between px-4 py-3">
+  <div class="d-flex align-items-center gap-3">
+    <span class="status-badge status-500">500</span>
+    <h6 class="fw-bold mb-0">{{ log.exceptionType }}</h6>
+  </div>
+  <button class="btn p-1 border-0 bg-transparent" (click)="close()">
+    <i class="bi bi-x-lg fs-5"></i>
+  </button>
+</div>
+
+<div class="modal-body px-4 py-3">
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="detail-label">Date & Time</div>
+      <div class="detail-value">{{ formatDate(log.occurredAt) }}</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="detail-label">Method</div>
+      <div class="detail-value">
+        <span class="method-badge method-{{ log.httpMethod.toLowerCase() }}">
+          {{ log.httpMethod }}
+        </span>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="detail-label">User ID</div>
+      <div class="detail-value">{{ log.userId ?? '—' }}</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="detail-label">Role</div>
+      <div class="detail-value">{{ log.userRole ?? '—' }}</div>
+    </div>
+  </div>
+
+  <div class="detail-block mb-3">
+    <div class="detail-label mb-1">Endpoint Path</div>
+    <div class="code-block">{{ log.path }}</div>
+  </div>
+
+  <div class="detail-block mb-3">
+    <div class="detail-label mb-1">Error Message</div>
+    <div class="message-block">{{ log.message }}</div>
+  </div>
+
+  @if (log.stackTrace) {
+  <div class="detail-block">
+    <div class="d-flex align-items-center justify-content-between mb-1">
+      <div class="detail-label">Stack Trace</div>
+      <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" (click)="copyStackTrace()">
+        @if (copied) {
+        <i class="bi bi-check-lg me-1 text-success"></i>Copied } @else {
+        <i class="bi bi-clipboard me-1"></i>Copy }
+      </button>
+    </div>
+    <pre class="stack-trace-block">{{ log.stackTrace }}</pre>
+  </div>
+  } @else {
+  <div class="text-muted fs-14">No stack trace available.</div>
+  }
+</div>

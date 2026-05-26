@@ -35,6 +35,7 @@ using Homecare.Application.Services.Leave;
 using Homecare.Application.Interfaces.PartnerLeave;
 using Homecare.Application.Interfaces.Notification;
 using Homecare.Application.Services.Notification;
+using System.Security.Claims;
 
 namespace Homecare.API.Extensions;
 
@@ -134,7 +135,9 @@ public static class ServiceExtensions
                     ValidIssuer = config["Jwt:Issuer"],
                     ValidAudience = config["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(config["Jwt:Key"]!))
+                        Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+                    NameClaimType = ClaimTypes.NameIdentifier,
+
                 };
             });
 

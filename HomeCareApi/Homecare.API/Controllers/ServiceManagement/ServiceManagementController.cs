@@ -59,9 +59,9 @@ public class ServiceManagementController : ControllerBase
 
     [HttpGet("get/service-type/{id}")]
     [AllowAnonymous]
-    public async Task<ApiResponse<List<ServiceResponseDto>>> GetServiceByServiceTypeId(int id,[FromQuery] string? search = null)
+    public async Task<ApiResponse<List<ServiceResponseDto>>> GetServiceByServiceTypeId(int id, [FromQuery] string? search = null)
     {
-        return await _serviceManagementService.GetServiceByServiceTypeIdAsync(id, search);
+        return await _serviceManagementService.GetServiceByServiceTypeIdAsync(id, search!);
     }
 
     [HttpPost("upsert")]

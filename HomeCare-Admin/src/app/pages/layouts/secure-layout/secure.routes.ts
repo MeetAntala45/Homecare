@@ -109,6 +109,12 @@ export const SECURE_ROUTES: Routes = [
                     import('../../features//admin-leave-request/admin-leave-request')
                 .then(m=>m.AdminLeaveRequest)
             },
+            {
+                path: 'error-logs',
+                loadComponent: () =>
+                  import('../../features/error-logs/error-logs')
+                    .then(m => m.ErrorLogs)
+              },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
         ]
     }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     MatSelectModule,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './input-component.html',
   styleUrl: './input-component.css',
@@ -36,7 +36,13 @@ export class InputComponent {
   togglePassword(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    this.hide.update(value => !value);
+    this.hide.update((value) => !value);
+  }
+
+  @Output() inputBlur = new EventEmitter<void>();
+
+  onBlur(): void {
+    this.inputBlur.emit();
   }
 
   get inputType(): string {

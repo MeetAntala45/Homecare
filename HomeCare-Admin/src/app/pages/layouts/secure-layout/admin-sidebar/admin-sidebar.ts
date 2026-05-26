@@ -36,6 +36,7 @@ export class AdminSidebar implements OnInit {
     { label: 'Offers', route: '/admin/offers', icon: 'bi-tag' },
     { label: 'Payments & Transactions', route: '/admin/payments', icon: 'bi-credit-card' },
     { label: 'Reviews & Ratings',       route: '/admin/reviews',                icon: 'bi-star-half' },
+    { label: 'Error Logs', route: '/admin/error-logs', icon: 'bi-bug' },
     { label: 'Master Data', route: '/admin/master-data', icon: 'bi-database' },
     { label: 'Support', route: '/admin/support', icon: 'bi-headset' },
     // { label: 'Leave Requests', route: '/admin/leave-requests', icon: 'bi-calendar-x' }

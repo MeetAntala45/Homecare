@@ -1,0 +1,22 @@
+<app-grid-layout
+  title="Server Error Logs"
+  [showFilter]="true"
+  [showAdd]="false"
+  [currentFilters]="filter"
+  [columns]="columns"
+  [data]="data"
+  [isLoading]="isLoading"
+  [skeletonRowCount]="filter.pageSize"
+  [showActions]="false"
+  [showPagination]="true"
+  [totalCount]="totalCount"
+  [pageNumber]="filter.pageNumber"
+  [pageSize]="filter.pageSize"
+  [sortBy]="filter.sortBy"
+  [sortOrder]="filter.sortOrder"
+  (pageChanged)="onPageChanged($event)"
+  (sortChanged)="onSortChanged($event)"
+  (filterClicked)="openFilter()"
+  (rowClicked)="onRowClicked($event)"
+>
+</app-grid-layout>

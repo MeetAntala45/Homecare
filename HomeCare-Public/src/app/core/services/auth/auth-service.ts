@@ -57,6 +57,7 @@ export class AuthService {
   setLoggedIn(value: boolean) {
     this.isLoggedInSubject.next(value);
   }
+  
   validateReferralCode(
     referralCode: string
   ): Observable<IApiResponse<{ isValid: boolean; errorMessage: string | null }>> {

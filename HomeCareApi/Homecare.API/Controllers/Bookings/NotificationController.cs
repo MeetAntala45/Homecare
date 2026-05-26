@@ -1,11 +1,13 @@
 using System.Security.Claims;
 using Homecare.Application.Interfaces.Bookings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Homecare.API.Controllers.Bookings
 {
     [Route("api/admin/[controller]")]
     [ApiController]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
@@ -15,8 +17,22 @@ namespace Homecare.API.Controllers.Bookings
             _notificationService = notificationService;
         }
 
-        private int GetAdminId() =>
-            int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        private int GetAdminId()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userIdClaim))
+            {
+                throw new UnauthorizedAccessException("User ID claim not found.");
+            }
+
+            if (!int.TryParse(userIdClaim, out int adminId))
+            {
+                throw new UnauthorizedAccessException("Invalid user ID.");
+            }
+
+            return adminId;
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetNotifications()
