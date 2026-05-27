@@ -1,5 +1,6 @@
 using Homecare.Application.Constants;
 using Homecare.Application.DTOs.Referral;
+using Homecare.Application.Interfaces.Auth;
 using Homecare.Application.Interfaces.Referral;
 using Homecare.Data;
 using Homecare.Domain.Entities;
@@ -11,10 +12,15 @@ namespace Homecare.Application.Services.Referral;
 public class ReferralService : IReferralService
 {
     private readonly AppDbContext _context;
+    private readonly EmailTemplateService _templateService;
+    private readonly IEmailService _emailService;
 
-    public ReferralService(AppDbContext context)
+
+    public ReferralService(AppDbContext context, EmailTemplateService templateService, IEmailService emailService)
     {
         _context = context;
+        _templateService = templateService;
+         _emailService = emailService;
     }
 
     public async Task<(bool success, string message)> ApplyReferralAtSignupAsync(
@@ -291,4 +297,45 @@ public class ReferralService : IReferralService
 
         return (true, null);
     }
+
+    public async Task<ApiResponse<string>> SendReferralEmailAsync(int customerId, string recipientEmail)
+{
+    var customer = await _context.Customers
+        .AsNoTracking()
+        .FirstOrDefaultAsync(c => c.Id == customerId);
+
+    if (customer == null || string.IsNullOrEmpty(customer.ReferralCode))
+        return ApiResponse<string>.Fail("Referral code not found.");
+
+    var normalizedEmail = recipientEmail.Trim().ToLower();
+
+    // Don't allow sending to yourself
+    if (customer.Email.ToLower() == normalizedEmail)
+        return ApiResponse<string>.Fail("You cannot send a referral to yourself.");
+
+    // Check if already a registered customer
+    var alreadyRegistered = await _context.Customers
+        .AnyAsync(c => c.Email == normalizedEmail);
+
+    if (alreadyRegistered)
+        return ApiResponse<string>.Fail("This email is already registered.");
+
+    var htmlBody = _templateService.GetTemplate(
+        "ReferralInviteTemplate.html",
+        new Dictionary<string, string>
+        {
+            { "ReferrerName", customer.Name ?? "A friend" },
+            { "ReferralCode",  customer.ReferralCode },
+            { "SignupLink", $"https://homecare-public-eme5g9fxc8dmh4b8.centralindia-01.azurewebsites.net/login?ref={customer.ReferralCode}" }
+        }
+    );
+
+    await _emailService.SendAsync(
+        recipientEmail,
+        "You've been invited to HomeCare!",
+        htmlBody
+    );
+
+    return ApiResponse<string>.SuccessResponse("Referral email sent successfully.");
+}
 }

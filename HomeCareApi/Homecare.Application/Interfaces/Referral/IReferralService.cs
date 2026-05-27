@@ -1,3 +1,4 @@
+using Homecare.Application.Constants;
 using Homecare.Application.DTOs.Referral;
 
 namespace Homecare.Application.Interfaces.Referral;
@@ -22,4 +23,5 @@ public interface IReferralService
     Task<ReferralInfoDto> GetReferralInfoAsync(int customerId);
 
     Task<(bool isValid, string? errorMessage)> ValidateReferralCodeAsync(string referralCode);
+    Task<ApiResponse<string>> SendReferralEmailAsync(int customerId, string recipientEmail);
 }

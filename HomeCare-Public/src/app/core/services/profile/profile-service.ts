@@ -14,31 +14,30 @@ import { IRecentSearch } from '../../models/profile/IRecentSearch';
 import { API_BASE_URL } from '../../constants/environment-config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProfileService {
   constructor(private http: HttpClient) {}
 
   private api_url = `${API_BASE_URL}/api/customer/profile`;
-  
+
   getProfile(): Observable<ApiResponse<ICustomerProfile>> {
     return this.http.get<ApiResponse<ICustomerProfile>>(this.api_url);
   }
-  
+
   updateMobile(mobileNumber: string): Observable<ApiResponse<string>> {
     return this.http.put<ApiResponse<string>>(`${this.api_url}/mobile`, { mobileNumber });
   }
 
   requestEmailChange(req: IEmailChangeRequest) {
     return this.http.post<IApiResponse<IEmailChangeOtpResponse>>(
-      `${this.api_url}/email/request-change`, req
+      `${this.api_url}/email/request-change`,
+      req
     );
   }
-  
+
   verifyEmailChange(req: IVerifyEmailChangeRequest) {
-    return this.http.post<IApiResponse<string>>(
-      `${this.api_url}/email/verify-otp`, req
-    );
+    return this.http.post<IApiResponse<string>>(`${this.api_url}/email/verify-otp`, req);
   }
 
   addAddress(dto: IAddressRequest): Observable<ApiResponse<string>> {
@@ -63,5 +62,10 @@ export class ProfileService {
 
   getRecentSearches(): Observable<ApiResponse<IRecentSearch[]>> {
     return this.http.get<ApiResponse<IRecentSearch[]>>(`${this.api_url}/address/recent-searches`);
+  }
+  shareReferral(recipientEmail: string): Observable<ApiResponse<string>> {
+    return this.http.post<ApiResponse<string>>(`${API_BASE_URL}/api/referral/share`, {
+      recipientEmail,
+    });
   }
 }

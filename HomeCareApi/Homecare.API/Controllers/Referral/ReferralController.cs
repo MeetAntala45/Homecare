@@ -37,4 +37,13 @@ public class ReferralController : ControllerBase
         var info = await _referralService.GetReferralInfoAsync(_currentUser.UserId);
         return Ok(ApiResponse<ReferralInfoDto>.SuccessResponse("Referral info fetched successfully.", info));
     }
+    [HttpPost("share")]
+    public async Task<ActionResult<ApiResponse<string>>> ShareReferral(
+        [FromBody] SendReferralEmailDto dto)
+    {
+        var result = await _referralService.SendReferralEmailAsync(
+            _currentUser.UserId, dto.RecipientEmail);
+
+        return result.Success ? Ok(result) : BadRequest(result);
+    }
 }

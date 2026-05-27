@@ -17,11 +17,12 @@ import { DeleteConfirmation } from '../../../shared/components/delete-confirmati
 import { PROFILE_MESSAGES } from '../../../core/constants/profile-messages';
 import { IReferralInfo, IWallet } from '../../../core/models/referral/IReferral';
 import { ReferralService } from '../../../core/services/referral/referral-service';
+import { ReferralModal } from './referral-modal/referral-modal';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, MapPicker, LocationSearchModal, ActionDropdown],
+  imports: [CommonModule, MapPicker, LocationSearchModal, ActionDropdown, ReferralModal],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -63,6 +64,15 @@ export class Profile implements OnInit {
     private referralSvc: ReferralService
   ) {}
 
+  showShareModal = false;
+
+  shareReferralCode() {
+    this.showShareModal = true;
+  }
+
+  closeShareModal() {
+    this.showShareModal = false;
+  }
   loadProfile() {
     this.isLoading = true;
     this.profileService.getProfile().subscribe({
@@ -106,16 +116,6 @@ export class Profile implements OnInit {
     });
   }
 
-  shareReferralCode(): void {
-    if (!this.referralInfo?.referralCode) return;
-    const url = `${window.location.origin}/login?ref=${this.referralInfo.referralCode}`;
-    if (navigator.share) {
-      navigator.share({ title: 'HomeCare', text: 'Use my code to get $2 off!', url });
-    } else {
-      navigator.clipboard.writeText(url);
-      this.toaster.success('Referral link copied!');
-    }
-  }
   getRefereeStatusClass(status: string): string {
     switch (status) {
       case 'Rewarded':

@@ -20,10 +20,7 @@ import {
   IGetSlotsRequest,
 } from '../../../../core/models/checkout/slot';
 
-import {
-  SLOT_BOOKING_MESSAGES,
-  SESSION_CONFIG,
-} from '../../../../core/constants/slot-messages';
+import { SLOT_BOOKING_MESSAGES, SESSION_CONFIG } from '../../../../core/constants/slot-messages';
 
 @Component({
   selector: 'app-slot',
@@ -38,7 +35,7 @@ export class Slot implements OnDestroy, OnChanges {
   @Input() preSelectedSlot: ISelectedSlot | null = null;
   @Output() slotConfirmed = new EventEmitter<ISelectedSlot | null>();
   @Output() modalClosed = new EventEmitter<void>();
-  @Input() addressId!: number ;
+  @Input() addressId!: number;
 
   readonly messages = SLOT_BOOKING_MESSAGES;
   sessions = [...SESSION_CONFIG];
@@ -50,16 +47,13 @@ export class Slot implements OnDestroy, OnChanges {
   selectedSession: string = 'Morning';
   selectedSlot: ISlotResponse | null = null;
 
-  loadingDates = false;
-  loadingSlots = false;
+  isLoading = false;
+
   errorMessage = '';
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private slotService: SlotService,
-    private toaster: Toaster
-  ) { }
+  constructor(private slotService: SlotService, private toaster: Toaster) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen']) {
@@ -70,7 +64,7 @@ export class Slot implements OnDestroy, OnChanges {
           this.loadDates();
         }
       } else {
-        document.body.style.overflow = ''; 
+        document.body.style.overflow = '';
       }
     }
     if (changes['addressId'] && this.isOpen && this.selectedDate) {
@@ -83,7 +77,6 @@ export class Slot implements OnDestroy, OnChanges {
     this.destroy$.complete();
   }
 
-
   private resetState(): void {
     this.availableDates = [];
     this.slots = [];
@@ -91,53 +84,54 @@ export class Slot implements OnDestroy, OnChanges {
     this.selectedSession = 'Morning';
     this.selectedSlot = null;
     this.errorMessage = '';
+    this.isLoading = false;
+
     this.bookedSessionKeys = new Set<string>();
     this.sessionSlotsCache = new Map<string, ISlotResponse[]>();
   }
 
-
   loadDates(): void {
-    this.loadingDates = true;
+    this.isLoading = true;
     this.errorMessage = '';
 
     this.slotService
       .getAvailableDates(this.serviceId)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.loadingDates = false))
-      )
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
-
         next: (res) => {
           if (res.success) {
             this.availableDates = res.data;
 
             if (this.preSelectedSlot) {
-
               const prevEntry = this.availableDates.find(
-                d => d.date === this.preSelectedSlot!.date && d.hasSlot
+                (d) => d.date === this.preSelectedSlot!.date && d.hasSlot
               );
               if (prevEntry) {
                 this.selectedDate = prevEntry;
                 this.selectedSession = this.preSelectedSlot.session;
                 this.loadAvailableSessions();
+              } else {
+                this.isLoading = false;
               }
             } else {
-
               const today = new Date().toISOString().split('T')[0];
-              const todayEntry = this.availableDates.find(d => d.date === today && d.hasSlot);
+              const todayEntry = this.availableDates.find((d) => d.date === today && d.hasSlot);
               if (todayEntry) {
                 this.selectedDate = todayEntry;
                 this.loadAvailableSessions();
+              } else {
+                this.isLoading = false;
               }
             }
+          } else {
+            this.isLoading = false;
           }
         },
         error: () => {
+          this.isLoading = false;
           this.errorMessage = this.messages.errors.LOAD_DATES_FAILED;
           this.toaster.error(this.messages.errors.LOAD_DATES_FAILED);
         },
-
       });
   }
 
@@ -149,54 +143,58 @@ export class Slot implements OnDestroy, OnChanges {
     const cacheKey = `${this.selectedDate.date}_${this.selectedSession}`;
     if (this.sessionSlotsCache.has(cacheKey)) {
       this.slots = this.sessionSlotsCache.get(cacheKey)!;
+      this.isLoading = false;
       return;
     }
 
-    this.loadingSlots = true;
     this.slots = [];
     this.selectedSlot = null;
     this.errorMessage = '';
-    
-    const requestPayload : IGetSlotsRequest = {
+
+    const requestPayload: IGetSlotsRequest = {
       serviceId: this.serviceId,
       date: this.selectedDate.date,
       session: this.selectedSession,
-      addressId: this.addressId 
+      addressId: this.addressId,
     };
-  
-    this.slotService.getSlots(
-      requestPayload
-    ).pipe(
-      takeUntil(this.destroy$),
-      finalize(() => (this.loadingSlots = false))
-    ).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.slots = res.data;
-          this.sessionSlotsCache.set(cacheKey, res.data);
 
-          if (this.preSelectedSlot && !this.selectedSlot) {
-            const prevSlot = this.slots.find(
-              s => s.startTime === this.preSelectedSlot!.startTime &&
-                s.endTime === this.preSelectedSlot!.endTime &&
-                s.available
-            );
-            if (prevSlot) this.selectedSlot = prevSlot;
+    this.slotService
+      .getSlots(requestPayload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.slots = res.data;
+            this.sessionSlotsCache.set(cacheKey, res.data);
+
+            if (this.preSelectedSlot && !this.selectedSlot) {
+              const prevSlot = this.slots.find(
+                (s) =>
+                  s.startTime === this.preSelectedSlot!.startTime &&
+                  s.endTime === this.preSelectedSlot!.endTime &&
+                  s.available
+              );
+              if (prevSlot) this.selectedSlot = prevSlot;
+            }
           }
-        }
-      },
-      error: () => {
-        this.errorMessage = this.messages.errors.LOAD_SLOTS_FAILED;
-        this.toaster.error(this.messages.errors.LOAD_SLOTS_FAILED);
-      },
-    });
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+          this.errorMessage = this.messages.errors.LOAD_SLOTS_FAILED;
+          this.toaster.error(this.messages.errors.LOAD_SLOTS_FAILED);
+        },
+      });
   }
   bookedSessionKeys = new Set<string>();
 
   loadAvailableSessions(): void {
     if (!this.selectedDate) return;
 
-    const allSessionKeys = SESSION_CONFIG.map(s => s.key);
+    this.sessions = [];
+    this.slots = [];
+
+    const allSessionKeys = SESSION_CONFIG.map((s) => s.key);
     const availableSessions = new Set<string>();
     const bookedSessions = new Set<string>();
     let completed = 0;
@@ -204,96 +202,91 @@ export class Slot implements OnDestroy, OnChanges {
     const today = new Date().toISOString().split('T')[0];
     const isToday = this.selectedDate.date === today;
 
-    allSessionKeys.forEach(sessionKey => {
-      this.slotService.getSlots({
-        serviceId: this.serviceId,
-        date: this.selectedDate!.date,
-        session: sessionKey,
-        addressId: this.addressId,
-      }).pipe(takeUntil(this.destroy$)).subscribe({
-        next: (res) => {
-          if (res.success && res.data.length > 0) {
-            const hasAvailable = res.data.some(s => {
-              if (!s.available) return false;
+    allSessionKeys.forEach((sessionKey) => {
+      this.slotService
+        .getSlots({
+          serviceId: this.serviceId,
+          date: this.selectedDate!.date,
+          session: sessionKey,
+          addressId: this.addressId,
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            if (res.success && res.data.length > 0) {
+              const hasAvailable = res.data.some((s) => {
+                if (!s.available) return false;
+                if (isToday) {
+                  const [h, m] = s.startTime.split(':').map(Number);
+                  const now = new Date();
+                  return !(now.getHours() > h || (now.getHours() === h && now.getMinutes() >= m));
+                }
+                return true;
+              });
 
-              if (isToday) {
-                const [h, m] = s.startTime.split(':').map(Number);
-                const now = new Date();
-                const isExpired = now.getHours() > h ||
-                  (now.getHours() === h && now.getMinutes() >= m);
-                return !isExpired;
-              }
-
-              return true;
-            });
-
-            if (hasAvailable) {
-              availableSessions.add(sessionKey);
-            } else {
-              bookedSessions.add(sessionKey);
-            }
-          }
-
-          completed++;
-
-          if (completed === allSessionKeys.length) {
-
-            if (availableSessions.size === 0) {
-              const dateIndex = this.availableDates.findIndex(
-                d => d.date === this.selectedDate!.date
-              );
-              if (dateIndex !== -1) {
-                this.availableDates[dateIndex] = {
-                  ...this.availableDates[dateIndex],
-                  hasSlot: true,
-                  allBooked: true
-                };
-              }
-
-              this.sessions = [];
-              this.slots = [];
-              this.selectedDate = null;
-              this.bookedSessionKeys = new Set<string>();
-
-              const nextAvailable = this.availableDates.find(
-                d => d.hasSlot && !d.allBooked
-              );
-              if (nextAvailable) {
-                this.selectedDate = nextAvailable;
-                this.loadAvailableSessions();
-              }
-              return;
+              if (hasAvailable) availableSessions.add(sessionKey);
+              else bookedSessions.add(sessionKey);
             }
 
-            this.sessions = [...SESSION_CONFIG].filter(s =>
-              availableSessions.has(s.key) || bookedSessions.has(s.key)
-            );
+            completed++;
 
-            this.bookedSessionKeys = bookedSessions;
-
-            if (this.sessions.length > 0) {
-              const stillValid = this.sessions.some(
-                s => s.key === this.selectedSession && availableSessions.has(s.key)
-              );
-              if (!stillValid) {
-                const firstAvailable = this.sessions.find(
-                  s => availableSessions.has(s.key)
+            if (completed === allSessionKeys.length) {
+              if (availableSessions.size === 0) {
+                const dateIndex = this.availableDates.findIndex(
+                  (d) => d.date === this.selectedDate!.date
                 );
-                this.selectedSession = firstAvailable?.key ?? this.sessions[0].key;
+                if (dateIndex !== -1) {
+                  this.availableDates[dateIndex] = {
+                    ...this.availableDates[dateIndex],
+                    hasSlot: true,
+                    allBooked: true,
+                  };
+                }
+
+                this.sessions = [];
+                this.slots = [];
+                this.selectedDate = null;
+                this.bookedSessionKeys = new Set<string>();
+
+                const nextAvailable = this.availableDates.find((d) => d.hasSlot && !d.allBooked);
+                if (nextAvailable) {
+                  this.selectedDate = nextAvailable;
+                  this.loadAvailableSessions(); 
+                } else {
+                  this.isLoading = false;
+                }
+                return;
               }
-              this.loadSlots();
-            } else {
-              this.sessions = [];
-              this.slots = [];
+
+              this.sessions = [...SESSION_CONFIG].filter(
+                (s) => availableSessions.has(s.key) || bookedSessions.has(s.key)
+              );
+              this.bookedSessionKeys = bookedSessions;
+
+              if (this.sessions.length > 0) {
+                const stillValid = this.sessions.some(
+                  (s) => s.key === this.selectedSession && availableSessions.has(s.key)
+                );
+                if (!stillValid) {
+                  const firstAvailable = this.sessions.find((s) => availableSessions.has(s.key));
+                  this.selectedSession = firstAvailable?.key ?? this.sessions[0].key;
+                }
+                this.loadSlots();
+              } else {
+                this.isLoading = false;
+              }
             }
-          }
-        },
-        error: () => {
-          completed++;
-        }
-      });
+          },
+          error: () => {
+            completed++;
+            if (completed === allSessionKeys.length) {
+              this.isLoading = false;
+            }
+          },
+        });
     });
   }
+
   onDateSelect(date: IDateAvailability): void {
     if (!date.hasSlot || this.isDateFullyBooked(date)) {
       this.toaster.error(this.messages.modal.NO_SLOTS);
@@ -301,12 +294,16 @@ export class Slot implements OnDestroy, OnChanges {
     }
     this.selectedDate = date;
     this.selectedSlot = null;
+    this.isLoading = true; 
+
     this.loadAvailableSessions();
   }
 
   onSessionSelect(session: string): void {
     this.selectedSession = session;
     this.selectedSlot = null;
+    this.isLoading = true; 
+
     this.loadSlots();
   }
 
@@ -334,7 +331,9 @@ export class Slot implements OnDestroy, OnChanges {
       startTime: this.selectedSlot.startTime,
       endTime: this.selectedSlot.endTime,
       displayDate: this.formatDisplayDate(this.selectedDate.date),
-      displayTime: `${this.formatTime(this.selectedSlot.startTime)} - ${this.formatTime(this.selectedSlot.endTime)}`,
+      displayTime: `${this.formatTime(this.selectedSlot.startTime)} - ${this.formatTime(
+        this.selectedSlot.endTime
+      )}`,
     };
 
     this.toaster.success(SLOT_BOOKING_MESSAGES.modal.SUCCESS);
@@ -351,7 +350,6 @@ export class Slot implements OnDestroy, OnChanges {
     this.isOpen = false;
     this.modalClosed.emit();
   }
-
 
   formatDisplayDate(date: string): string {
     return new Date(date).toLocaleDateString('en-IN', {
@@ -381,10 +379,9 @@ export class Slot implements OnDestroy, OnChanges {
     return this.selectedDate?.date === date.date;
   }
 
-  isSlotSelected(slot: ISlotResponse): boolean {    
+  isSlotSelected(slot: ISlotResponse): boolean {
     return (
-      this.selectedSlot?.startTime === slot.startTime &&
-      this.selectedSlot?.endTime === slot.endTime
+      this.selectedSlot?.startTime === slot.startTime && this.selectedSlot?.endTime === slot.endTime
     );
   }
   isSlotExpired(slot: ISlotResponse): boolean {
@@ -397,7 +394,6 @@ export class Slot implements OnDestroy, OnChanges {
     return now.getHours() > h || (now.getHours() === h && now.getMinutes() >= m);
   }
 
-
   isDateFullyBooked(date: IDateAvailability): boolean {
     return date.hasSlot && !!date.allBooked;
   }
@@ -409,5 +405,4 @@ export class Slot implements OnDestroy, OnChanges {
   get canConfirm(): boolean {
     return !!this.selectedDate && !!this.selectedSlot;
   }
-
 }
