@@ -1,9 +1,8 @@
 using Homecare.Application.Constants.Payments;
+using Homecare.Application.Interfaces;
 using Homecare.Application.Interfaces.Payments;
 using Homecare.Data;
-using Homecare.Domain.Entities;
 using Homecare.Domain.Enums;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 
@@ -12,12 +11,12 @@ namespace Homecare.Application.Services.Payments;
 public class InvoiceService : IInvoiceService
 {
     private readonly AppDbContext _context;
-    private readonly IWebHostEnvironment _env;
+    private readonly ICloudinaryService _cloudinary;
 
-    public InvoiceService(AppDbContext context, IWebHostEnvironment env)
+    public InvoiceService(AppDbContext context, ICloudinaryService cloudinary)
     {
         _context = context;
-        _env = env;
+        _cloudinary = cloudinary;
     }
 
     public async Task<string> GetInvoicePathAsync(int bookingId)
@@ -26,15 +25,14 @@ public class InvoiceService : IInvoiceService
             .FirstOrDefaultAsync(p => p.BookingId == bookingId)
             ?? throw new KeyNotFoundException(PaymentMessages.PaymentNotFoundForBooking);
 
-        await GenerateAsync(bookingId);
+        var cloudinaryUrl = await GenerateAsync(bookingId);
+
         await _context.Entry(payment).ReloadAsync();
 
-        var fullPath = Path.Combine(_env.WebRootPath, payment.InvoicePath!);
-
-        if (!File.Exists(fullPath))
+        if (string.IsNullOrWhiteSpace(payment.InvoicePath))
             throw new FileNotFoundException(PaymentMessages.InvoiceNotGenerated);
 
-        return fullPath;
+        return payment.InvoicePath;
     }
 
     public async Task<string> GenerateAsync(int bookingId)
@@ -87,15 +85,13 @@ public class InvoiceService : IInvoiceService
             throw new Exception(PaymentMessages.PaymentNotCompleted);
 
         decimal walletDiscount = booking.WalletDiscountAmount;
-
         decimal refereeDiscount = 0;
+
         bool hasReferral = await _context.ReferralUses
             .AnyAsync(r => r.RefereeId == booking.CustomerId);
 
         if (hasReferral && booking.CouponId == null)
-        {
             refereeDiscount = booking.DiscountAmount;
-        }
 
         decimal couponDiscount = booking.DiscountAmount - refereeDiscount;
 
@@ -108,13 +104,6 @@ public class InvoiceService : IInvoiceService
                 .FirstOrDefaultAsync();
         }
 
-        var folder = Path.Combine(_env.WebRootPath, "invoices");
-        Directory.CreateDirectory(folder);
-
-        var fileName = $"INV-{bookingId:D7}.pdf";
-        var filePath = Path.Combine(folder, fileName);
-        var relativePath = $"invoices/{fileName}";
-
         var doc = new InvoiceDocument(
             booking, service, payment,
             booking.Address, _context,
@@ -125,12 +114,16 @@ public class InvoiceService : IInvoiceService
             refereeDiscount,
             walletDiscount);
 
-        doc.GeneratePdf(filePath);
+        byte[] pdfBytes = doc.GeneratePdf();
 
-        payment.InvoicePath = relativePath;
+        var fileName = $"INV-{bookingId:D7}.pdf";
+        var cloudinaryUrl = await _cloudinary.UploadRawFileAsync(
+            pdfBytes, fileName, "invoices");
+
+        payment.InvoicePath = cloudinaryUrl;
         payment.ModifiedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 
-        return relativePath;
+        return cloudinaryUrl;
     }
 }

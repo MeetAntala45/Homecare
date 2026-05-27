@@ -300,7 +300,7 @@ export class ServicePartnerDetail implements OnInit {
 
   async downloadFile(filePath: string, documentName: string, fileType: string): Promise<void> {
     try {
-      const fullUrl = `${API_BASE_URL}${filePath}`;
+      const fullUrl = filePath;
       const response = await fetch(fullUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);

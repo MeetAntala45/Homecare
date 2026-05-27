@@ -18,16 +18,24 @@ public class PaymentController : ControllerBase
 
     private readonly ICurrentUserService _currentUser;
     private int userId => _currentUser.UserId;
-        
-    public PaymentController(IPaymentService paymentService, IInvoiceService invoiceService, AppDbContext context, ICurrentUserService currentUser)
+    private readonly IHttpClientFactory _httpClientFactory;
+
+
+    public PaymentController(
+    IPaymentService paymentService,
+    IInvoiceService invoiceService,
+    AppDbContext context,
+    ICurrentUserService currentUser,
+    IHttpClientFactory httpClientFactory)   // ← ADD
     {
         _paymentService = paymentService;
         _invoiceService = invoiceService;
         _currentUser = currentUser;
         _context = context;
+        _httpClientFactory = httpClientFactory;  // ← ADD
     }
 
-    [Authorize] 
+    [Authorize]
     [HttpPost("create-checkout-session")]
     public async Task<ApiResponse<CheckoutSessionResponseDto>> CreateCheckoutSession(
         [FromBody] CheckoutRequestDto dto)
@@ -60,21 +68,22 @@ public class PaymentController : ControllerBase
     }
 
 
-    [Authorize] 
+    [Authorize]
     [HttpGet("booking/{bookingId:int}/success-details")]
     public async Task<ApiResponse<BookingSuccessResponseDto>> GetBookingSuccessDetails(int bookingId)
     {
         return await _paymentService.GetBookingSuccessDetailsAsync(bookingId, userId);
     }
 
-    [Authorize] 
+    [Authorize]
     [HttpGet("booking/{bookingId:int}/invoice")]
     public async Task<IActionResult> DownloadInvoice(int bookingId)
     {
         try
         {
-            var fullPath = await _invoiceService.GetInvoicePathAsync(bookingId);
-            return PhysicalFile(fullPath, "application/pdf", $"Invoice-{bookingId}.pdf");
+            var cloudinaryUrl = await _invoiceService.GetInvoicePathAsync(bookingId);
+
+            return Redirect(cloudinaryUrl);
         }
         catch (KeyNotFoundException ex)
         {

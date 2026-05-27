@@ -36,6 +36,7 @@ using Homecare.Application.Interfaces.PartnerLeave;
 using Homecare.Application.Interfaces.Notification;
 using Homecare.Application.Services.Notification;
 using System.Security.Claims;
+using Homecare.Application.Interfaces.Payments;
 
 namespace Homecare.API.Extensions;
 
@@ -104,6 +105,7 @@ public static class ServiceExtensions
         services.AddScoped<ILeaveService, LeaveService>();
         services.AddScoped<IPartnerSystemNotifService, PartnerSystemNotifService>();
         services.AddScoped<IAdminSystemNotifService, AdminSystemNotifService>();
+
 
         services.AddHostedService<BookingCompletionJob>();
         services.AddHostedService<BookingExpiryJob>();

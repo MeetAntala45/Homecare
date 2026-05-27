@@ -59,28 +59,45 @@ public class CloudinaryService : ICloudinaryService
         await _cloudinary.DestroyAsync(deleteParams);
     }
 
-    // Extracts "homecare/folder/filename" from a full Cloudinary URL
     public string? ExtractPublicId(string? url)
     {
         if (string.IsNullOrWhiteSpace(url)) return null;
         try
         {
             var uri = new Uri(url);
-            // path is like /demo/image/upload/v123456/homecare/folder/file.jpg
             var segments = uri.AbsolutePath.Split('/');
             var uploadIndex = Array.IndexOf(segments, "upload");
             if (uploadIndex < 0) return null;
 
-            // skip "upload" and the version segment (starts with 'v' + digits)
             var start = uploadIndex + 1;
             if (start < segments.Length && System.Text.RegularExpressions.Regex.IsMatch(segments[start], @"^v\d+$"))
                 start++;
 
             var publicIdWithExt = string.Join("/", segments[start..]);
-            // strip extension for images; raw files keep it
             var dot = publicIdWithExt.LastIndexOf('.');
             return dot > 0 ? publicIdWithExt[..dot] : publicIdWithExt;
         }
         catch { return null; }
+    }
+    public async Task<string> UploadRawFileAsync(byte[] fileBytes, string fileName, string folder)
+    {
+        using var stream = new MemoryStream(fileBytes);
+
+        var uploadParams = new RawUploadParams
+        {
+            File = new FileDescription(fileName, stream),
+            Folder = folder,
+            PublicId = Path.GetFileNameWithoutExtension(fileName),
+            Overwrite = true,
+            UseFilename = false,
+            UniqueFilename = false
+        };
+
+        var result = await _cloudinary.UploadAsync(uploadParams);
+
+        if (result.Error != null)
+            throw new Exception($"Cloudinary upload failed: {result.Error.Message}");
+
+        return result.SecureUrl.ToString();
     }
 }

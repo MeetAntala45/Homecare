@@ -39,7 +39,7 @@ export class AdminSidebar implements OnInit {
     { label: 'Error Logs', route: '/admin/error-logs', icon: 'bi-bug' },
     { label: 'Master Data', route: '/admin/master-data', icon: 'bi-database' },
     { label: 'Support', route: '/admin/support', icon: 'bi-headset' },
-    // { label: 'Leave Requests', route: '/admin/leave-requests', icon: 'bi-calendar-x' }
+    { label: 'Leave Requests', route: '/admin/leave-requests', icon: 'bi-calendar-x' }
   ];
 
   ngOnInit(): void {

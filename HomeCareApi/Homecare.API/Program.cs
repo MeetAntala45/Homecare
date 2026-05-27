@@ -43,6 +43,7 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddOpenApi()
     .AddHttpClient();
+
 var app = builder.Build();
 
 app.UseAppMiddleware(app.Configuration);
